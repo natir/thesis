@@ -1,0 +1,136 @@
+\documentclass[main.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Introduction}
+
+\section{Sequencing}
+
+Sequencing technology evolve quickly since 1977, even if it is an a posteriori reconstruction, three generations can be distinguished, based on reads property. In this section we didn't detail the biochemic methods we just focus on reads property and her impact on different bioinformatics task.
+
+The two most important properties of a read are its size and error rate. The longer a read provide more information about  original sequence, which will facilitate downstream analysis. If read contains many error, the cost of downstream analysis increase and lost in precision and recall.
+
+Sanger technique create large reads with very small error rate, but with a very low throutput and very expensive cost per base.
+Second generation increase the throutput and reduce the cost per base, by reducing the length of the reads and increasing the probability of error ($\approx$ 1\%). This error are generaly a substitution, sequencer read \texttt{A} in place of a \texttt{T}
+The third generation has greatly increased the size of the reads but also the error rate while maintaining a descent throughput. Error in third generation are mostly insertion deletion, sequencer didn't read a par of sequence or generate random base not present in original sequence. Table \ref{intro:tab:technology_property} present read length and error rate on many technology.
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{l|rr|l}
+         Technology          & Read length (bd)                 & Error rate    & Source                          \\ \hline
+         ABI/Solid           & 75                               & Low ($\approx$ 2\%)    & \cite{seq_assembly_demystified} \\
+         Illumina/Solexa     & 100–150                          & Low (<2\%)             & \cite{seq_assembly_demystified} \\
+         IonTorrent          & $\approx$ 200                    & Medium ($\approx$ 4\%) & \cite{seq_assembly_demystified} \\
+         Roche/454           & 400–600                          & Medium ($\approx$ 4\%) & \cite{seq_assembly_demystified} \\
+         Sanger              & $\approx$ 2 kb                   & Low ($\approx$ 2\%)    & \cite{seq_assembly_demystified} \\
+         Pacific Biosciences & $\approx$ 10 kb ($\max$ 100 kb)  & High ($\approx$ 18\%)  & \cite{seq_assembly_demystified} \cite{longread_dark_matter} \\
+         Oxford Nanopore     & $\approx$ 10 kb ($\max$ 1 mb)    & High ($\approx$ 12\%)  & \cite{longread_dark_matter} \cite{nanopore_read_accuracy} \\
+    \end{tabular}
+    \caption{This table present length of reads and error rate of main sequencing technology. Pacific Biosciences and Oxford Nanopore evolve quickly and this value change we have tried to be as up-to-date as possible but between two publications these values vary considerably.}
+    \label{intro:tab:technology_property}
+\end{table}
+
+
+DNA sequencing was very useful tools for many analysis, and in some cases is mandatory to be able to understand biological mechanisms. In this thesis we while focus only on genome assembly problem it's a important usage of sequencing but the only one.
+
+\section{Assembly algorithm}
+
+If you want study an organism, know exact genome sequence composition it's very useful to found gene, regulation sequence, found variations in population, …. But the best sequencing technology in length provide reads very smaller than genome (2 order of magnitude smaller).
+
+Imagined a crazy copyist monk, his copy a book but he randomly chooses where he starts to copy the book and only copies small fragments of text.
+If we want to be able to read the book, we must gather the different pieces that the monks produce and put them back in order.
+The book is the genome of the organism we want to study, the copyist monks are our sequencer, and the operation of putting the fragments in order is the assembly.
+
+To try to find the good order of book fragment we can try to compare fragment and say this fragment are the same of this one, or this two fragment share same lettre at extremity. When two reads share a common sequence at extremity we say they overlap \ref{intro:fig:overlap:perfect}, but it possible to reads share a common sequence randomly this probability is smaller when overlap it's longer %\pim{il faut une demonstration ici}
+. In perfect word the only criteria to evaluate overlap can be the length of overlap but reads contains error \ref{intro:fig:overlap:erroneous}.
+
+To reconstruct the original sequence with short fragment (reads) find overlaps between this fragment is the base of some assembly algorithm.
+
+\begin{figure}
+    \centering
+    \subfloat[][$R_1$ share 7 base at is end with $R_2$ without any error]{
+        \subfile{introduction/tikz/perfect_overlap.tex}
+        \label{intro:fig:overlap:perfect}
+    }
+    \subfloat[][$R_1$ share 5 base at is end with $R_3$ with one substitution and one deletion]{
+        \subfile{introduction/tikz/erroneous_overlap.tex}
+        \label{intro:fig:overlap:erroneous}
+    }
+    \caption{When reads didn't contains error all overlap look like (a) but}
+    \label{intro:fig:overlap}
+\end{figure}
+
+\subsection{How to find overlap}
+
+Find overlap between reads are generaly the bootleneck of many assembly algorithm.
+
+\subsection{\textit{Greedy} assembly algorithm}
+
+%\pim{rajouté des citations}
+
+The \textit{Greedy} assembly algorithm are the first type of assembly tools, used on Sanger data. Algorithm \ref{intro:algo:greedy} present global idea how \textit{Greedy} algorithm work.
+
+The BEST\_OVERLAP function is the main part of algorithm the best overlap is the larger one or the overlap with less error, each algorithm have her own choose method.
+
+\begin{algorithm}
+    \caption{A greedy assembly}
+    \begin{algorithmic}[1]
+    \Function{greedy}{reads}\Comment{reads is a set of read}
+        \State choose r1 in reads
+        \State sequence $\leftarrow$ r1
+        \While{r2 $\leftarrow$ \Call{best\_overlap}{r1}}\Comment{\Call{best\_overlap}{\null} is a function for r1 they get read r2 the best overlap for read r1 in reads}
+            \State \Call{concatenate}{sequence, r2}
+            \State \Call{drop}{r1, reads}
+            \State r1 $\leftarrow$ r2
+        \EndWhile
+    \EndFunction
+    \end{algorithmic}
+    \label{intro:algo:greedy}
+\end{algorithm}
+
+Moreover \textit{Greedy} algorithm, by focusing on the local problem, weach overlap is the best one for this read, can't manage repetition. Genome contains many repetition, like a book some word are reused or complete part of sentence can be present multiple time.
+
+Figure \ref{intro:fig:greedy:repetition} present a case where reads $R_0$ $R_1$ and $R_2$ contains a repetition. $R_0$ have two possible overlap if overlap with $R_1$ is choose the assembly sequence match with the green path, if overlap with $R_2$ is choose the assembly sequence match with the red path. We can't know weach path is the good one and we didn't see the repetition. So assembly tools based on \textit{Greedy} algorithm can produce many misassembly.
+
+\begin{figure}
+    \centering 
+    \subfile{introduction/tikz/repetition.tex}
+    \caption{Each black box are a read, the grey box mark the position of a repetition. The begin of $R_1$ and $R_2$ are in repetition they share same begin but didn't match at her end. This repetition create a ambiguity in assembly.}
+    \label{intro:fig:greedy:repetition}
+\end{figure}
+
+\subsection{Overlap Graph Consensus}
+
+To solve trouble of repetition in \textit{Greedy} algorithm, %\pim{ref necessaire}
+define an Overlap Graph Consensus (OLC). Each read was a node and we build an edge between node if reads share an overlap. Figure \ref{intro:fig:olc:graph}, present the OLC corresponding to ovelap present in \ref{intro:fig:greedy:repetition}.
+
+The repetition create a fork in OLC, a node with two successor, it's easy to detect this case in graph and stop assembly. The result of assembly of this graph was 3 contigs with white node, green node and red node. The assembly was more fragmented than \textit{Greedy} algorithme but the assembly didn't contains misassembly.
+
+\begin{figure}
+    \centering 
+    \subfile{introduction/tikz/overlap_graph.tex}
+    \caption{Each node are a read and an edge was build between two read if they share an overlap.}
+    \label{intro:fig:olc:graph}
+\end{figure}
+
+\subsection{DeBruijn Graph}
+
+%\subsection{Hybrid assembly}
+
+%\section{Sequencing technology}
+
+%\subsection{First generation}
+
+%\subsection{Second generation}
+
+\section{Correction}
+
+\section{Why people use long reads}
+
+\section{Assembly Trouble}
+
+\subsection{Data management}
+
+\subsection{Trouble with heuristic algorithme}
+
+\end{document}
