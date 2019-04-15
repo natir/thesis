@@ -4,6 +4,7 @@
 % Adapted by : Yoann Dufresne and Pierre Marijon
 %
 
+\NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{thesis}[2014/03/18]
 
 %---------------------------------------------------------------------------
@@ -30,7 +31,7 @@
 
 % En-têtes, etc
 \RequirePackage{fancyhdr}
-%\RequirePackage{lastpage} %pour avoir dernière page
+\RequirePackage{lastpage} %pour avoir dernière page
 
 % Equations
 \RequirePackage{amsfonts}
@@ -44,7 +45,7 @@
 % Figures
 \RequirePackage{float}
 \RequirePackage{rotating}
-\RequirePackage[format=hang]{subfig,caption}
+\RequirePackage[format=hang]{subfig}
 
 % Tableaux
 \RequirePackage{booktabs,multirow}
@@ -116,6 +117,11 @@
 	}
 }
 
+\newboolean{normalnumbering}
+\setboolean{normalnumbering}{false}
+\newboolean{numberingstartright}
+\setboolean{numberingstartright}{true}
+
 %Page de Titre
 \def\s@btitle{\relax}
 \def\subtitle#1{\gdef\s@btitle{#1}} 
@@ -123,10 +129,7 @@
   \thispagestyle{empty}
   % Numérotation
   \pagenumbering{roman} \setcounter{page}{1}
-  \newboolean{normalnumbering}
-  \setboolean{normalnumbering}{false}
-  \newboolean{numberingstartright}
-  \setboolean{numberingstartright}{true}
+
   % Texte
   \begin{center}
     \begin{spacing}{1.3}
@@ -265,10 +268,10 @@
 }
 \renewcommand{\chaptermark}[1]{
 	\ifthenelse{\boolean{normalnumbering}}{
-	}{
+	}{%
 		\ifthenelse{\isodd{\arabic{page}}}
 		{
-  			\setboolean{numberingstartright}{true}
+ 			\setboolean{numberingstartright}{true}
   		}
   		{
   			\setboolean{numberingstartright}{false}
@@ -312,7 +315,7 @@
 \renewcommand{\footrulewidth}{0pt} % pas de filet en bas
 
 \fancyhead[LE]{
-	\ifthenelse{\boolean{numberingstartright}}
+	\ifthenelse{\equal{numberingstartright}[true]}
 	{
 		\bfseries{\thepage}
 	}
@@ -385,83 +388,3 @@
             linkcolor=black,
             urlcolor=black
             }
-
-%%---------------------------------------------------------------------------
-%% TiKZ
-%%---------------------------------------------------------------------------
-\usepackage{tikz}
-%\usetikzlibrary{patterns}
-%\usetikzlibrary{calc}
-%% pour avoir plus d'option avec les nodes
-%  \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,positioning,fit,shapes.geometric}
-%% pour avoir dash-dot
-%  \tikzset{
-%    dash-dot/.style={
-%    dash pattern=on 4pt off 3pt on 1pt off 3pt,
-%  },
-%  }
-%% pour avoir dash-dot-dot
-%  \tikzset{
-%    dash-dot-dot/.style={
-%    dash pattern=on 4pt off 3pt on 1pt off 3pt on 1pt off 3pt,
-%  },
-%  }
-%% pour avoir des grandes flèches, et dans le style stealth
-%  \newdimen\arrowsize
-%  \newdimen\arrowsizeb
-%  \pgfarrowsdeclare{large_arrow}{large_arrow}
-%  {
-%  \arrowsize=0.5\pgflinewidth
-%  \advance\arrowsize by.3\pgflinewidth%
-%  \arrowsizeb=6\arrowsize
-%  \advance\arrowsizeb by.5\pgflinewidth%
-%  \pgfarrowsleftextend{+-\arrowsizeb}
-%  \arrowsizeb=2\arrowsize
-%  \advance\arrowsizeb by0.5\pgflinewidth%
-%  \pgfarrowsrightextend{+\arrowsizeb}
-%  }
-%  {
-%  \arrowsize=0.5\pgflinewidth
-%  \advance\arrowsize by.3\pgflinewidth%
-%  \pgfsetdash{}{+0pt}
-%  \pgfsetroundjoin
-%  \pgfpathmoveto{\pgfqpoint{2\arrowsize}{0\arrowsize}}
-%  \pgfpathcurveto
-%  {\pgfqpoint{-.5\arrowsize}{.5\arrowsize}}
-%  {\pgfqpoint{-3\arrowsize}{1.5\arrowsize}}
-%  {\pgfqpoint{-6\arrowsize}{3.25\arrowsize}}
-%  \pgfpathcurveto
-%  {\pgfqpoint{-3\arrowsize}{1\arrowsize}}
-%  {\pgfqpoint{-3\arrowsize}{-1\arrowsize}}
-%  {\pgfqpoint{-6\arrowsize}{-3.25\arrowsize}}
-%  \pgfpathcurveto
-%  {\pgfqpoint{-3\arrowsize}{-1.5\arrowsize}}
-%  {\pgfqpoint{-.5\arrowsize}{-.5\arrowsize}}
-%  {\pgfqpoint{2\arrowsize}{0\arrowsize}}
-%  \pgfpathclose
-%  \pgfusepathqfillstroke
-%  }
-%  \tikzset{>=large_arrow}
-%  \tikzset{shorten >=1pt}
-%  \tikzset{shorten <=1pt}
-%  
-%%---------------------------------------------------------------------------
-%% pgfplots
-%%---------------------------------------------------------------------------
-%\usepackage{pgfplots}
-%  % Pour que ce soit compatible avec la version 1.6
-%  \pgfplotsset{compat=1.6}
-%  % pour les label des axes
-%  \pgfplotsset{tick scale binop={\times}}
-%  % le style de la légende  
-%  \pgfplotsset{every axis legend/.append style={
-%                at={(0.9,0.9)},
-%                 anchor=north east}}
-%  % pour avoir un espace separant les mille
-%  \pgfkeys{/pgf/number format/.cd,fixed,precision=2,%use comma, %pour utiliser la virgule
-%                                                    set thousands separator={\,}}
-%  % position des label sur x et y
-%  \pgfplotsset{every axis x label/.style=
-%   {at={(ticklabel cs:0.5)},anchor=near ticklabel}}
-%  \pgfplotsset{every axis y label/.style=
-%   {at={(ticklabel cs:0.5)},rotate=90,anchor=near ticklabel}}

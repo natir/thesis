@@ -14,7 +14,7 @@ Sanger technique create large reads with very small error rate, but with a very 
 Second generation increase the throutput and reduce the cost per base, by reducing the length of the reads and increasing the probability of error ($\approx$ 1\%). This error are generaly a substitution, sequencer read \texttt{A} in place of a \texttt{T}
 The third generation has greatly increased the size of the reads but also the error rate while maintaining a descent throughput. Error in third generation are mostly insertion deletion, sequencer didn't read a par of sequence or generate random base not present in original sequence. Table \ref{intro:tab:technology_property} present read length and error rate on many technology.
 
-\begin{table}[]
+\begin{table}[ht]
     \centering
     \begin{tabular}{l|rr|l}
          Technology          & Read length (bd)                 & Error rate    & Source                          \\ \hline
@@ -46,13 +46,13 @@ To try to find the good order of book fragment we can try to compare fragment an
 
 To reconstruct the original sequence with short fragment (reads) find overlaps between this fragment is the base of some assembly algorithm.
 
-\begin{figure}
+\begin{figure}[ht]
     \centering
-    \subfloat[][$R_1$ share 7 base at is end with $R_2$ without any error]{
+    \subfloat[ht][$R_1$ share 7 base at is end with $R_2$ without any error]{
         \subfile{introduction/tikz/perfect_overlap.tex}
         \label{intro:fig:overlap:perfect}
     }
-    \subfloat[][$R_1$ share 5 base at is end with $R_3$ with one substitution and one deletion]{
+    \subfloat[ht][$R_1$ share 5 base at is end with $R_3$ with one substitution and one deletion]{
         \subfile{introduction/tikz/erroneous_overlap.tex}
         \label{intro:fig:overlap:erroneous}
     }
@@ -72,7 +72,7 @@ The \textit{Greedy} assembly algorithm are the first type of assembly tools, use
 
 The BEST\_OVERLAP function is the main part of algorithm the best overlap is the larger one or the overlap with less error, each algorithm have her own choose method.
 
-\begin{algorithm}
+\begin{algorithm}[ht]
     \caption{A greedy assembly}
     \begin{algorithmic}[1]
     \Function{greedy}{reads}\Comment{reads is a set of read}
@@ -92,7 +92,7 @@ Moreover \textit{Greedy} algorithm, by focusing on the local problem, weach over
 
 Figure \ref{intro:fig:greedy:repetition} present a case where reads $R_0$ $R_1$ and $R_2$ contains a repetition. $R_0$ have two possible overlap if overlap with $R_1$ is choose the assembly sequence match with the green path, if overlap with $R_2$ is choose the assembly sequence match with the red path. We can't know weach path is the good one and we didn't see the repetition. So assembly tools based on \textit{Greedy} algorithm can produce many misassembly.
 
-\begin{figure}
+\begin{figure}[ht]
     \centering 
     \subfile{introduction/tikz/repetition.tex}
     \caption{Each black box are a read, the grey box mark the position of a repetition. The begin of $R_1$ and $R_2$ are in repetition they share same begin but didn't match at her end. This repetition create a ambiguity in assembly.}
@@ -106,7 +106,7 @@ define an Overlap Graph Consensus (OLC). Each read was a node and we build an ed
 
 The repetition create a fork in OLC, a node with two successor, it's easy to detect this case in graph and stop assembly. The result of assembly of this graph was 3 contigs with white node, green node and red node. The assembly was more fragmented than \textit{Greedy} algorithme but the assembly didn't contains misassembly.
 
-\begin{figure}
+\begin{figure}[ht]
     \centering 
     \subfile{introduction/tikz/overlap_graph.tex}
     \caption{Each node are a read and an edge was build between two read if they share an overlap.}
@@ -132,5 +132,11 @@ The repetition create a fork in OLC, a node with two successor, it's easy to det
 \subsection{Data management}
 
 \subsection{Trouble with heuristic algorithme}
+
+\onlyinsubfile{
+\bibliographystyle{plainnat}
+\bibliography{main}
+\addcontentsline{toc}{chapter}{Bibliography}
+}
 
 \end{document}
