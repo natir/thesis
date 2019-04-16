@@ -5,7 +5,7 @@
 \chapter{Introduction}
 
 \section{Sequencing}
-
+\pim{test}
 Sequencing technology evolve quickly since 1977, even if it is an a posteriori reconstruction, three generations can be distinguished, based on reads property. In this section we didn't detail the biochemic methods we just focus on reads property and her impact on different bioinformatics task.
 
 The two most important properties of a read are its size and error rate. The longer a read provide more information about  original sequence, which will facilitate downstream analysis. If read contains many error, the cost of downstream analysis increase and lost in precision and recall.
@@ -38,11 +38,12 @@ DNA sequencing was very useful tools for many analysis, and in some cases is man
 If you want study an organism, know exact genome sequence composition it's very useful to found gene, regulation sequence, found variations in population, …. But the best sequencing technology in length provide reads very smaller than genome (2 order of magnitude smaller).
 
 Imagined a crazy copyist monk, his copy a book but he randomly chooses where he starts to copy the book and only copies small fragments of text.
-If we want to be able to read the book, we must gather the different pieces that the monks produce and put them back in order.
-The book is the genome of the organism we want to study, the copyist monks are our sequencer, and the operation of putting the fragments in order is the assembly.
+The copyist monks make error, replace a symbol by another one,  skip some symbol, add symbol, we call this error substitution, deletion and insertion.
+The copyist monks, choose randomly where they begin to write, they can choose many time the same region of book and never or rarely another region of book. We call the coverage how many time this copy a part of region or a part of book, coverage can significantly differ from one region to another of the book.
 
-To try to find the good order of book fragment we can try to compare fragment and say this fragment are the same of this one, or this two fragment share same lettre at extremity. When two reads share a common sequence at extremity we say they overlap \ref{intro:fig:overlap:perfect}, but it possible to reads share a common sequence randomly this probability is smaller when overlap it's longer %\pim{il faut une demonstration ici}
-. In perfect word the only criteria to evaluate overlap can be the length of overlap but reads contains error \ref{intro:fig:overlap:erroneous}.
+The book is the genome of the organism we want to study, the copyist monks are our sequencer, the fragment of text was reads and the operation to rebuild the book is assembly. The assembly can this summary has a scheduling problem we try to put the text fragments back in the right order.
+
+To try to find the good order of book fragment we can try to compare fragment and say this fragment are the same of this one, or this two fragment share same symbol at extremity. When two reads share a common sequence at extremity we say they overlap \ref{intro:fig:overlap:perfect}, but it possible to reads share a common sequence randomly this probability is smaller when overlap it's longer \pim{il faut une demonstration ici?}. In perfect word the only criteria to evaluate overlap can be the length of overlap but reads contains error \ref{intro:fig:overlap:erroneous}.
 
 To reconstruct the original sequence with short fragment (reads) find overlaps between this fragment is the base of some assembly algorithm.
 
@@ -66,11 +67,10 @@ Find overlap between reads are generaly the bootleneck of many assembly algorith
 
 \subsection{\textit{Greedy} assembly algorithm}
 
-%\pim{rajouté des citations}
-
+\pim{rajouté des citations}{
 The \textit{Greedy} assembly algorithm are the first type of assembly tools, used on Sanger data. Algorithm \ref{intro:algo:greedy} present global idea how \textit{Greedy} algorithm work.
 
-The BEST\_OVERLAP function is the main part of algorithm the best overlap is the larger one or the overlap with less error, each algorithm have her own choose method.
+The BEST\_OVERLAP function is the main part of algorithm the best overlap is the larger one or the overlap with less error, each algorithm have her own choose method.}
 
 \begin{algorithm}[ht]
     \caption{A greedy assembly}
@@ -101,10 +101,11 @@ Figure \ref{intro:fig:greedy:repetition} present a case where reads $R_0$ $R_1$ 
 
 \subsection{Overlap Graph Consensus}
 
-To solve trouble of repetition in \textit{Greedy} algorithm, %\pim{ref necessaire}
-define an Overlap Graph Consensus (OLC). Each read was a node and we build an edge between node if reads share an overlap. Figure \ref{intro:fig:olc:graph}, present the OLC corresponding to ovelap present in \ref{intro:fig:greedy:repetition}.
+To solve trouble of repetition in \textit{Greedy} algorithm, \pim{ref necessaire} define an Overlap Graph Consensus (\OLC). Each read was a node and we build a edge between node if reads share an overlap. Figure \ref{intro:fig:olc:graph}, present the \OLC corresponding to ovelap present in \ref{intro:fig:greedy:repetition}.
 
-The repetition create a fork in OLC, a node with two successor, it's easy to detect this case in graph and stop assembly. The result of assembly of this graph was 3 contigs with white node, green node and red node. The assembly was more fragmented than \textit{Greedy} algorithme but the assembly didn't contains misassembly.
+We can see this graph like an ordering of piece of book provide by crazy monky, an edge indicate this piece of text was before this piece of text in the original book.
+
+The repetition create a fork in \OLC, a node with two successor, it's easy to detect this case in graph and stop assembly. The result of assembly of this graph was 3 sequences with white node, green node and red node. The assembly was more fragmented than \textit{Greedy} algorithme but the assembly didn't contains misassembly.
 
 \begin{figure}[ht]
     \centering 
@@ -113,7 +114,33 @@ The repetition create a fork in OLC, a node with two successor, it's easy to det
     \label{intro:fig:olc:graph}
 \end{figure}
 
+\pim{peut-être pas sa place ici}
+In Figure \ref{intro:fig:olc:graph} you can notice edge from $R_1$ to read $R_3$, this overlap was exact we can found an overlap between $R_1$ and $R_3$. But this edge didn't provides a new information we know $R_1$ is before $R_3$, this edge was call a transitive edge. Gene Myers propose in \cite{string_graph} another assembly graph the string graph is an overlap graph without transitive edge.
+
+If we have good string graph we just need follow simple path (path were all nodes have just one successor), to build assembly without misassembly.
+
 \subsection{DeBruijn Graph}
+
+A main trouble of \OLC strategy was the cost to find overlap between reads. In \citeauthor{eulerian_approach} in \cite{eulerian_approach} propose a new approch to solve assembly problem, without search of overlap between reads.
+
+This approch was based on DeBruijn Graph (or \DBG), for an alphabet with $n$ symbol a \DBG represent each word of length $k$ as node and build a directed edges if node share $k - 1$ symbol at extremity, for example in Figure \ref{intro:fig:dbg:graph} node \texttt{ACTG} and \texttt{CTGG} share \texttt{CTG}. A word of length $k$ was called a \kmer.
+
+In assembly problem $n = 4$ (${A, C, T, G}$), and we can choose a value of k between 1 and the length of read. In practice this size is often smaller than the size of a reads is the choice of the right values of k, depending on the use that we will have of the \DBG graph could be the subject of a completed thesis.
+
+To build the \DBG we choose a value of $k$ and we add all \kmer present in reads in the \DBG. The \DBG used in assembly contains only \kmer present in dataset not all possible \kmer, and edge can be only edge present in dataset or all possible edges.
+
+\begin{figure}[ht]
+    \centering
+    \subfile{introduction/tikz/debruijn_graph.tex}
+    \caption{The \DBG build for sequence \texttt{ATCGGATTCGCGGTGGTTTCG}. Each node was a word and if a word share $k - 1$ symbol at is end with $k - 1$ symbol at begin of another node we build a directed edge. This \DBG contains cycle this cycle match with a repetition in original sequence}
+    \label{intro:fig:dbg:graph}
+\end{figure}
+
+Like \OLC we can detect repetition by inspect the number of successor of a node Figure \ref{intro:fig:dbg:graph} present a \DBG with a repetition. After build the \DBG we can follow the simple path to rebuild the original sequence.
+
+With \DBG strategy we didn't compute overlap between reads, but the length of word in graph was shorter. And all repetition with a size upper than $k$ create cycle in the graph and fragment the assembly.
+
+Moreover the overlap between word in \DBG must exact (without error) and with a fixed length ($k - 1$), these two constraints are particularly problematic when the reads contain a lot of error or when the coverage of the region is low. 
 
 %\subsection{Hybrid assembly}
 

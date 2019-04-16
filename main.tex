@@ -16,12 +16,22 @@
 \newcommand{\notinsubfile}[1]{}
 
 % todonotes package and macro
-\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
-\newcommandx{\js}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
-\newcommandx{\rc}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
-\newcommandx{\pim}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
-\usepackage{marginnote}
-\renewcommand{\marginpar}{\marginnote}
+% Switch comment to enable or disable comment
+%\usepackage[disable]{todonotes}
+\usepackage[colorinlistoftodos,prependcaption,textwidth=6cm]{todonotes}
+
+\newcommandx{\js}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red]{#2}{#1}}
+\newcommandx{\rc}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue]{#2}{#1}}
+\newcommandx{\pim}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen]{#2}{#1}}
+
+\ifthenelse{\boolean{@todonotes@disabled}}{
+}{
+\setlength{\evensidemargin}{\evensidemargin+6cm}
+\setlength{\marginparwidth}{\marginparwidth+6cm}
+\setlength{\paperwidth}{\paperwidth+6cm}
+%\usepackage{showframe}
+}
+
 
 \title{How improve long read assembly without change assembly tools} % Veuillez incrémenté le compteur s'il vous plait TITRE numéro 2
 \author{Pierre Marijon}
@@ -34,19 +44,15 @@
 
 \input{macro.tex}
 
-
-
 \begin{document}
-
 % We are in main document
 \renewcommand{\onlyinsubfile}[1]{}
 \renewcommand{\notinsubfile}[1]{#1}
 
-%\listoftodos
-%\newpage
-
 \maketitle
 \clearpage
+
+\listoftodos
 
 \begin{center}
 ~\vspace{3.0cm}\\
