@@ -4,7 +4,6 @@
 % Adapted by : Yoann Dufresne and Pierre Marijon
 %
 
-\NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{thesis}[2014/03/18]
 
 %---------------------------------------------------------------------------
@@ -45,7 +44,7 @@
 % Figures
 \RequirePackage{float}
 \RequirePackage{rotating}
-\RequirePackage[format=hang]{subfig}
+\RequirePackage[format=hang]{subfig,caption}
 
 % Tableaux
 \RequirePackage{booktabs,multirow}
@@ -315,7 +314,7 @@
 \renewcommand{\footrulewidth}{0pt} % pas de filet en bas
 
 \fancyhead[LE]{
-	\ifthenelse{\equal{numberingstartright}[true]}
+	\ifthenelse{\boolean{numberingstartright}}
 	{
 		\bfseries{\thepage}
 	}
