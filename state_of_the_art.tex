@@ -1,0 +1,86 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Long reads assembly tools state of the art}
+
+\section{State of the art}
+
+\subsection{Pipeline with correction}
+
+\subsubsection{\canu}
+
+\canu is based on \toolsname{Celera} \cite{celera_first, celera_second}, we can split the \canu pipeline in three step, correction, trimming, assembly, before each step \canu search overlap between reads.
+
+\paragraph{Overlapping}
+
+To avoid all versus all alignment \mhap try to estimate which read share a common part by estimate a Jaccard distance between the set of \kmers of two reads. The Jaccard distance, present in equation \ref{sota:equ:jaccard_dist} evaluate the distance between two set by divide the intersection of set by union of set.
+
+\begin{equation}
+J_{\delta}(A,B) = 1 - J(A,B) = 1 -  J(A,B) = 1 - \frac{|A \cap B|}{|A \cup B|}
+\label{sota:equ:jaccard_dist}
+\end{equation}
+
+Enumerate all \kmers of each reads and compute intersection and union of each set take many times. \mhap select a subset of \kmers to represent the read and compute a mash distance \cite{mash_distance} see equation \ref{sota:equ:mash_dist_def} 
+
+\begin{equation}
+J(A,B) = \frac{|A \cap B|}{|A \cup B|} \approx \frac{|S(A \cup B) \cap S(A) \cap S(B)|}{|S(A \cup B)|}
+\label{sota:equ:mash_dist_def}
+\end{equation}
+
+$S(A)$ is a \kmers set compose by $s$ first \kmers of set $A$. \citeauthor{mash_distance} evaluate the error between mash distance and jaccard distance was in $\mathcal{O}(\frac{1}{\sqrt{s}})$, by default in \mhap $s=512$ so the error was smaller than 0.05.
+
+In \mhap order \kmer with a \texttt{tf-idf} score, see equation \ref{sota:equ:tf_idf_def}. The \texttt{tf-idf} score come for text search domain, try to say if this term is specific to this document. \texttt{tf} for term frequency indicate if the term was present many times in document, $n_{i,j}$ how many time the term $i$ was present in document $j$ divide by the number of term in document $j$. \texttt{idf} for inverse document frequency evaluate if the term was present in many document or just in some document, $|\mathcal{D}|$ the number of document in dataset divide by $|\{d_{j}:t_{i}\in d_{j}\}|$ the number of document where the term $i$ was present.
+
+\begin{equation}
+\mathrm{tf-idf_{i,j}} = \mathrm{tf_{i,j}} \cdot \mathrm{idf_{i}} = \frac{n_{i,j}}{\sum_{k}n_{k,j}} \cdot \log{\frac  {|\mathcal{D}|}{|\{d_{j}:t_{i}\in d_{j}\}|}}
+\label{sota:equ:tf_idf_def}
+\end{equation}
+
+In \mhap term was \kmer and document was read, this technique permit to reduce the number of kmer in set and keep kmer specific to a read. If two read share specific kmer they probably share a common part.
+
+If two reads have a small mash distance \mhap compare the position of each \kmer in reads to determinate the overlap position.
+
+\paragraph{Correction}
+
+In \canu correction was performed by a part of \toolsname{FALCON} \cite{falcon}, \toolsname{falcon\_sense}. 
+
+\begin{figure}[ht]
+    \centering
+    \missingfigure[]{pbdagcon}
+    \caption{Caption}
+    \label{sota:fig:canu:correction}
+\end{figure}
+
+\paragraph{Trimming}
+
+The trimming step will remove the parts of the reads that are not supported by the other reads, see Figure \ref{sota:fig:canu:trimming}. For each reads we will analyze its coverage curve and remove the parts of the reads that are not sufficiently covered, for trimming \canu use an homemade tools.
+
+
+\begin{figure}[ht]
+    \centering
+    \subfile{state_of_the_art/tikz/trimming.tex}
+    \caption{Black line was a reads, the \canu trimming step keep only the blue part of read $R_0$, part covered by other read.}
+    \label{sota:fig:canu:trimming}
+\end{figure}
+
+\paragraph{Assembly}
+
+
+\subsection{Pipeline without correction}
+
+\section{Miniasm}
+
+\section{HINGE}
+
+\section{Ra}
+
+\section{wgtdb2}
+
+\onlyinsubfile{
+\bibliographystyle{plainnat}
+\bibliography{state_of_the_art}
+\addcontentsline{toc}{chapter}{Bibliography}
+}
+
+\end{document}

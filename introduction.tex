@@ -1,11 +1,11 @@
-\documentclass[main.tex]{subfiles}
+\documentclass[./main.tex]{subfiles}
 
 \begin{document}
 
 \chapter{Introduction}
 
 \section{Sequencing}
-\pim{test}
+
 Sequencing technology evolve quickly since 1977, even if it is an a posteriori reconstruction, three generations can be distinguished, based on reads property. In this section we didn't detail the biochemic methods we just focus on reads property and her impact on different bioinformatics task.
 
 The two most important properties of a read are its size and error rate. The longer a read provide more information about  original sequence, which will facilitate downstream analysis. If read contains many error, the cost of downstream analysis increase and lost in precision and recall.
@@ -35,12 +35,13 @@ DNA sequencing was very useful tools for many analysis, and in some cases is man
 
 \section{Assembly algorithm}
 
-If you want study an organism, know exact genome sequence composition it's very useful to found gene, regulation sequence, found variations in population, …. But the best sequencing technology in length provide reads very smaller than genome (2 order of magnitude smaller).
+If you want study an organism, knowing the complete genome sequence is very useful in order to find the genes, regulatory sequences, variations across a population, etc …. Yet, the best sequencing technologies still provide reads that are much shorter than the genome (at least 2 orders of magnitude shorter). To understand the assembly problem, we provide a useful analogy. To the best of our knowledge, this exact analogy has never been formulated before.
 
-Imagined a crazy copyist monk, his copy a book but he randomly chooses where he starts to copy the book and only copies small fragments of text.
-The copyist monks make error, replace a symbol by another one,  skip some symbol, add symbol, we call this error substitution, deletion and insertion.
-The copyist monks, choose randomly where they begin to write, they can choose many time the same region of book and never or rarely another region of book. We call the coverage how many time this copy a part of region or a part of book, coverage can significantly differ from one region to another of the book.
-
+Imagine a crazy copyist monk. He is copying a book but he randomly chooses where he starts to copy, and he only copies small fragments of text at a time.
+The copyist monks make errors, e.g. he would sometimes replaces a symbol by another one, would skip a symbol, or would add a random symbol. We respectively call these errors substitutions, deletions and insertions.
+Now imagine that there are multiple such copyist monks.
+They choose randomly where they begin to write. They can choose several times the same region of the book, never choose to copy a certain region, or more rarely copy another region. We refer by "coverage" the number of times a given chunk of the original is copied. Coverage may significantly differ from one region to another of the book.
+\rc{j'en suis ici de la relecture (et en fait, corrections) de 1.2}
 The book is the genome of the organism we want to study, the copyist monks are our sequencer, the fragment of text was reads and the operation to rebuild the book is assembly. The assembly can this summary has a scheduling problem we try to put the text fragments back in the right order.
 
 To try to find the good order of book fragment we can try to compare fragment and say this fragment are the same of this one, or this two fragment share same symbol at extremity. When two reads share a common sequence at extremity we say they overlap \ref{intro:fig:overlap:perfect}, but it possible to reads share a common sequence randomly this probability is smaller when overlap it's longer \pim{il faut une demonstration ici?}. In perfect word the only criteria to evaluate overlap can be the length of overlap but reads contains error \ref{intro:fig:overlap:erroneous}.
@@ -63,7 +64,7 @@ To reconstruct the original sequence with short fragment (reads) find overlaps b
 
 \subsection{How to find overlap}
 
-Find overlap between reads are generaly the bootleneck of many assembly algorithm.
+Find overlap between reads are generaly the bootleneck of many assembly algorithm. \pim{sa n'a peut-être pas sa place ici}
 
 \subsection{\textit{Greedy} assembly algorithm}
 
@@ -158,12 +159,12 @@ Moreover the overlap between word in \DBG must exact (without error) and with a 
 
 \subsection{Data management}
 
-\subsection{Trouble with heuristic algorithme}
+\subsection{Trouble with heuristic algorithm}
 
-\onlyinsubfile{
-\bibliographystyle{plainnat}
-\bibliography{main}
-\addcontentsline{toc}{chapter}{Bibliography}
-}
+%\onlyinsubfile{
+%\bibliographystyle{plainnat}
+%\bibliography{main}
+%\addcontentsline{toc}{chapter}{Bibliography}
+%}
 
 \end{document}

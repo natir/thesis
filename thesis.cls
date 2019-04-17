@@ -253,7 +253,7 @@
   		{
   			\setboolean{numberingstartright}{false}
   		}
-		\pagenumbering{arabic} \setcounter{page}{1}
+		\pagenumbering{arabic} %\setcounter{page}{1}
 		\setboolean{normalnumbering}{true}
 		\hypersetup{colorlinks,
 			breaklinks,
@@ -275,7 +275,7 @@
   		{
   			\setboolean{numberingstartright}{false}
   		}
-		\pagenumbering{arabic} \setcounter{page}{1}
+		\pagenumbering{arabic} %\setcounter{page}{1}
 		\setboolean{normalnumbering}{true}
 		\hypersetup{breaklinks,
 			citecolor=LHSVDarkBlue,
@@ -296,7 +296,7 @@
   		{
   			\setboolean{numberingstartright}{false}
   		}
-		\pagenumbering{arabic} \setcounter{page}{1}
+		\pagenumbering{arabic} %\setcounter{page}{1}
 		\setboolean{normalnumbering}{true}
 		\hypersetup{breaklinks,
 			citecolor=LHSVDarkBlue,
