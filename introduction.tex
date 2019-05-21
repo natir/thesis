@@ -3,16 +3,16 @@
 \begin{document}
 
 \chapter{Introduction}
-
+\pim{rajouté une introduction pour ammener le pourquoi du séquençage}
 \section{Sequencing}
 
-Sequencing technology evolve quickly since 1977, even if it is an a posteriori reconstruction, three generations can be distinguished, based on reads property. In this section we didn't detail the biochemic methods we just focus on reads property and her impact on different bioinformatics task.
+Sequencing technology\otherp{definir sequencing technology : commencer par ce qu'est l ADN puis comment on le séquence : 1 pages} evolve quickly since 1977\otherp{todo ref}, even if it is an a posteriori reconstruction\otherp{why : expliquer pourquoi}, three generations can be distinguished, based on reads property. In this section we didn't detail the biochemic methods we just focus on reads property and her impact on different bioinformatics task.
 
-The two most important properties of a read are its size and error rate. The longer a read provide more information about  original sequence, which will facilitate downstream analysis. If read contains many error, the cost of downstream analysis increase and lost in precision and recall.
+The two most important properties of a read are its size and error rate\otherp{why : expliquer avant d affirmer}. The longer of a read provide more information about his original sequence, which facilitate downstream analysis. If read contains many errors, the cost of downstream analysis increase and lost in precision and recall\otherp{pas clair, phrase qui veut rien dire}.
 
-Sanger technique create large reads with very small error rate, but with a very low throutput and very expensive cost per base.
-Second generation increase the throutput and reduce the cost per base, by reducing the length of the reads and increasing the probability of error ($\approx$ 1\%). This error are generaly a substitution, sequencer read \texttt{A} in place of a \texttt{T}
-The third generation has greatly increased the size of the reads but also the error rate while maintaining a descent throughput. Error in third generation are mostly insertion deletion, sequencer didn't read a par of sequence or generate random base not present in original sequence. Table \ref{intro:tab:technology_property} present read length and error rate on many technology.
+Sanger technique\otherp{ definir avant + ref} create large reads \otherp{large? large comment?} with very small error rate \otherp{ ordre de grandeur?}, but with a very low throutput and very expensive cost per base\otherp{ donner des échelles précises et définir ton échelle avant de faire ce genre de phrase : mettre le tableau avant}.
+Second generation\otherp{définir} increase the throutput and reduce the cost per base, by reducing the length of the reads and increasing the probability of error ($\approx$ 1\%). This type of error are most of the time a substitution betwen two amino acids, sequencer read \texttt{A} in place of a \texttt{T}.
+The third generation\otherp{définir} has greatly increased the size of the reads but also the error rate while maintaining a descent throughput. Error in third generation are mostly insertion deletion, sequencer didn't read a par\otherp{par? pair?} of sequence or generate random base not present in original sequence\otherp{lapin comprit}. Table \ref{intro:tab:technology_property} present read length and error rate on many technology.
 
 \begin{table}[ht]
     \centering
@@ -31,30 +31,31 @@ The third generation has greatly increased the size of the reads but also the er
 \end{table}
 
 
-DNA sequencing was very useful tools for many analysis, and in some cases is mandatory to be able to understand biological mechanisms. In this thesis we while focus only on genome assembly problem it's a important usage of sequencing but the only one.
+DNA sequencing was very useful tools for many analysis, and in some cases is mandatory to be able to understand biological mechanisms. In this thesis we while focus only on genome assembly problem it's a important usage of sequencing but the only one\otherp{ comme j ai pas compris ni les questions que tu te pose ni les soucis 'ue ca entraine cette phrase tombe comme un cheveux sur la soupe pour le moment.}.
 
 \section{Assembly algorithm}
 
-If you want study an organism, knowing the complete genome sequence is very useful in order to find the genes, regulatory sequences, variations across a population, etc …. Yet, the best sequencing technologies still provide reads that are much shorter than the genome (at least 2 orders of magnitude shorter). To understand the assembly problem, we provide a useful analogy. To the best of our knowledge, this exact analogy has never been formulated before.
+If you want study an organism, knowing the complete genome sequence is very useful for a lot of task like find the genes or the sequence variations across a population. Yet, the best sequencing technologies still provide reads that are at least 2 orders of magnitude shorter than the genome. To understand the assembly problem, we provide a useful analogy which, to the best of our knowledge, has never been formulated before.
 
 Imagine a crazy copyist monk. He is copying a book but he randomly chooses where he starts to copy, and he only copies small fragments of text at a time.
 The copyist monks make errors, e.g. he would sometimes replaces a symbol by another one, would skip a symbol, or would add a random symbol. We respectively call these errors substitutions, deletions and insertions.
 Now imagine that there are multiple such copyist monks.
-They choose randomly where they begin to write. They can choose several times the same region of the book, never choose to copy a certain region, or more rarely copy another region. We refer by "coverage" the number of times a given chunk of the original is copied. Coverage may significantly differ from one region to another of the book.
-\rc{j'en suis ici de la relecture (et en fait, corrections) de 1.2}
-The book is the genome of the organism we want to study, the copyist monks are our sequencer, the fragment of text was reads and the operation to rebuild the book is assembly. The assembly can this summary has a scheduling problem we try to put the text fragments back in the right order.
+They choose randomly where they begin to write. They can choose several times the same region of the book, never choose to copy a certain region, or more rarely copy another region. We refer by "coverage" the number of times a given chunk of the original book is copied. Coverage may significantly differ from one region to another.
+In this analogy, the book is the genome of the organism we want to study, and the copyist monks are our sequencer. The fragments of text are reads, and the operation to rebuild the book is assembly.
 
-To try to find the good order of book fragment we can try to compare fragment and say this fragment are the same of this one, or this two fragment share same symbol at extremity. When two reads share a common sequence at extremity we say they overlap \ref{intro:fig:overlap:perfect}, but it possible to reads share a common sequence randomly this probability is smaller when overlap it's longer \pim{il faut une demonstration ici?}. In perfect word the only criteria to evaluate overlap can be the length of overlap but reads contains error \ref{intro:fig:overlap:erroneous}.
+The assembly task can be summary has a order problem we try to put the text fragments in the right order. \rc{Pas compris cette phrase}\pim{c'est mieux ?}
 
-To reconstruct the original sequence with short fragment (reads) find overlaps between this fragment is the base of some assembly algorithm.
+To find the right order of book fragments, we can try to compare fragments and say that e.g. this fragment is the same of this one, or these two fragments share the same symbols at their extremities. When two reads share a common sequence at their extremities we say they overlap \ref{intro:fig:overlap:perfect}. Yet it possible for reads to share a common sequence just by chance.\otherp{pas clair} Intuitively, this probability gets smaller as overlaps get longer. In perfect word, the only criteria to evaluate whether an overlap is "real" or not should be the length of the overlap, the only criteria to evaluate if an overlap is a true one should be his length. However the number of errors in each reads broke this paradigm and force us to build  yet an important factor do consider is that reads contain errors \ref{intro:fig:overlap:erroneous}.
+
+To reconstruct the original sequence with short fragments (reads), finding the overlaps between these fragments constitutes the basis of many assembly algorithms.
 
 \begin{figure}[ht]
     \centering
-    \subfloat[ht][$R_1$ share 7 base at is end with $R_2$ without any error]{
+    \subfloat[ht][$R_1$ share 7 bases at its end with the beginning of $R_2$, without any error]{
         \subfile{introduction/tikz/perfect_overlap.tex}
         \label{intro:fig:overlap:perfect}
     }
-    \subfloat[ht][$R_1$ share 5 base at is end with $R_3$ with one substitution and one deletion]{
+    \subfloat[ht][$R_1$ share 5 bases at its end with $R_3$, with one substitution and one deletion]{
         \subfile{introduction/tikz/erroneous_overlap.tex}
         \label{intro:fig:overlap:erroneous}
     }
@@ -64,11 +65,14 @@ To reconstruct the original sequence with short fragment (reads) find overlaps b
 
 \subsection{How to find overlap}
 
-Find overlap between reads are generaly the bootleneck of many assembly algorithm. \pim{sa n'a peut-être pas sa place ici}
+Find overlap between reads are generally the bootleneck of many assembly algorithm. 
+This is a complete research field with many tools, \citeauthor{ovl_bench} produce a interesting benchmark about some of them. We details how of \mhap and \minimap works in section \ref{subsubsec:sota:canu} and \ref{subsubsec:sota:miniasm}.
+
+\pim{sa n'a peut-être pas sa place ici} \rc{C'est pas mal de le mentionner. Tu peux juste dire ici que c'est un domaine de recherche à part entiere et citer quelque papiers. Et faire un rapide apercu des techniques utilisées (mentionner LCP, etc)}
 
 \subsection{\textit{Greedy} assembly algorithm}
 
-\pim{rajouté des citations}{
+\pim{rajouté des citations}\rc{Oui, cela correspond-il à BOG? si non, le terme BEST\_OVERLAP est mal choisi meme s'il est correct. Remplace par LONGEST\_OVERLAP.}{
 The \textit{Greedy} assembly algorithm are the first type of assembly tools, used on Sanger data. Algorithm \ref{intro:algo:greedy} present global idea how \textit{Greedy} algorithm work.
 
 The BEST\_OVERLAP function is the main part of algorithm the best overlap is the larger one or the overlap with less error, each algorithm have her own choose method.}
@@ -91,7 +95,7 @@ The BEST\_OVERLAP function is the main part of algorithm the best overlap is the
 
 Moreover \textit{Greedy} algorithm, by focusing on the local problem, weach overlap is the best one for this read, can't manage repetition. Genome contains many repetition, like a book some word are reused or complete part of sentence can be present multiple time.
 
-Figure \ref{intro:fig:greedy:repetition} present a case where reads $R_0$ $R_1$ and $R_2$ contains a repetition. $R_0$ have two possible overlap if overlap with $R_1$ is choose the assembly sequence match with the green path, if overlap with $R_2$ is choose the assembly sequence match with the red path. We can't know weach path is the good one and we didn't see the repetition. So assembly tools based on \textit{Greedy} algorithm can produce many misassembly.
+Figure \ref{intro:fig:greedy:repetition} present a case where reads $R_0$ $R_1$ and $R_2$ contains a repetition. $R_0$ have two possible overlap if overlap with $R_1$ is choose the assembly sequence match with the green path, if overlap with $R_2$ is choose the assembly sequence match with the red path. We can't know weach path is the good one and we didn't see the repetition. So assembly tools based on \textit{Greedy} algorithm can produce many misassembly. \otherp{met les noms en gras pas en italique c est la meme langue tu sera plus cohérent dans le style, greedy peut etre a détailler un peu plus}
 
 \begin{figure}[ht]
     \centering 
@@ -131,7 +135,6 @@ In assembly problem $n = 4$ (${A, C, T, G}$), and we can choose a value of k bet
 To build the \DBG we choose a value of $k$ and we add all \kmer present in reads in the \DBG. The \DBG used in assembly contains only \kmer present in dataset not all possible \kmer, and edge can be only edge present in dataset or all possible edges.
 
 \begin{figure}[ht]
-    \centering
     \subfile{introduction/tikz/debruijn_graph.tex}
     \caption{The \DBG build for sequence \texttt{ATCGGATTCGCGGTGGTTTCG}. Each node was a word and if a word share $k - 1$ symbol at is end with $k - 1$ symbol at begin of another node we build a directed edge. This \DBG contains cycle this cycle match with a repetition in original sequence}
     \label{intro:fig:dbg:graph}
@@ -141,7 +144,7 @@ Like \OLC we can detect repetition by inspect the number of successor of a node 
 
 With \DBG strategy we didn't compute overlap between reads, but the length of word in graph was shorter. And all repetition with a size upper than $k$ create cycle in the graph and fragment the assembly.
 
-Moreover the overlap between word in \DBG must exact (without error) and with a fixed length ($k - 1$), these two constraints are particularly problematic when the reads contain a lot of error or when the coverage of the region is low. 
+Moreover the overlap between word in \DBG must exact (without error) and with a fixed length ($k - 1$), these two constraints are particularly problematic when the reads contain a lot of error or when the coverage of the region is low.
 
 %\subsection{Hybrid assembly}
 
@@ -151,20 +154,72 @@ Moreover the overlap between word in \DBG must exact (without error) and with a 
 
 %\subsection{Second generation}
 
-\section{Correction}
+%\section{Correction}
+
+\subsection{Graph cleaning}
+
+\OLC and \DBG was based on graph, the meaning of nodes and edges are different in this top type of graph. But we can found same structure in them, bubbles and tips.
+
+Figure \ref{intro:fig:cleaning}
+
+\begin{figure}[ht]
+    \subfloat[][A example of tips in an assembly graph, the tips node wase represent in read, green, blue and black line underline different possible assembly scenario]{
+        \subfile{introduction/tikz/cleaning_tips.tex}
+        \label{intro:fig:cleaning:tips}
+    }
+    \subfloat[][A example of bubble in an assembly graph, each path was colored in different color. The length of each path can be different and we can have more than two path in bubble]{
+        \subfile{introduction/tikz/cleaning_bubble.tex}
+        \label{intro:fig:cleaning:bubble}
+    }
+    \caption{}
+    \label{intro:fig:cleaning}
+\end{figure}
+
+\paragraph{Tips}
+
+A tips in an assembly graph is a node with only on edge, a tips can be create by many thing, trouble during DNA extraction, DNA duplication, sequencer create an artefact, a read with to many error ….
+
+As we can see in Figure \ref{intro:fig:cleaning:tips} a tips can create a branching node in middle of simple path, if we keep this tips generaly assembly create two contigs one before tips and one after tips (green and blue assembly scenario). If we remove this tips we can run the black scenario.
+
+Its easy to detect and remove tips in graph, in many assembly tools tips are considered as errors and are removed.
+
+\paragraph{Bubble}
+
+We can define a bubble as a set of subpath in graph with same parent and same children, Figure \ref{intro:fig:cleaning:bubble} present an example with two path with same length. The bubble can be create by repetition or heterozygotie one or more version of this sequence contains a substitution or more complexe mutation.
+
+If bubble are large it can be harder to detect, with small bubble one version of the bubble are kept the choose of the version can be based on random choice or on coverage or other magic tricks.
 
 \section{Why people use long reads}
+
+The length of read have a huge impacte on assembly, 
 
 \section{Assembly Trouble}
 
 \subsection{Data management}
 
+Sequencing generate more and more data, and long-read sequencing technology work how to increase the throughout of sequencer. Tools around long-read assembly generate more data (overlap, assembly graph, contigs, hétérozygotie), and many times all this data isn't useful for a specific downstream analysis \pim{est-ce que fournir une référence est necessaire}.
+
+Moreover some long-reads contains very bad quality region \cite{blog_post_error_repartition}.
+
+Can we filter overlapping information with a positive (or not very bad) impact on assembly result, to increase speed of assembly and the impacte of assembly step on disk space ?
+Can we found very bad quality region in long-read and remove it before any other analysis to increase quality and computation time of downstream analysis ?
+
+We try to answer to this two question in paper "Optimize "
+
 \subsection{Trouble with heuristic algorithm}
 
-%\onlyinsubfile{
-%\bibliographystyle{plainnat}
-%\bibliography{main}
-%\addcontentsline{toc}{chapter}{Bibliography}
-%}
+Assembly tools perform make a greate job, but they can't explore all space.
+Due to memory constraint and cpu usage you can't build and store all overlap.
+Due to theoretical limit, how many of base need to be share between to read to create an overlap how many error we can accept in this overlap.
+
+Assembly tools need use heuristic algorithm, solve assembly trouble in this constraint, in majority of case this heuristic  perform a very good work, but in some case we need perform a more complex analysis.
+
+We try to build tools to simplify this analysis in paper
+
+\onlyinsubfile{
+\bibliographystyle{plainnat}
+\bibliography{main}
+\addcontentsline{toc}{chapter}{Bibliography}
+}
 
 \end{document}

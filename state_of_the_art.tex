@@ -4,11 +4,9 @@
 
 \chapter{Long reads assembly tools state of the art}
 
-\section{State of the art}
+\section{Pipeline with correction}
 
-\subsection{Pipeline with correction}
-
-\subsubsection{\canu}
+\subsubsection{\canu} \label{subsubsec:sota:canu}
 
 \canu is based on \toolsname{Celera} \cite{celera_first, celera_second}, we can split the \canu pipeline in three step, correction, trimming, assembly, before each step \canu search overlap between reads.
 
@@ -43,19 +41,20 @@ If two reads have a small mash distance \mhap compare the position of each \kmer
 
 \paragraph{Correction}
 
-In \canu correction was performed by a part of \toolsname{FALCON} \cite{falcon}, \toolsname{falcon\_sense}. 
+In \canu correction was performed by a part of \toolsname{FALCON} \cite{falcon}, \toolsname{falcon\_sense}. In this section we didn't present in details how \toolsname{falcon\_sense} work but only the main idea.
+
+Some correction tools as \toolsname{falcon\_sense} use a Partial Order Alignment (POA) (introduce in \cite{poa}) to perform long read correction. For each read \texttt{$R_1$} we recruit all read share an overlap with him, and perform an exact alignment with him. This alignment was use to build a POA graph, in POA graph each base was a node and a direct edge was create between two base if the first base was before the second one in an alignment. If an edge was present in two alignment her weight was increment. After all alignment was add in the POA graph, we search weighed path in this graph, and follow to reconstruct the corrected sequence. An example of POA graph construction was present in figure \ref{sota:fig:canu:correction}
 
 \begin{figure}[ht]
     \centering
-    \missingfigure[]{pbdagcon}
-    \caption{Caption}
+    \includegraphics[width=\textwidth]{state_of_the_art/images/POA_explain.pdf}
+    \caption{Sequence need to be correct was represent as a graph, each base was a node and if a base is follow by another an directed edge was build. (b) was the representation of sequence \texttt{ATATTAGGC} (call backbone in this figure), (b) We add the result of alignment of one read in the graph, number upper than edge was her weigth if and edge exist in some 3 alignment her weight was egal to 3, (c) We add all other alignment in the graph, (d) the bold path was choose a the correct path because it was supported by more alignment. This figure was originaly present in Supplementary material of \hgap \cite{hgap}}
     \label{sota:fig:canu:correction}
 \end{figure}
 
 \paragraph{Trimming}
 
 The trimming step will remove the parts of the reads that are not supported by the other reads, see Figure \ref{sota:fig:canu:trimming}. For each reads we will analyze its coverage curve and remove the parts of the reads that are not sufficiently covered, for trimming \canu use an homemade tools.
-
 
 \begin{figure}[ht]
     \centering
@@ -66,16 +65,31 @@ The trimming step will remove the parts of the reads that are not supported by t
 
 \paragraph{Assembly}
 
+\canu assembly step is based on \OLC paradigm, with some specificity \canu build a Best Overlap Graph (BOG) for each not contained read only two overlap are kept in the graph, the best overlap for each read extremity, in \canu the best overlap was the longest overlap. After this graph construction step performed, some clean step was run, remove tips (a read with no sucessor), little buble.
+
+This BOG was used as a scaffold to generate assembly, by remapping read against this scaffold, \canu try to detect repetition, larger than read not show in BOG as loop, and to call read to build a consensus after. Each simple path in BOG was used to build a contig. 
+
 
 \subsection{Pipeline without correction}
 
-\section{Miniasm}
+\subsubsection{\miniasm} \label{subsubsec:sota:miniasm}
 
-\section{HINGE}
+\miniasm \minimap was an assembly pipeline proposed in \cite{miniasm_minimap} and \cite{minimap2}, the main purpose of this pipeline is to demonstrate we can perform a long read assembly without correct long read.
 
-\section{Ra}
+\paragraph{\minimap}
 
-\section{wgtdb2}
+\paragraph{\miniasm}
+
+\subsubsection{\hinge}
+
+\subsubsection{\wtdbg}
+
+Use a \DBG approch to solve long-read assembly, isn't realy a \DBG but a "Fuzzy-Brujin graph" (\abreviation{FDBG}). To build this graph \wtdbg split read in bin with a fixed size (256 base pairs) and they store kmer present in each bin in a hash table.
+To find overlap between reads wtdg2 use an hash table to compare the kmer composition between each reads and perform an exact alignment between each bin of reads. 
+
+After this alignment step \wtdbg keep only in memory wich bin are align to which bin, and they build a k-bins each k-bins is a sequence of k successive bin in a read, \wtdbg can infer if two k-bins overlap if some bin in this two k-bins share an ovelap.
+
+A group of K-bins are a node of \abreviation{FDBG}, \wtdbg build an edge between two node if a K-bins in each node are succesive in a read, after some cleanning step (pops bubbles, tips cleanning, etc…) \wtdbg build a consensus sequence with each simple path in \abreviation{FDBG}.
 
 \onlyinsubfile{
 \bibliographystyle{plainnat}
