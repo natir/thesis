@@ -2,11 +2,11 @@
 
 \begin{document}
 
-\chapter{Long reads assembly tools state of the art}
+\chapter{Long reads assembly tools state of the art}\label{chapter:sota}
 
-\section{Pipeline with correction}
+In this chapter we present some long-read assembly tools we select this tools because method and algorithm used in it was representative how other tools work in addition, these tools are recognized by the community for their quality.
 
-\subsubsection{\canu} \label{subsubsec:sota:canu}
+\section{A Pipeline with correction \canu} \label{section:sota:canu}
 
 \canu is based on \toolsname{Celera} \cite{celera_first, celera_second}, we can split the \canu pipeline in three step, correction, trimming, assembly, before each step \canu search overlap between reads.
 
@@ -70,26 +70,32 @@ The trimming step will remove the parts of the reads that are not supported by t
 This BOG was used as a scaffold to generate assembly, by remapping read against this scaffold, \canu try to detect repetition, larger than read not show in BOG as loop, and to call read to build a consensus after. Each simple path in BOG was used to build a contig. 
 
 
-\subsection{Pipeline without correction}
+\section{Pipeline without correction \miniasm} \label{section:sota:miniasm}
 
-\subsubsection{\miniasm} \label{subsubsec:sota:miniasm}
+\minimap and \miniasm was an assembly pipeline proposed in \cite{miniasm_minimap} and \cite{minimap2}, the main purpose of this pipeline is to demonstrate we can perform a long read assembly without correct long read before.
 
-\miniasm \minimap was an assembly pipeline proposed in \cite{miniasm_minimap} and \cite{minimap2}, the main purpose of this pipeline is to demonstrate we can perform a long read assembly without correct long read.
+\subsection{\minimap}
 
-\paragraph{\minimap}
+% idea of kmer
+% minimizer vs scketch explain what is minimizer
+% colinear match search
 
-\paragraph{\miniasm}
+\subsection{\miniasm}
 
-\subsubsection{\hinge}
+% read filtering
+% overlap filtering
+% graph construction
+% graph simplification
+% low consensus
 
-\subsubsection{\wtdbg}
+\section{New type of pipeline \wtdbg} \label{section:sota:wtdbg}
 
 Use a \DBG approch to solve long-read assembly, isn't realy a \DBG but a "Fuzzy-Brujin graph" (\abreviation{FDBG}). To build this graph \wtdbg split read in bin with a fixed size (256 base pairs) and they store kmer present in each bin in a hash table.
 To find overlap between reads wtdg2 use an hash table to compare the kmer composition between each reads and perform an exact alignment between each bin of reads. 
 
 After this alignment step \wtdbg keep only in memory wich bin are align to which bin, and they build a k-bins each k-bins is a sequence of k successive bin in a read, \wtdbg can infer if two k-bins overlap if some bin in this two k-bins share an ovelap.
 
-A group of K-bins are a node of \abreviation{FDBG}, \wtdbg build an edge between two node if a K-bins in each node are succesive in a read, after some cleanning step (pops bubbles, tips cleanning, etc…) \wtdbg build a consensus sequence with each simple path in \abreviation{FDBG}.
+A group of k-bins are a node of \abreviation{FDBG}, \wtdbg build an edge between two node if a k-bins in each node are succesive in a read, after some cleanning step (pops bubbles, tips cleanning) \wtdbg build a consensus sequence with each simple path in \abreviation{FDBG}.
 
 \onlyinsubfile{
 \bibliographystyle{plainnat}
