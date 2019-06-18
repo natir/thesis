@@ -76,6 +76,19 @@ This BOG was used as a scaffold to generate assembly, by remapping read against 
 
 \subsection{\minimap}
 
+Main idea to \minimap (similar to \mhap) is we can represent a read as a set of some minimal kmer, and if two read share same succession of minimal kmer we can suppose this two read share an overlap.
+
+A minimal kmer is a the kmer for a set of consecutive kmer than minimize her score, the score function was the same during all analyse and for the same set of consecutive kmer the same kmer was the minimizer. Moreover a kmer can be minimizer of some consecutive set of kmer, if no other kmer with lowest score come in window. 
+
+\begin{figure}[ht]
+    \centering
+    \subfile{state_of_the_art/tikz/minimizer.tex}
+    \caption{The red kmer was the minimizer of the read box and the blue kmer was the minimizer of the blue box.}
+    \label{sota:fig:miniasm:minimizer}
+\end{figure}
+
+The minimal kmer can represent many other read it's form of loosly compression.
+
 % idea of kmer
 % minimizer vs scketch explain what is minimizer
 % colinear match search

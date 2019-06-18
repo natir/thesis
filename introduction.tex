@@ -85,10 +85,8 @@ To reconstruct the original sequence with short fragments (reads), finding the o
 
 \subsection{How to find overlap}
 
-Find overlap between reads are generally the bootleneck of many assembly algorithm. 
-This is a complete research field with many tools, \citeauthor{ovl_bench} produce a interesting benchmark about some of them. We details how of \mhap and \minimap works in section \ref{subsubsec:sota:canu} and \ref{subsubsec:sota:miniasm}.
-
-\pim{sa n'a peut-être pas sa place ici} \rc{C'est pas mal de le mentionner. Tu peux juste dire ici que c'est un domaine de recherche à part entiere et citer quelque papiers. Et faire un rapide apercu des techniques utilisées (mentionner LCP, etc)}
+Find overlap between reads are generally the bootleneck of many assembly pipeline. 
+This is a complete research field with many tools, and sepcificity of long-reads(length and high error rate) has relaunched this research field, \citeauthor{ovl_bench} produce an interesting review about some of long-read overlap search in \cite{ovl_bench}. We details how two of them \mhap and \minimap works in section \ref{section:sota:canu} and \ref{section:sota:miniasm}.
 
 \subsection{\textit{Greedy} assembly algorithm}
 
@@ -140,9 +138,10 @@ The repetition create a fork in \OLC, a node with two successor, it's easy to de
 \end{figure}
 
 \pim{peut-être pas sa place ici}
-In Figure \ref{intro:fig:olc:graph} you can notice edge from $R_1$ to read $R_3$, this overlap was exact we can found an overlap between $R_1$ and $R_3$. But this edge didn't provides a new information we know $R_1$ is before $R_3$, this edge was call a transitive edge. Gene Myers propose in \cite{string_graph} another assembly graph the string graph is an overlap graph without transitive edge.
-
-If we have good string graph we just need follow simple path (path were all nodes have just one successor), to build assembly without misassembly.
+In Figure \ref{intro:fig:olc:graph} you can notice edge from $R_1$ to read $R_3$, this overlap was exact we can found an overlap between $R_1$ and $R_3$. But this edge didn't provides a new information we know $R_1$ is before $R_3$, this edge was call a transitive edge. More formally we can define a transitive edge, in a directed graph if we have this set of edge $(a, b)$ $(b, c)$ and $(a, c)$ the edge $(a, c)$ is transitive.
+ 
+\citeauthor{string_graph} propose in \cite{string_graph} another assembly graph the \textbf{string graph} is an overlap graph without transitive edge. The string graph by reduce the number of edge in graph simplify traversing of the graph and memory impact of this one.
+With string graph we just need follow simple path (path were all nodes have just one successor), to build assembly without misassembly.
 
 \subsection{DeBruijn Graph}
 
@@ -211,24 +210,29 @@ If bubble are large it can be harder to detect, with small bubble one version of
 
 \section{Why people use long reads}
 
-The length of read have a huge impacte on assembly, 
+The length of read have a huge impact on assembly, before third generation sequencing the maximum length of read is lower than 2 kb (for Sanger read) or a majority of repetition in genome are larger than this length. \citeauthor{one_chromosome_one_contig} in \cite{one_chromosome_one_contig} indicate a theoretical length of read to obtain a perfect genome assembly for bacteria, read need to be upper than 7 kb, this limit not work in all practical case. If read are longer than repetition read can have a sufficient length before repetition cover all repetition and sufficient length after repetition we can solve the repetition.
+
+Third generation read aren't larger than all repetition but larger than many repetition and they help to produce better genome assembly.
+Third generation come with her own trouble, mainly a different error profile many insertion deletion low substitution than previous technology, and new to be create for this data type.
+
+Durring my thesis I focus on trouble before assembly step and after assembly step.
 
 \section{Assembly Trouble}
 
 \subsection{Data management}
 
-Sequencing generate more and more data, and long-read sequencing technology work how to increase the throughout of sequencer. Tools around long-read assembly generate more data (overlap, assembly graph, contigs, hétérozygotie), and many times all this data isn't useful for a specific downstream analysis \pim{est-ce que fournir une référence est necessaire}.
+Sequencing generate more and more data, and long-read sequencing technology work how to increase the throughout of sequencer. Tools around long-read assembly generate more data (overlap, assembly graph, contigs, hétérozygotie), and many times all this data isn't useful for a specific downstream analysis.
 
 Moreover some long-reads contains very bad quality region \cite{blog_post_error_repartition}.
 
-Can we filter overlapping information with a positive (or not very bad) impact on assembly result, to increase speed of assembly and the impacte of assembly step on disk space ?
+Can we filter overlapping information with a positive (or not very bad) impact on assembly result, to increase speed of assembly and the impact of assembly step on disk space ?
 Can we found very bad quality region in long-read and remove it before any other analysis to increase quality and computation time of downstream analysis ?
 
 We try to answer to this two question in paper "\yacrd and \fpa: upstream tools for long-read genome assembly"
 
 \subsection{Trouble with heuristic algorithm}
 
-Assembly tools perform a greate job, but they can't explore all space.
+Assembly tools perform a great job, but they can't explore all space.
 Due to memory constraint and cpu usage you can't build and store all overlap.
 Due to theoretical limit, how many of base need to be share between to read to create an overlap how many error we can accept in this overlap.
 
@@ -238,7 +242,7 @@ We try to build tools to simplify analysis of assembly tools result and help use
 
 \onlyinsubfile{
 \bibliographystyle{plainnat}
-\bibliography{main}
+\bibliography{introduction}
 \addcontentsline{toc}{chapter}{Bibliography}
 }
 
