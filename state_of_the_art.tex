@@ -39,6 +39,8 @@ In \mhap term was \kmer and document was read, this technique permit to reduce t
 
 If two reads have a small mash distance \mhap compare the position of each \kmer in reads to determinate the overlap position.
 
+The size of kmer was very important to if k is too large many kmer contains error the size of intersection was reduce and \mhap can miss overlap. Moreover size of sketch have a huge impact if it's to small the read was sub-sample if it's to large compute mash distance take more time, but with long-reads dataset the length of reads can be very different choose a good sketch size for this type of data isn't easy.
+
 \paragraph{Correction}
 
 In \canu correction was performed by a part of \toolsname{FALCON} \cite{falcon}, \toolsname{falcon\_sense}. In this section we didn't present in details how \toolsname{falcon\_sense} work but only the main idea.
@@ -87,7 +89,21 @@ A minimal kmer is a the kmer for a set of consecutive kmer than minimize her sco
     \label{sota:fig:miniasm:minimizer}
 \end{figure}
 
-The minimal kmer can represent many other read it's form of loosly compression.
+The minimal kmer can represent many other read, this technique can be compare to a loosly compression.
+
+\minimap build an index where each minimizer are associate to reads where minimizer is present and position of this minimizer in reads.
+
+With this index \minimap can collect position of similar minimizer between two reads, with this collection of position \minimap search the largest co-linear match, a succession of similar minimizer in each reads with coherent position, same order of minimizer and similar distance between each minimizer. Figure \ref{sota:fig:miniasm:mapping} show an overview of \minimap works.
+
+\begin{figure}[ht]
+    \centering
+    \subfile{state_of_the_art/tikz/minimap.tex}
+    \caption{$Read_A$ and $Read_B$ was represent by black arrow. Common minimizer of $Read_A$ and $Read_B$ was represent by blue and red arrow respectively. Green arrow was a co-linear chain, purple arrow was another co-linear chain, black arrow didn't participate to a co-linear chain.}
+    \label{sota:fig:miniasm:mapping}
+\end{figure}
+
+
+
 
 % idea of kmer
 % minimizer vs scketch explain what is minimizer

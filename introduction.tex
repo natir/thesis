@@ -7,13 +7,11 @@
 % Citation
 "Only what is evolving is alive" \footnote{Pierre Kerner translation from french, original quote "N'est vivant que ce qui évolue"} this definition of life, like many others, is incomplete and we can probably found some corner case. This definition is based on the definition of evolution, we can try to define evolution of a thing, as the change on the thing to optimize her capability to conserve her self. To do that a thing need a memory.
 
-In majority of actual know the physical support of this memory was DNA for DeoxyriboNucleic Acid. DNA is a molecule compose by two strain, each strain was composed by phosphate backbone, along of these backbone we have sugar linked to a nucleic acid. We have four type on nucleic acid: Adenine (A), Thymine (T), Cytosine (C) and Guanine (G), Figure \ref{intro:fig:dna_rna_pres} show 3d structure of DNA.
+In majority of actual know life the physical support of this memory was DNA for DeoxyriboNucleic Acid. DNA is a molecule compose by two strain, each strain was composed by phosphate backbone, along of these backbone we have sugar linked to a nucleic acid. We have four type on nucleic acid: Adenine (A), Thymine (T), Cytosine (C) and Guanine (G), Figure \ref{intro:fig:dna_rna_pres} show 3d structure of DNA.
 
-The two strands of DNA are linked by their nucleic acid, with some rules in front of an A we will always have a T in front of a C we will always have a G and vice versa, a DNA strain was a complementary of the other. But we cannot add a new DNA base to each DNA strain at the same end, for some of chemical properties that we will not detail here, we say DNA was composed by two anti-parallel strain, by convention we represent DNA always in the same orientation
+The two strands of DNA are linked by their nucleic acid, with some rules in front of an A we will always have a T in front of a C we will always have a G and vice versa, a DNA strain was a complementary of the other. But we cannot add a new DNA base to each DNA strain at the same end, for some of chemical properties that we will not detail here, we say DNA was composed by two anti-parallel strain, by convention we represent DNA always in the same orientation.
 
-These properties allow us to reconstruct the composition of one strand from the other by apply two operation complementary (replace A by T, T by A, C by G and G by C) and reverse order.
-
-In bioinformatics we generally represent a DNA strain by string in a four letter alphabet (A, C, T, G) and we can get the other strain by reverse complement operation.
+In bioinformatics we generally represent a DNA strain by string in a four letter alphabet (A, C, T, G) the two property describe earlier allow us to reconstruct the composition of one strand from the other by apply complementary (replace A by T, T by A, C by G and G by C) and reverse order.
 
 \begin{figure}[ht]
     \centering
@@ -28,34 +26,51 @@ To read this information we have many biochemical techniques that we group under
 
 \section{Sequencing}
 
-Sequencing technology evolve quickly since 1977\cite{sanger_sequencing}, even if it is an a posteriori reconstruction, three generations can be distinguished, based on reads property. In this section we didn't detail the biochemic methods we just focus on reads property and her impact on different bioinformatics task.
+Sequencing technology evolve quickly since 1977\cite{sanger_sequencing}, even if it is an a posteriori reconstruction, three generations can be distinguished, based on reads property. In this section we didn't detail the biochemical methods we just focus on reads property and her impact on different bioinformatics task.
 
 The two most important properties of a read are its size and error rate\. The longer of a read provide more information about his original sequence, which facilitate downstream analysis. If read contains many errors, the cost of downstream analysis increase and lost in precision and recall.
 
-Sanger technique create large reads with very small error rate, but with a very low throughput and very expensive cost per base.
-Second generation increase the throughput and reduce the cost per base, by reducing the length of the reads and increasing the probability of error ($\approx$ 1\%). This type of error are most of the time a substitution between two nucleotides, sequencer read \texttt{A} in place of a \texttt{T}.
-The third generation has greatly increased the size of the reads but also the error rate while maintaining a descent throughput. Error in third generation are mostly insertion deletion, sequencer didn't read a part of sequence or generate random base not present in original sequence.
-
-Table \ref{intro:tab:technology_property} present read length and error rate on many technology.
-
 \begin{table}[ht]
     \centering
-    \begin{tabular}{l|rr|l}
-         Technology          & Read length (bd)                 & Error rate    & Source                          \\ \hline
-         ABI/Solid           & 75                               & Low ($\approx$ 2\%)    & \cite{seq_assembly_demystified} \\
-         Illumina/Solexa     & 100–150                          & Low (<2\%)             & \cite{seq_assembly_demystified} \\
-         IonTorrent          & $\approx$ 200                    & Medium ($\approx$ 4\%) & \cite{seq_assembly_demystified} \\
-         Roche/454           & 400–600                          & Medium ($\approx$ 4\%) & \cite{seq_assembly_demystified} \\
-         Sanger              & $\approx$ 2 kb                   & Low ($\approx$ 2\%)    & \cite{seq_assembly_demystified} \\
-         Pacific Biosciences & $\approx$ 10 kb ($\max$ 100 kb)  & High ($\approx$ 18\%)  & \cite{seq_assembly_demystified} \cite{longread_dark_matter} \\
-         Oxford Nanopore     & $\approx$ 10 kb ($\max$ 1 mb)    & High ($\approx$ 12\%)  & \cite{longread_dark_matter} \cite{nanopore_read_accuracy} \\
+    \begin{tabular}{ll|rr|l}
+Generation & Technology          & Read length (bd)                 & Error rate             & Source                          \\ \hline
+Second     & ABI/Solid           & 75                               & Low ($\approx$ 2\%)    & \cite{seq_assembly_demystified} \\
+Second     & Illumina/Solexa     & 100–150                          & Low (<2\%)             & \cite{seq_assembly_demystified} \\
+Second     & IonTorrent          & $\approx$ 200                    & Medium ($\approx$ 4\%) & \cite{seq_assembly_demystified} \\
+Second     & Roche/454           & 400–600                          & Medium ($\approx$ 4\%) & \cite{seq_assembly_demystified} \\
+First      & Sanger              & $\approx$ 2 kb                   & Low ($\approx$ 2\%)    & \cite{seq_assembly_demystified} \\
+Third      & Pacific Biosciences & $\approx$ 10 kb ($\max$ 100 kb)  & High ($\approx$ 18\%)  & \cite{seq_assembly_demystified} \cite{longread_dark_matter} \\
+Third      & Oxford Nanopore     & $\approx$ 10 kb ($\max$ 1 mb)    & High ($\approx$ 12\%)  & \cite{longread_dark_matter} \cite{nanopore_read_accuracy} \\
     \end{tabular}
     \caption{This table present length of reads and error rate of main sequencing technology. Pacific Biosciences and Oxford Nanopore evolve quickly and this value change we have tried to be as up-to-date as possible but between two publications these values vary considerably.}
     \label{intro:tab:technology_property}
 \end{table}
 
+Sanger technique create large reads with very small error rate, but with a very low throughput and very expensive cost per base.
+Second generation increase the throughput and reduce the cost per base, by reducing the length of the reads and increasing the probability of error ($\approx$ 1\%). This type of error are most of the time a substitution between two nucleotides, sequencer read \texttt{A} in place of a \texttt{T}.
+The third generation has greatly increased the size of the reads but also the error rate while maintaining a descent throughput. Error in third generation are mostly insertion deletion, sequencer didn't read a part of sequence or generate random base not present in original sequence. Table \ref{intro:tab:technology_property} present read length and error rate on many sequencing technology.
 
-DNA sequencing was very useful tools for many analysis, and in some cases is mandatory to be able to understand biological mechanisms. In this thesis we while focus only on genome assembly problem it's a important usage of sequencing but the only one.
+DNA sequencing was very useful tools for many analysis, and in some cases is mandatory to be able to understand biological mechanisms. 
+In important majority of case down stream analysis required:
+\begin{itemize}
+    \item mapping against a reference genome, found a subsequence in reference genome similar to the read
+    \item found overlap between reads (or other set of reads), found similar sequence between reads 
+\end{itemize}
+ 
+\subsection{How to found similar region between sequence} 
+
+\pim{Rajouté mapping}
+
+Find overlap between reads are generally the bottleneck of many assembly pipeline.
+
+This task have many link to plain text search. A simple description of this task could be, each reads are lines in a file, and for each line we will search in the file for lines that share suffixes or prefixes with our first line.
+
+For first and second generation the main approach choose was the FM-index\cite{fm-index}. An FM-index is a compressed full-text sub string index based on idea we can use Burrows-Wheeler transform of text as a suffix array to perform an exact text search. First and second generation data didn't produce many error, so this method based on exact text search work well, we can cite \toolsname{SGA} as \OLC based second generation assembly pipeline use an FM-index to find overlap between reads. 
+
+FM-index can be use for seed-and-extend technique, we search a short sub-sequence between reads with FM-index, if we have some common sub-sequence we can extend alignment between this seeds with \citeauthor{smith_waterman}\cite{smith_waterman} like algorithm.
+
+This is a complete research field with many tools, and specificity of long-reads(length and high error rate) has relaunched this research field, \citeauthor{ovl_bench} produce an interesting review about some of third-generation overlap search in \cite{ovl_bench}. We details how two of them \mhap and \minimap works in section \ref{section:sota:canu} and \ref{section:sota:miniasm}.
+
 
 \section{Assembly algorithm}
 
@@ -87,12 +102,10 @@ To reconstruct the original sequence with short fragments (reads), finding the o
     \label{intro:fig:overlap}
 \end{figure}
 
-\subsection{How to find overlap}
-
-Find overlap between reads are generally the bootleneck of many assembly pipeline. 
-This is a complete research field with many tools, and sepcificity of long-reads(length and high error rate) has relaunched this research field, \citeauthor{ovl_bench} produce an interesting review about some of third-generation overlap search in \cite{ovl_bench}. We details how two of them \mhap and \minimap works in section \ref{section:sota:canu} and \ref{section:sota:miniasm}.
 
 \subsection{\textit{Greedy} assembly algorithm}
+
+\pim{quand sa a utilisation pourquoi cité au moins un outils}
 
 The \textbf{Greedy} assembly algorithm are the first type of assembly tools, used on Sanger data. Algorithm \ref{intro:algo:greedy} present global idea how \textbf{Greedy} algorithm work.
 
@@ -127,9 +140,11 @@ Figure \ref{intro:fig:greedy:repetition} present a case where reads $R_0$ $R_1$ 
 
 \subsection{Overlap Graph Consensus}
 
-An alternative of \textbf{Greedy} approche was Overlap Graph Consensus (\OLC). This approch was based on a graph where read was a node and we build a edge between node if reads share an overlap. Figure \ref{intro:fig:olc:graph}, present the \OLC corresponding to ovelap present in \ref{intro:fig:greedy:repetition}.
+\pim{quand sa a utilisation pourquoi cité au moins un outils}
 
-We can see this graph like an ordering of piece of book provide by crazy copiest monke, an edge indicate this piece of text was before this piece of text in the original book.
+An alternative of \textbf{Greedy} approach was Overlap Graph Consensus (\OLC). This approch was based on a graph where read was a node and we build a edge between node if reads share an overlap. Figure \ref{intro:fig:olc:graph}, present the \OLC corresponding to ovelap present in \ref{intro:fig:greedy:repetition}.
+
+We can see this graph like an ordering of piece of book provide by crazy copyist monk, an edge indicate this piece of text was before this piece of text in the original book.
 
 The repetition create a fork in \OLC, a node with two successor, it's easy to detect this case in graph and stop assembly. The result of assembly of this graph was 3 sequences with white node, green node and red node. The assembly was more fragmented than \textit{Greedy} algorithm but the assembly didn't contains misassembly.
 
@@ -140,21 +155,26 @@ The repetition create a fork in \OLC, a node with two successor, it's easy to de
     \label{intro:fig:olc:graph}
 \end{figure}
 
-By analyzing the graph we will be able to detect the paths with out barching node in the graph and reconstruct the corresponding sequence by merging the sequences present in the graph.
+By analyzing the graph we will be able to detect the paths with out branching node in the graph and reconstruct the corresponding sequence by merging the sequences present in the graph.
+
+\pim{parlé des défauts long et couteux en mémoire}
 
 \subsection{DeBruijn Graph}
 
+\pim{présenté le découpage en kmer}
+
 A main trouble of \OLC strategy was the cost to find overlap between reads. In \citeauthor{eulerian_approach} in \cite{eulerian_approach} propose a new approch to solve assembly problem, without search of overlap between reads.
 
-This approch was based on DeBruijn Graph (or \DBG), for an alphabet with $n$ symbol a \DBG represent each word of length $k$ as node and build a directed edges if node share $k - 1$ symbol at extremity, for example in Figure \ref{intro:fig:dbg:graph} node \texttt{ATCG} and \texttt{TCGG} share \texttt{TCG}. A word of length $k$ was called a \kmer.
+This approach was based on DeBruijn Graph (or \DBG), for an alphabet with $n$ symbol a \DBG represent each word of length $k$ as node and build a directed edges if node share $k - 1$ symbol at extremity, for example in Figure \ref{intro:fig:dbg:graph} node \texttt{ATCG} and \texttt{TCGG} share \texttt{TCG}. A word of length $k$ was called a \kmer.
 
 In assembly problem $n = 4$ (${A, C, T, G}$), and we can choose a value of k between 1 and the length of read. In practice this size is often smaller than the size of a reads is the choice of the right values of k, depending on the use that we will have of the \DBG graph could be the subject of a completed thesis.
 
 To build the \DBG we choose a value of $k$ and we add all \kmer present in reads in the \DBG. The \DBG used in assembly contains only \kmer present in dataset not all possible \kmer, and edge can be only edge present in dataset or all possible edges.
 
 \begin{figure}[ht]
+    \center
     \subfile{introduction/tikz/debruijn_graph.tex}
-    \caption{The \DBG build for sequence \texttt{ATCGGATTCGCGGTGGTTTCG}. Each node was a word and if a word share $k - 1$ symbol at is end with $k - 1$ symbol at begin of another node we build a directed edge. This \DBG contains cycle this cycle match with a repetition in original sequence}
+    \caption{We have a dataset of 4 reads with same length equal to 7, we choose a value equal to 4, kmer was present under each read. A \DBG build from this kmer set was present under kmer, each node was a kmer and if a word share $k - 1$ symbol at is end with $k - 1$ symbol at begin of another node we build a directed edge. This \DBG contains cycle this cycle probably match with a repetition in original sequence}
     \label{intro:fig:dbg:graph}
 \end{figure}
 
@@ -164,19 +184,11 @@ With \DBG strategy we didn't compute overlap between reads, but the length of wo
 
 Moreover the overlap between word in \DBG must exact (without error) and with a fixed length ($k - 1$), these two constraints are particularly problematic when the reads contain a lot of error or when the coverage of the region is low.
 
-%\subsection{Hybrid assembly}
-
-%\section{Sequencing technology}
-
-%\subsection{First generation}
-
-%\subsection{Second generation}
-
-%\section{Correction}
+\pim{preséenté les défaut, problème des réptpétino plus grand que k choix du k zone peut couverte}
 
 \subsection{Graph cleaning}
 
-Graph structure was usefull to have complete view on all information provide by reads, but some information is not useful and will slow down the assembly tools and increase their costs in memory or at worst lead to misassembly or to unecessary fragmentation of the assembly.
+Graph structure was usefull to have complete view on all information provide by reads, but having too much information can create problems, slow down the assembly tools and increase their costs in memory or at worst lead to misassembly or to unnecessary fragmentation of the assembly.
 
 \subsubsection{Transitive edge}
 
@@ -188,11 +200,11 @@ With string graph we just need follow simple path (path were all nodes have just
 
 \subsubsection{Contained reads}
 
-The crazy copyist monke provide fragment with different size and choose the begin of fragment randomly, so it's possible to have a read is contained in another one. All information in contained reads was present in the container read for assembly task we can forget contained read.
+In thrid generation technology, the crazy copyist monk provide fragment with different size and choose the begin of fragment randomly, so it's possible to have a read is contained in another one. All information (kmer or overlap with other reads) in contained reads was present in the container read for assembly task we can remove contained read, and save memory and time.
 
 \subsubsection{Bubble and tips}
 
-\OLC and \DBG was based on graph, the meaning of nodes and edges are different in this top type of graph. But we can found same structure in them, bubbles and tips.
+\OLC and \DBG was based on graph, the meaning of nodes and edges are different in this type of graph. But we can found same structure in them, bubbles and tips.
 
 Figure \ref{intro:fig:cleaning}
 
@@ -209,26 +221,41 @@ Figure \ref{intro:fig:cleaning}
     \label{intro:fig:cleaning}
 \end{figure}
 
-A tips in an assembly graph is a node with only on edge, a tips can be create by many thing, trouble during DNA extraction, DNA duplication, sequencer create an artefact, a read with to many error ….
+A tips in an assembly graph is a node with only one edge, a tips can be create by many thing, trouble during DNA extraction, DNA duplication, sequencer create an artifact, a read with to many error ….
 
-As we can see in Figure \ref{intro:fig:cleaning:tips} a tips can create a branching node in middle of simple path, if we keep this tips generaly assembly create two contigs one before tips and one after tips (green and blue assembly scenario). If we remove this tips we can run the black scenario.
+As we can see in Figure \ref{intro:fig:cleaning:tips} a tips can create a branching node in middle of simple path, if we keep this tips generally assembly create two contigs one before tips and one after tips (green and blue assembly scenario). If we remove this tips we can run the black scenario.
 
 Its easy to detect and remove tips in graph, in many assembly tools tips are considered as errors and are removed.
 
-We can define a bubble as a set of subpath in graph with same parent and same children, Figure \ref{intro:fig:cleaning:bubble} present an example with two path with same length. The bubble can be create by repetition or heterozygotie one or more version of this sequence contains a substitution or more complexe mutation.
+We can define a bubble as a set of subpath in graph with same parent and same children, Figure \ref{intro:fig:cleaning:bubble} present an example with two path with same length. The bubble can be create by repetition or heterozygotie one or more version of this sequence contains a substitution or more complex mutation.
 
 If bubble are large it can be harder to detect, with small bubble one version of the bubble are kept the choose of the version can be based on random choice or on coverage or other magic tricks.
 
 \section{Why people use long reads}
 
-The length of read have a huge impact on assembly, before third generation sequencing the maximum length of read is lower than 2 kb (for Sanger read) or a majority of repetition in genome are larger than this length. \citeauthor{one_chromosome_one_contig} in \cite{one_chromosome_one_contig} indicate a theoretical length of read to obtain a perfect genome assembly for bacteria, read need to be upper than 7 kb, this limit not work in all practical case. If read are longer than repetition read can have a sufficient length before repetition cover all repetition and sufficient length after repetition we can solve the repetition.
+\pim{rajouté des citations et des fais ou les long reads on amélioré les génomes }
+
+The length of read have a huge impact on assembly, before third generation sequencing the maximum length of read is lower than 2 kb (for Sanger read) or a majority of repetition in genome are larger than this length. \citeauthor{one_chromosome_one_contig} in \cite{one_chromosome_one_contig} indicate a theoretical length of read to obtain a perfect genome assembly for bacteria, read need to be upper than 7 kb, this limit not work in all practical case. If read are longer than repetition read can have a sufficient length before repetition cover all repetition and sufficient length after repetition we can solve the repetition see Figure \ref{intro:fig:whylongreads}.
+
+\begin{figure}[ht]
+    \centering
+    \subfile{introduction/tikz/whyrepetition.tex}
+    \caption{We have a part of assembly graph (\OLC or \DBG), node \texttt{R} represent a repetition node \texttt{A}, \texttt{B}, \texttt{C}, \texttt{D} represent basic sequence. Red, purple, green and blue line represent reads. Red read was larger than repetition and span over it and indicate $A_1 \rightarrow A_2 \rightarrow R \rightarrow C_1 \rightarrow C_2$ was a good path, with out this read we can solve this repetition.}
+    \label{intro:fig:whylongreads}
+\end{figure}
 
 Third generation read aren't larger than all repetition but larger than many repetition and they help to produce better genome assembly.
 Third generation come with her own trouble, mainly a different error profile many insertion deletion low substitution than previous technology, and new to be create for this data type.
 
-Durring my thesis I focus on trouble before assembly step and after assembly step.
+During my thesis I focus on trouble before assembly step and after assembly of thrid generation reads.
+
+\pim{bien faire passé le message que les reads de troisième génération c'est cool}
 
 \section{Assembly Trouble}
+
+\pim{nuancé le propos précédant}
+
+\pim{Indique pour chaque problème si on y répond comment et dans qu'elle section}
 
 \subsection{Data management}
 
@@ -241,13 +268,51 @@ Can we found very bad quality region in long-read and remove it before any other
 
 We try to answer to this two question in paper "\yacrd and \fpa: upstream tools for long-read genome assembly"
 
+\subsection{Correction work but not good enough}
+
+The sequencing depth is not homogeneous and if for a given region this depth is not sufficient for the corrector, it will be less effective but it could still reduce the sequencing depth by eliminating reads or part of reads. To solve this problem it is necessary either to work without correction or to return to the raw reads to find the lost connection.
+
+At the best of our knowledge the only one reads correctors they try to keept the hetrozygotie during correction is falcon \cite{falcon}, the other didn't try to keep this information. Or heterozygotie are very use full to understand genetic diversity in population or some genetic disease.
+Moreover if you genome contain some almost repetion (two instance of same text with some mutation), the correction maybe can't distinguish the mutation between this two instance to sequencing error and correct the two instance of the almost repetition to the same sequence, so correction can create a repetition that cannot be resolved where there were we have two solvable almost repetitions 
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{c|c}
+         &  \\
+         & 
+    \end{tabular}
+    \caption{Time and memory usage of three self corrected long reads, compare to two most popular long reads assembly. For \canu we messure separatly the correction and the assembly module, on long reads dataset XXXXXX.}
+    \label{intro:tab:correctionvsassemblytime}
+\end{table}
+
+Table \ref{intro:tab:correctionvsassemblytime} we can see the correction two orders of magnitude more time to be started and four orders of magnitude more memory. Moreover, as the table \ref{intro:tab:assembleandcorrect} shows, it would seem that assembling the raw reads and then correcting the contigs would be more interesting than correcting the reads and then assembling them.
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{c|c}
+         &  \\
+         & 
+    \end{tabular}
+    \caption{}
+    \label{intro:tab:assembleandcorrect}
+\end{table}
+
+All this point demonstrate correction have large space to progression and question the interest of long reads correction, we participate to this discussion with our reads scrubber \yacrd.
+
+\pim{les indles bloc la detection de proteine voir http://www.opiniomics.org/a-simple-test-for-uncorrected-insertions-and-deletions-indels-in-bacterial-genomes/}
+
 \subsection{Trouble with heuristic algorithm}
+
+\pim{parler de https://github.com/rrwick/Long-read-assembler-comparison}
+\pim{cité les papier de l'intro de knot sur l'annalyse d'assemblage}
 
 Assembly tools perform a great job, but they can't explore all space.
 Due to memory constraint and cpu usage you can't build and store all overlap.
 Due to theoretical limit, how many of base need to be share between to read to create an overlap how many error we can accept in this overlap.
 
 Assembly tools need use heuristic algorithm, solve assembly trouble in this constraint, in majority of case this heuristic perform a very good work, but in some case we need perform a more complex analysis.
+
+\citeauthor{long_read_assembler_comparison} in \cite{long_read_assembler_comparison} perform a comparaison of 
 
 We try to build tools to simplify analysis of assembly tools result and help user to make choice for improve assembly quality in paper "Graph analysis of fragmented long-read bacterial genome assemblies"
 
