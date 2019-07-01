@@ -74,6 +74,8 @@ This is a complete research field with many tools, and specificity of long-reads
 
 \section{Assembly algorithm}
 
+\pim{ajouter definition de contig unitig scaffold N50}
+
 If you want study an organism, knowing the complete genome sequence is very useful for a lot of task like find the genes or the sequence variations across a population, understand how speciation affect genome. Yet, the best sequencing technologies still provide reads that are at least 2 orders of magnitude shorter than the genome. To understand the assembly problem, we provide a useful analogy which, to the best of our knowledge, has never been formulated before.
 
 Imagine a crazy copyist monk. He is copying a book but he randomly chooses where he starts to copy, and he only copies small fragments of text at a time.
@@ -102,6 +104,7 @@ To reconstruct the original sequence with short fragments (reads), finding the o
     \label{intro:fig:overlap}
 \end{figure}
 
+\pim{Ajouter définition contig unitig}
 
 \subsection{\textit{Greedy} assembly algorithm}
 
@@ -161,8 +164,6 @@ By analyzing the graph we will be able to detect the paths with out branching no
 
 \subsection{DeBruijn Graph}
 
-\pim{présenté le découpage en kmer}
-
 A main trouble of \OLC strategy was the cost to find overlap between reads. In \citeauthor{eulerian_approach} in \cite{eulerian_approach} propose a new approch to solve assembly problem, without search of overlap between reads.
 
 This approach was based on DeBruijn Graph (or \DBG), for an alphabet with $n$ symbol a \DBG represent each word of length $k$ as node and build a directed edges if node share $k - 1$ symbol at extremity, for example in Figure \ref{intro:fig:dbg:graph} node \texttt{ATCG} and \texttt{TCGG} share \texttt{TCG}. A word of length $k$ was called a \kmer.
@@ -174,7 +175,7 @@ To build the \DBG we choose a value of $k$ and we add all \kmer present in reads
 \begin{figure}[ht]
     \center
     \subfile{introduction/tikz/debruijn_graph.tex}
-    \caption{We have a dataset of 4 reads with same length equal to 7, we choose a value equal to 4, kmer was present under each read. A \DBG build from this kmer set was present under kmer, each node was a kmer and if a word share $k - 1$ symbol at is end with $k - 1$ symbol at begin of another node we build a directed edge. This \DBG contains cycle this cycle probably match with a repetition in original sequence}
+    \caption{We have a dataset of 4 reads with length equal to 7, we choose a value equal to 4, kmer was present under each read. A \DBG build from this kmer set was present under kmer, each node was a kmer and if a word share $k - 1$ symbol at is end with $k - 1$ symbol at begin of another node we build a directed edge. This \DBG contains cycle this cycle probably match with a repetition in original sequence}
     \label{intro:fig:dbg:graph}
 \end{figure}
 
@@ -183,8 +184,6 @@ Like \OLC we can detect repetition by inspect the number of successor of a node 
 With \DBG strategy we didn't compute overlap between reads, but the length of word in graph was shorter. And all repetition with a size upper than $k$ create cycle in the graph and fragment the assembly.
 
 Moreover the overlap between word in \DBG must exact (without error) and with a fixed length ($k - 1$), these two constraints are particularly problematic when the reads contain a lot of error or when the coverage of the region is low.
-
-\pim{preséenté les défaut, problème des réptpétino plus grand que k choix du k zone peut couverte}
 
 \subsection{Graph cleaning}
 
@@ -200,7 +199,7 @@ With string graph we just need follow simple path (path were all nodes have just
 
 \subsubsection{Contained reads}
 
-In thrid generation technology, the crazy copyist monk provide fragment with different size and choose the begin of fragment randomly, so it's possible to have a read is contained in another one. All information (kmer or overlap with other reads) in contained reads was present in the container read for assembly task we can remove contained read, and save memory and time.
+In third generation technology, the crazy copyist monk provide fragment with different size and choose the begin of fragment randomly, so it's possible to have a read is contained in another one. All information (kmer or overlap with other reads) in contained reads was present in the container read for assembly task we can remove contained read, and save memory and time.
 
 \subsubsection{Bubble and tips}
 
@@ -233,8 +232,6 @@ If bubble are large it can be harder to detect, with small bubble one version of
 
 \section{Why people use long reads}
 
-\pim{rajouté des citations et des fais ou les long reads on amélioré les génomes }
-
 The length of read have a huge impact on assembly, before third generation sequencing the maximum length of read is lower than 2 kb (for Sanger read) or a majority of repetition in genome are larger than this length. \citeauthor{one_chromosome_one_contig} in \cite{one_chromosome_one_contig} indicate a theoretical length of read to obtain a perfect genome assembly for bacteria, read need to be upper than 7 kb, this limit not work in all practical case. If read are longer than repetition read can have a sufficient length before repetition cover all repetition and sufficient length after repetition we can solve the repetition see Figure \ref{intro:fig:whylongreads}.
 
 \begin{figure}[ht]
@@ -244,16 +241,16 @@ The length of read have a huge impact on assembly, before third generation seque
     \label{intro:fig:whylongreads}
 \end{figure}
 
-Third generation read aren't larger than all repetition but larger than many repetition and they help to produce better genome assembly.
-Third generation come with her own trouble, mainly a different error profile many insertion deletion low substitution than previous technology, and new to be create for this data type.
+Third generation read aren't larger than all repetition but larger than many repetition and they help to produce better genome assembly. We can take as an example the gorilla genome where N50 was increase by a factor 1000 with an pacbio assembly with Falcon \cite{gorilla_genome}.
 
-During my thesis I focus on trouble before assembly step and after assembly of thrid generation reads.
 
 \pim{bien faire passé le message que les reads de troisième génération c'est cool}
 
 \section{Assembly Trouble}
 
-\pim{nuancé le propos précédant}
+Third generation come with her own trouble, mainly a different error profile many insertion deletion low substitution than previous technology, reads with a different length, this difference required to devllop new tools for this type of data.
+
+During my thesis I focus only on trouble before assembly step and after assembly of thrid generation reads.
 
 \pim{Indique pour chaque problème si on y répond comment et dans qu'elle section}
 
@@ -261,12 +258,11 @@ During my thesis I focus on trouble before assembly step and after assembly of t
 
 Sequencing generate more and more data, and long-read sequencing technology work how to increase the throughout of sequencer. Tools around long-read assembly generate more data (overlap, assembly graph, contigs, hétérozygotie), and many times all this data isn't useful for a specific downstream analysis.
 
-Moreover some long-reads contains very bad quality region \cite{blog_post_error_repartition}.
+
 
 Can we filter overlapping information with a positive (or not very bad) impact on assembly result, to increase speed of assembly and the impact of assembly step on disk space ?
-Can we found very bad quality region in long-read and remove it before any other analysis to increase quality and computation time of downstream analysis ?
 
-We try to answer to this two question in paper "\yacrd and \fpa: upstream tools for long-read genome assembly"
+We present our solution of this problem \fpa in section \ref{section:preassembly:yacrd_fpa}, overlaper output can by pipe directly in \fpa (for Filter Pairwise Alignment), \fpa can filter overlap with some filter, length of read, length of overlap, type of overlap, read name. Some simple \fpa filter reduce the computation time of assembly without effect (or a small positif effect) on assembly, read section \ref{section:preassembly:yacrd_fpa} for more details on this tools.
 
 \subsection{Correction work but not good enough}
 
@@ -297,9 +293,11 @@ Table \ref{intro:tab:correctionvsassemblytime} we can see the correction two ord
     \label{intro:tab:assembleandcorrect}
 \end{table}
 
-All this point demonstrate correction have large space to progression and question the interest of long reads correction, we participate to this discussion with our reads scrubber \yacrd.
+Specific long-error profile with a majority of indel create some difficulty to found gene in long-reads assembly (corrected by short-reads or only by long-reads), by create frame shift \cite{blog_post_gene_detection}. A very low error rate in genome assembly with long-reads can be archived but only by assembly tools expert.
 
-\pim{les indles bloc la detection de proteine voir http://www.opiniomics.org/a-simple-test-for-uncorrected-insertions-and-deletions-indels-in-bacterial-genomes/}
+Correction of reads before assembly can generate some trouble in assembly and remove some important information. But long-reads still contains very low quality region \cite{blog_post_error_repartition} this region can lead to a fragmented assembly \cite{long_read_assembler_comparison}. 
+
+To found and remove this very low quality region and read we create \yacrd, \yacrd use self overlapping information to compute a coverage curve and identify region with low coverage. We suppose this low coverage region is region with low quality, read section \ref{section:preassembly:yacrd_fpa} for more details on this tools.
 
 \subsection{Trouble with heuristic algorithm}
 
@@ -312,13 +310,41 @@ Due to theoretical limit, how many of base need to be share between to read to c
 
 Assembly tools need use heuristic algorithm, solve assembly trouble in this constraint, in majority of case this heuristic perform a very good work, but in some case we need perform a more complex analysis.
 
-\citeauthor{long_read_assembler_comparison} in \cite{long_read_assembler_comparison} perform a comparaison of 
+\citeauthor{long_read_assembler_comparison} in \cite{long_read_assembler_comparison} perform a comparison of five assembly tools on real data and simulated data bacterial data set. Some trouble in long-reads was simulated to stress assembly tools:
+\begin{itemize}
+    \item adaptator length, sequencing require add short sequence before reads, remove this adaptator in long-read sequencing technology aren't trivial
+    \item chimeric read, during DNA extraction and fragmentation two fragment come from different region an can lead to assembly fragmentation
+    \item glitch level, long-read error aren't uniformly distributed along the reads and sometimes sequencer create a region with only random sequence. A more important the glitch level indicate the bigger the glitch will be and the more frequently it will happen
+    \item random junk read, some read are just a string of random character
+    \item read depth, correspond to genome coverage
+    \item read identity, percent of error insertion, deletion, substitution 
+    \item read length, length of read 
+\end{itemize}
 
-We try to build tools to simplify analysis of assembly tools result and help user to make choice for improve assembly quality in paper "Graph analysis of fragmented long-read bacterial genome assemblies"
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{introduction/images/rrwick_bench.png}
+    \caption{Effect of different reads property on assembly contiguity (number of contigs expect and map correctly on reference genome), of five assembly tools, \toolsname{Unicycler} was an hybrid assembler (use second and thrid generation read), \canu was a long-read assembly pipeline they perform a self correction before construct assembly with a special \OLC graph (more detail in Section \ref{section:sota:canu}), \toolsname{Ra} perform a basic string graph assembly on raw reads with a correction of contigs after assembly (more detail in Section \ref{section:sota:miniasm}), \wtdbg and \toolsname{Flye} use a \DBG like approach to perform assembly on raw reads (more detail in Section \ref{section:sota:wtdbg})}
+    \label{intro:fig:rrwick_bench}
+\end{figure}
+
+This study focus on contiguity of assembly, if the number of contig match with the expected number of contig and if this contigs map against the reference. All assembly perform a good assembly when:
+\begin{itemize}
+    \item reads length are upper than 10k and lower than 20k, this length was reach by long-read sequencing techonology but requests a particular attention be focused on the risk of DNA fragmentation
+    \item read identity need to be upper than 85\% except
+    \item a minimal coverage is around 20x, but this study didn't analyze the error rate of assembly we can suspect an high error rate in assembled contigs
+    \item Chimeric read have an important impact on assembly contiguity but at level generally not observe in real data
+\end{itemize}
+
+We can observe an important variability of result (in \canu, \wtdbg and \toolsname{Unicycler}), an assembly can failled for many reason a chimeric read in a repetition, a drop of coverage, a missing overlap, or a not wheel chosen set of parameter.
+
+We notice some times an overlapping tools mis an overlap found by another on and we notice an important space of progress in overlapping tools on real data \cite{ovl_bench}. In section \ref{section:preassembly:ovl_consensus} we present a blog post and a poster, about difference between overlapping tools result and some preliminary result of an overlapping tools consensus.
+
+Analysis and understanding of data produce by assembly tools, help to understand and sometimes solve assembly trouble, coverage gap produce by correction, refund link between contigs, tag contigs they probably share a repetition. We create \knot a tools to simplify analysis of assembly tools result and help user to make choice for improve assembly quality. We present this work in section \ref{section:postassembly:knot}..
 
 \onlyinsubfile{
 \bibliographystyle{plainnat}
-\bibliography{introduction}
+\bibliography{introduction,state_of_the_art}
 \addcontentsline{toc}{chapter}{Bibliography}
 }
 
