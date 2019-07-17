@@ -1,0 +1,64 @@
+%\documentclass[a4paper]{article}
+%
+%\usepackage{tikz}
+%
+%\begin{document}
+
+
+{\small
+  \usetikzlibrary{arrows}
+  \usetikzlibrary{shapes}
+  \usetikzlibrary{positioning}
+  \usetikzlibrary{calc}
+  \usetikzlibrary{fit}
+  
+\tikzset{
+    between/.style args={#1 and #2}{
+         at = ($(#1)!0.5!(#2)$)
+    }
+}  
+\begin{tikzpicture}
+
+    \begin{scope}[node distance=0.5cm and 0.1cm]
+        \node[draw,rounded corners=0.1cm] (0,0) (ac) {Assembly contigs};
+        \node[draw,rounded corners=0.1cm, right=of ac] (rr) {Raw reads};
+
+        \node[draw,rounded corners=0.1cm, below=of ac.west] (cc) {Contig classification};
+        \node[draw,dotted,rounded corners=0.1cm, below=of rr.east] (isg) {Raw string graph};
+
+        \node[between=cc and isg] (middle) {};
+        \node[draw,dotted,rounded corners=0.1cm, below=of middle] (icps) {Inter-contigs paths search};
+
+        \node[draw,dotted,rounded corners=0.1cm, below=of icps] (aag) {Augmented
+          assembly graph};
+
+        \node[draw,rounded corners=0.1cm, below=of aag] (pas) {Parsomonious assembly
+        scenario};
+
+      \draw[->] (ac) -- (cc);
+      \draw[->] (rr) -- (isg);
+      \draw[->] (cc) -- (icps);
+      \draw[->] (isg) -- (icps);
+      \draw[->] (icps) -- (aag);
+      \draw[->] (aag) -- (pas);
+
+      \node[draw,fit=(ac) (rr)] (r1) {};
+      \node[draw,fit=(aag) (pas)] (r2) {};
+  \end{scope}
+
+    \begin{scope}[node distance=0em and 0em]
+      \node[above=of r1.north,distance=0.01cm] {Input};
+      \node[below=of r2.south,distance=0.01cm] {Output};
+  \end{scope}
+
+  
+    \end{tikzpicture}
+  }
+
+%\end{document}
+
+  
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

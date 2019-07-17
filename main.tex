@@ -12,10 +12,24 @@
 \usepackage{pdfpages}
 
 \usepackage{xr}
-\externaldocument{introduction}
-\externaldocument{state_of_the_art}
-\externaldocument{preassembly}
-\externaldocument{postassembly}
+\makeatletter
+\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+  \typeout{(#1)}
+  \@addtofilelist{#1}
+  \IfFileExists{#1}{}{\typeout{No file #1.}}
+}
+\makeatother
+ 
+\newcommand*{\myexternaldocument}[1]{%
+    \externaldocument{#1}%
+    \addFileDependency{#1.tex}%
+    \addFileDependency{#1.aux}%
+}
+
+\myexternaldocument{introduction}
+\myexternaldocument{state_of_the_art}
+\myexternaldocument{preassembly}
+\myexternaldocument{postassembly}
 
 % multidocument organisation
 \usepackage{subfiles}
@@ -95,6 +109,7 @@ Les relecteur:
 dridk
 Chopopope
 Plop
+Léopold
 
 L'aide 
 Lins et tout bioinfo-fr
@@ -119,7 +134,7 @@ La famille
 
 \notinsubfile{
 \bibliographystyle{plainnat}
-\bibliography{introduction,preassembly,state_of_the_art,postassembly,hybrid_technology,conclusion}
+\bibliography{main}
 \addcontentsline{toc}{chapter}{Bibliography}
 }
 \end{document}

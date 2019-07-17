@@ -133,8 +133,8 @@
   \begin{center}
     \begin{spacing}{1.3}
       ~\vspace{-1.4cm}\\
-      \includegraphics[width=0.4\textwidth]{assets/images/logo_UL}
-      \includegraphics[width=0.4\textwidth]{assets/images/logo_INRIA} \vspace{-0.4cm}
+      \includegraphics[width=0.4\textwidth]{assets/images/logo_UL.jpg}
+      \includegraphics[width=0.4\textwidth]{assets/images/logo_INRIA.jpg} \vspace{-0.4cm}
      \\
       {\fontsize{22}{24}\bfseries\MakeUppercase\selectfont
         \'{E}cole Doctorale SPI \\

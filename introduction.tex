@@ -59,36 +59,7 @@ In important majority of case down stream analysis required:
  
 \subsection{How to found similar region between sequence} 
 
-\pim{Rajouté mapping}
-
-Find overlap between reads are generally the bottleneck of many assembly pipeline.
-
-This task have many link to plain text search. A simple description of this task could be, each reads are lines in a file, and for each line we will search in the file for lines that share suffixes or prefixes with our first line.
-
-For first and second generation the main approach choose was the FM-index\cite{fm-index}. An FM-index is a compressed full-text sub string index based on idea we can use Burrows-Wheeler transform of text as a suffix array to perform an exact text search. First and second generation data didn't produce many error, so this method based on exact text search work well, we can cite \toolsname{SGA} as \OLC based second generation assembly pipeline use an FM-index to find overlap between reads. 
-
-FM-index can be use for seed-and-extend technique, we search a short sub-sequence between reads with FM-index, if we have some common sub-sequence we can extend alignment between this seeds with \citeauthor{smith_waterman}\cite{smith_waterman} like algorithm.
-
-This is a complete research field with many tools, and specificity of long-reads(length and high error rate) has relaunched this research field, \citeauthor{ovl_bench} produce an interesting review about some of third-generation overlap search in \cite{ovl_bench}. We details how two of them \mhap and \minimap works in section \ref{section:sota:canu} and \ref{section:sota:miniasm}.
-
-
-\section{Assembly algorithm}
-
-\pim{ajouter definition de contig unitig scaffold N50}
-
-If you want study an organism, knowing the complete genome sequence is very useful for a lot of task like find the genes or the sequence variations across a population, understand how speciation affect genome. Yet, the best sequencing technologies still provide reads that are at least 2 orders of magnitude shorter than the genome. To understand the assembly problem, we provide a useful analogy which, to the best of our knowledge, has never been formulated before.
-
-Imagine a crazy copyist monk. He is copying a book but he randomly chooses where he starts to copy, and he only copies small fragments of text at a time.
-The copyist monks make errors, e.g. he would sometimes replaces a symbol by another one, would skip a symbol, or would add a random symbol. We respectively call these errors substitutions, deletions and insertions.
-Now imagine that there are multiple such copyist monks.
-They choose randomly where they begin to write. They can choose several times the same region of the book, never choose to copy a certain region, or more rarely copy another region. We refer by "coverage" the number of times a given chunk of the original book is copied. Coverage may significantly differ from one region to another.
-In this analogy, the book is the genome of the organism we want to study, and the copyist monks are our sequencer. The fragments of text are reads, and the operation to rebuild the book is assembly.
-
-The assembly task can be summary has a ordering problem we try to put the text fragments in the original book order.
-
-To find the right order of book fragments, we can try to compare fragments and say that e.g. this fragment is the same of this one, or these two fragments share the same symbols at their extremities. When two fragment share a common sequence at their end of the fragment we say they overlap \ref{intro:fig:overlap:perfect}. Yet it possible for reads to share a common sequence just because alphabet have a fixed size, but the probability of this event decrease when the length of common sequence increase. Intuitively, this probability gets smaller as overlaps get longer. In perfect word, the only criteria to evaluate whether an overlap is "real" or not should be the length of the overlap, the only criteria to evaluate if an overlap is a true one should be his length. However the number of errors in each reads broke this paradigm and force us to build  yet an important factor do consider is that reads contain errors \ref{intro:fig:overlap:erroneous}.
-
-To reconstruct the original sequence with short fragments (reads), finding the overlaps between these fragments constitutes the basis of many assembly algorithms.
+When two sequence share a common subsequence we say they overlap or one of them map in the other one. \ref{intro:fig:overlap:perfect}. Yet it possible for sequence to share a common subsequence just because alphabet have a fixed size, but the probability of this event decrease when the length of common subsequence increase. Intuitively, this probability gets smaller as common subsequence get longer. In perfect word, the only criteria to evaluate whether if a common subsequence is "real" or not should be the length of this subsequence. However the number of errors in reads sequencing broke this paradigm and force us to build yet an important factor do consider is that reads contain errors \ref{intro:fig:overlap:erroneous}.
 
 \begin{figure}[ht]
     \centering
@@ -100,17 +71,67 @@ To reconstruct the original sequence with short fragments (reads), finding the o
         \subfile{introduction/tikz/erroneous_overlap.tex}
         \label{intro:fig:overlap:erroneous}
     }
-    \caption{When reads didn't contains error all overlap look like (a) but}
+    \caption{When reads didn't contains error overlap look like (a) but sequencing technology make error and overlap present in (b) can be a real overlap}
     \label{intro:fig:overlap}
 \end{figure}
 
-\pim{Ajouter définition contig unitig}
+In this document we distinguish two task in similarity search between two sequence:
+\begin{itemize}
+    \item mapping: when we try to found the position of a reads in larger sequence, reference genome, contigs
+    \item overlapping: when we try to found wich reads to share a common subsequence with another reads. 
+\end{itemize}
+When we try to found common subsequence in the same dataset we use term overlapping, when we try to found common subsequnece between different dataset, different sequencing generation or between assembly and reads used for this assembly, we use mapping.
+
+Search of similarity between two or more DNA sequence have many link to plain text search.
+
+\paragraph{Seed and extend} was an approch use by many tools to perform found similar sequence between of a target (for exemple a genome reference) and a query (for exemple a read in reads set), tools create an index of the target, this index need to answer to a simple question this subsequence was present in target and at which position. With this index and for each reads (called query) tools take one or many substring of query and ask index where this substring was present in dataset. Tools use this exact match as anchor to run a \citeauthor{smith_waterman}\cite{smith_waterman} dynamic programming alignment between query and target, if the alignment score between is sufficient position and mapping was report.
+
+Main tools for mapping and overlapping use seed-and-extend strategy. We can cite \toolsname{Blast} \cite{blast_one, blast_two}, \toolsname{BWA} \cite{bwa_mem}, \toolsname{blasr} \cite{blasr}. Implementation details of index, size and number of anchor change for example \toolsname{BWA}, \toolsname{blasr} use an FM-index \cite{fm-index} to perform anchor search. An is a compressed full-text sub string index based on idea we can use Burrows-Wheeler transform of text as a suffix array to perform an exact text search. 
+
+To found overlap, similar sequence in a read dataset, FM-index was used too, for example \toolsname{SGA} \cite{SGA} to search exact overlap between low error read, by search a sub-sequence at end of read in a FM-index. This is a complete research field with many tools, and specificity of long-reads(length and high error rate) has relaunched this research field, \citeauthor{ovl_bench} produce an interesting review about some of third-generation overlap search in \cite{ovl_bench}. We details two long reads overlapper tools \mhap and \minimap in section \ref{section:sota:canu} and \ref{section:sota:miniasm}.
+
+\section{Assembly algorithm}
+
+If you want study an organism, knowing the complete genome sequence is very useful for a lot of task like find the genes or the sequence variations across a population, understand how speciation affect genome. Yet, the best sequencing technologies still provide reads that are at least 2 orders of magnitude shorter than the genome. To understand the assembly problem, we provide a useful analogy which, to the best of our knowledge, has never been formulated before.
+
+Imagine a crazy copyist monk. He is copying a book but he randomly chooses where he starts to copy, and he only copies small fragments of text at a time.
+The copyist monks make errors, e.g. he would sometimes replaces a symbol by another one, would skip a symbol, or would add a random symbol. We respectively call these errors substitutions, deletions and insertions.
+Now imagine that there are multiple such copyist monks.
+They choose randomly where they begin to write. They can choose several times the same region of the book, never choose to copy a certain region, or more rarely copy another region. We refer by "coverage" the number of times a given chunk of the original book is copied. Coverage may significantly differ from one region to another.
+In this analogy, the book is the genome of the organism we want to study, and the copyist monks are our sequencer. The fragments of text are reads, and the operation to rebuild the book is assembly.
+
+The assembly task can be summary has a ordering problem we try to put the text fragments in the original book order, and merge common part at the end.
+
+\subsection{Assembly glossary} 
+
+Assembly community like any other scientific community create her own slang, to designate object they manipulate.
+
+We see \textbf{reads} designate a fragment of DNA produce by sequencer.
+
+A \textbf{contig} designate a sequence of DNA produce by an assembly tools, exact definition of what is a \textbf{contig} change between each assembly tools. We can see in some publication the term \textbf{unitig} the only thing common in \textbf{unitig} definition was \textbf{contig} was builded from \textbf{unitig}.
+
+A \textbf{scaffold} designate an ordering of contig many time we can't reconstruct each chromosome in one contig, we describe some reason of this fragmentation later. But with external information, restriction card, linked read, target sequencing, we can order contig and determinate approximately the number of base between each of them and become near to the true genome easily.
+
+To compare and evaluate, assembly some different metrics was develop, the most common metrics used is N50.
+To compute N50, take a list of your contigs length, sort them, when the cumulative sum of contigs is larger than the sum of all contigs length the last added contigs length is the N50 value. For example $L$ is the sorted list of contigs length: 
+\begin{equation}
+\begin{aligned}
+L &= \{20, 30, 40, 50, 70, 80\} \\
+L_{sum} &= \sum\limits_{i=0}^{|L|} L_i = 290 \\
+\frac{290}{2} &> 20 + 30 + 40 + 50 \\
+\frac{290}{2} &< 20 + 30 + 40 + 50 + 70\\
+\end{aligned}
+\end{equation}
+
+70 was the last length add in cumulative length before this cumulative length are upper than the half of total sum of assembly. N25, N75 or NX correspond at same metrics than N50 for 25\%, 75\% or X\% of total length of contig. L50 was the position of the N50 contigs in $L$.
+
+NG50 was same thing of N50, but the total sum of contigs length was replace by the genome length. NGA50 was same as NG50 but we the contig length was replace by the length of contig map against reference genome. We can cite U50 as another metrics similar metrics where overlapping region between contigs was ignored \cite{U50}.
+
+N50 family metrics wasn't perfect but they help to represent the contig length distribution.
 
 \subsection{\textit{Greedy} assembly algorithm}
 
-\pim{quand sa a utilisation pourquoi cité au moins un outils}
-
-The \textbf{Greedy} assembly algorithm are the first type of assembly tools, used on Sanger data. Algorithm \ref{intro:algo:greedy} present global idea how \textbf{Greedy} algorithm work.
+The \textbf{Greedy} assembly algorithm are the first type of assembly tools, used on Sanger data. For exemple GigAssembler was used to assembly the first human genome data \cite{GigAssembler}. Algorithm \ref{intro:algo:greedy} present global idea how \textbf{Greedy} algorithm work.
 
 The BEST\_OVERLAP function is the main part of algorithm the best overlap is the larger one or the overlap with less error, each algorithm have her own choose method.
 
@@ -141,11 +162,9 @@ Figure \ref{intro:fig:greedy:repetition} present a case where reads $R_0$ $R_1$ 
     \label{intro:fig:greedy:repetition}
 \end{figure}
 
-\subsection{Overlap Graph Consensus}
+\subsection{Overlap Layout Consensus}
 
-\pim{quand sa a utilisation pourquoi cité au moins un outils}
-
-An alternative of \textbf{Greedy} approach was Overlap Graph Consensus (\OLC). This approch was based on a graph where read was a node and we build a edge between node if reads share an overlap. Figure \ref{intro:fig:olc:graph}, present the \OLC corresponding to ovelap present in \ref{intro:fig:greedy:repetition}.
+An alternative of \textbf{Greedy} approach was Overlap Graph Consensus (\OLC). We can found a first \OLC definition in \cite{OLC_myers} in 1995, a probably most popular assembly pipeline based on OLC was Celera \cite{celera_first, celera_second}. This approch was based on a graph where read was a node and we build a edge between node if reads share an overlap. Figure \ref{intro:fig:olc:graph}, present the \OLC corresponding to ovelap present in \ref{intro:fig:greedy:repetition}.
 
 We can see this graph like an ordering of piece of book provide by crazy copyist monk, an edge indicate this piece of text was before this piece of text in the original book.
 
@@ -160,11 +179,11 @@ The repetition create a fork in \OLC, a node with two successor, it's easy to de
 
 By analyzing the graph we will be able to detect the paths with out branching node in the graph and reconstruct the corresponding sequence by merging the sequences present in the graph.
 
-\pim{parlé des défauts long et couteux en mémoire}
+\OLC based tools allow to avoid misassembly but the search for overlap between reads is still expensive in time. The graph construction consumes a lot of memory, and more cleaning steps and graph analysis are expensive in computation time compared to a \textbf{Greedy} approach. 
 
 \subsection{DeBruijn Graph}
 
-A main trouble of \OLC strategy was the cost to find overlap between reads. In \citeauthor{eulerian_approach} in \cite{eulerian_approach} propose a new approch to solve assembly problem, without search of overlap between reads.
+\DBG tools try to speed up assembly by simplify overlap search step, this method was propose in \cite{eulerian_approach}.
 
 This approach was based on DeBruijn Graph (or \DBG), for an alphabet with $n$ symbol a \DBG represent each word of length $k$ as node and build a directed edges if node share $k - 1$ symbol at extremity, for example in Figure \ref{intro:fig:dbg:graph} node \texttt{ATCG} and \texttt{TCGG} share \texttt{TCG}. A word of length $k$ was called a \kmer.
 
@@ -243,28 +262,25 @@ The length of read have a huge impact on assembly, before third generation seque
 
 Third generation read aren't larger than all repetition but larger than many repetition and they help to produce better genome assembly. We can take as an example the gorilla genome where N50 was increase by a factor 1000 with an pacbio assembly with Falcon \cite{gorilla_genome}.
 
-
-\pim{bien faire passé le message que les reads de troisième génération c'est cool}
-
 \section{Assembly Trouble}
 
 Third generation come with her own trouble, mainly a different error profile many insertion deletion low substitution than previous technology, reads with a different length, this difference required to devllop new tools for this type of data.
 
 During my thesis I focus only on trouble before assembly step and after assembly of thrid generation reads.
 
-\pim{Indique pour chaque problème si on y répond comment et dans qu'elle section}
-
 \subsection{Data management}
 
 Sequencing generate more and more data, and long-read sequencing technology work how to increase the throughout of sequencer. Tools around long-read assembly generate more data (overlap, assembly graph, contigs, hétérozygotie), and many times all this data isn't useful for a specific downstream analysis.
-
-
 
 Can we filter overlapping information with a positive (or not very bad) impact on assembly result, to increase speed of assembly and the impact of assembly step on disk space ?
 
 We present our solution of this problem \fpa in section \ref{section:preassembly:yacrd_fpa}, overlaper output can by pipe directly in \fpa (for Filter Pairwise Alignment), \fpa can filter overlap with some filter, length of read, length of overlap, type of overlap, read name. Some simple \fpa filter reduce the computation time of assembly without effect (or a small positif effect) on assembly, read section \ref{section:preassembly:yacrd_fpa} for more details on this tools.
 
 \subsection{Correction work but not good enough}
+
+\pim{polishing}
+
+\toolsname{Racon} was polishing tools create on top of \miniasm pipeline to perform a polishing of contig, we can cite \toolsname{CONSENT} was a correction and polishing tools.
 
 The sequencing depth is not homogeneous and if for a given region this depth is not sufficient for the corrector, it will be less effective but it could still reduce the sequencing depth by eliminating reads or part of reads. To solve this problem it is necessary either to work without correction or to return to the raw reads to find the lost connection.
 
@@ -273,25 +289,16 @@ Moreover if you genome contain some almost repetion (two instance of same text w
 
 \begin{table}[ht]
     \centering
-    \begin{tabular}{c|c}
-         &  \\
-         & 
+    \begin{tabular}{l|rrr|rrr}
+    & \toolsname{CONSENT} & \canu & \toolsname{Mecat} & \miniasm & \canu & \wtdbg \\ \hline
+    \textit{E. coli} & 16045 & 13070 & \underline{3298} & 128 & \textbf{1160} & 92 \\
+    \textit{S. cerevisiae} & 43686 & 17599 & \underline{4183} & 236 & 2880 & \textbf{2901} \\
     \end{tabular}
-    \caption{Time and memory usage of three self corrected long reads, compare to two most popular long reads assembly. For \canu we messure separatly the correction and the assembly module, on long reads dataset XXXXXX.}
+    \caption{Time and memory usage of three self corrected long reads, compare to two most popular long reads assembly. For \canu we measure separately the correction and the assembly module, on long reads simulated dataset of \textit{E. coli} and \textit{S. cerevisiae}. }
     \label{intro:tab:correctionvsassemblytime}
 \end{table}
 
 Table \ref{intro:tab:correctionvsassemblytime} we can see the correction two orders of magnitude more time to be started and four orders of magnitude more memory. Moreover, as the table \ref{intro:tab:assembleandcorrect} shows, it would seem that assembling the raw reads and then correcting the contigs would be more interesting than correcting the reads and then assembling them.
-
-\begin{table}[]
-    \centering
-    \begin{tabular}{c|c}
-         &  \\
-         & 
-    \end{tabular}
-    \caption{}
-    \label{intro:tab:assembleandcorrect}
-\end{table}
 
 Specific long-error profile with a majority of indel create some difficulty to found gene in long-reads assembly (corrected by short-reads or only by long-reads), by create frame shift \cite{blog_post_gene_detection}. A very low error rate in genome assembly with long-reads can be archived but only by assembly tools expert.
 
@@ -300,9 +307,6 @@ Correction of reads before assembly can generate some trouble in assembly and re
 To found and remove this very low quality region and read we create \yacrd, \yacrd use self overlapping information to compute a coverage curve and identify region with low coverage. We suppose this low coverage region is region with low quality, read section \ref{section:preassembly:yacrd_fpa} for more details on this tools.
 
 \subsection{Trouble with heuristic algorithm}
-
-\pim{parler de https://github.com/rrwick/Long-read-assembler-comparison}
-\pim{cité les papier de l'intro de knot sur l'annalyse d'assemblage}
 
 Assembly tools perform a great job, but they can't explore all space.
 Due to memory constraint and cpu usage you can't build and store all overlap.
@@ -340,11 +344,17 @@ We can observe an important variability of result (in \canu, \wtdbg and \toolsna
 
 We notice some times an overlapping tools mis an overlap found by another on and we notice an important space of progress in overlapping tools on real data \cite{ovl_bench}. In section \ref{section:preassembly:ovl_consensus} we present a blog post and a poster, about difference between overlapping tools result and some preliminary result of an overlapping tools consensus.
 
-Analysis and understanding of data produce by assembly tools, help to understand and sometimes solve assembly trouble, coverage gap produce by correction, refund link between contigs, tag contigs they probably share a repetition. We create \knot a tools to simplify analysis of assembly tools result and help user to make choice for improve assembly quality. We present this work in section \ref{section:postassembly:knot}..
+
+Analysis and understanding of data produce by assembly tools help to check if assembly result didn't produce false result or to understand and sometimes solve assembly trouble. Some tools use remapping of read against assembled contigs to found misassembly by detect incongruity's in read coverage, mate pairs mapping, read mapping clipping (AMOSvalidate \cite{amosvalidate}).
+Other tools evaluate the assembly completeness without genome reference with presence or absence of core genes (BUSCO \cite{busco}).
+Tools estimate the probability of a set reads was generate by sequencing contigs produce by assembly (ALE \cite{ALE}). 
+Some tools or assembly tools was develop with idea to analyses assembly graph to understand what's appening durring assembly we can cite \toolsname{Bandage} \cite{paper/} a tools to visualize assembly graph, and \hinge \cite{hinge} an assembly tools where assembly graph was analyze who tries to find a way to manage repetitions than to break the assembly as soon as there is a fork in assembly graph.
+
+We create \knot a tools to simplify analysis of assembly tools result and help user to make choice for improve assembly quality and found lost link between contigs in assembly. This tool is based on the observation that the graph of raw reads is generally connected (we can reach any node from any node), while the graph of contigs does not necessarily the idea and to use the graph of raw reads to find the links between the contigs, this method was present in section \ref{section:postassembly:knot}.
 
 \onlyinsubfile{
 \bibliographystyle{plainnat}
-\bibliography{introduction,state_of_the_art}
+\bibliography{main}
 \addcontentsline{toc}{chapter}{Bibliography}
 }
 

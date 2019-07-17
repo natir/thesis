@@ -1,0 +1,34 @@
+{\small
+    \ttfamily
+    \begin{tikzpicture}
+        \draw (0,0) node (1Left) {};
+        \draw (8,0) node (1Right) {};
+
+        \draw (8.3,0) node (8Left) {};
+        \draw (10,0) node (8Right) {};
+
+        \draw (10.3,0) node (4Left) {};
+        \draw (15,0) node (4Right) {};
+        
+        % dessin des contigs
+        \draw[fill] (1Left) ++ (0,0.1) rectangle node[above] {tig1} (1Right);
+        \draw[fill] (8Left) ++ (0,0.1) rectangle node[above] {tig8} (8Right);
+        \draw[fill] (4Left) ++ (0,0.1) rectangle node[above] {tig4} (4Right);
+        
+        % liens minimap qui respectent la reference NCTC
+        \draw (1Right)
+        .. controls +(up:5mm) and +(up:5mm) ..
+        node[above] {491922} (8Left);
+        
+        \draw (8Right)
+        .. controls +(up:5mm) and +(up:5mm) ..
+        node[above] {ovl} (4Left);
+        
+        \draw[dotted] (1Right)
+        .. controls +(up:12mm) and +(up:12mm) ..
+        node[above] {755235} (4Left);
+    
+        % dessin du gÃ©nome (en dernier pour masquer)
+        \draw (0,0) -- (15,0);
+    \end{tikzpicture}
+}

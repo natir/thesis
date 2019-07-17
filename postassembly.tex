@@ -4,7 +4,7 @@
 
 \chapter{Post Assembly} 
 
-\section{Introduction}
+\section{\knot} \label{section:postassembly:knot}
 % historique
 
 \begin{figure}[ht]
@@ -21,13 +21,15 @@
     \label{fig:my_label}
 \end{figure}
 
-\section{\knot} \label{section:postassembly:knot}
+we can cite AMOSvalidate \cite{amosvalidate}, REAPR \cite{REAPR}, FRCbam \cite{FRCbam}, Pilon \cite{Pilon}, VALET \cite{VALET}.
+We can evaluate the assembly completeness without genome reference with presence or absence of core genes with BUSCO \cite{busco} or CheckM \cite{checkm}.
 
-\includepdf[pages=-]{paper/knot.pdf}
+\subfile{paper/knot.tex}
+%\includepdf[pages=-]{paper/knot.pdf}
 
 \onlyinsubfile{
 \bibliographystyle{plainnat}
-\bibliography{postassembly}
+\bibliography{main}
 \addcontentsline{toc}{chapter}{Bibliography}
 }
 

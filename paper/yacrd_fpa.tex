@@ -1,0 +1,138 @@
+\documentclass[./main.tex]{subfiles}
+
+\begin{document}
+
+\section{\yacrd and \fpa: upstream tools for long-read genome assembly}
+
+Originaly publish in: Oxford Bioinformatics doi: \href{https://doi.org/10.1101/674036}{10.1101/674036}
+
+Author: Pierre Marijon\, Rayan Chikhi\, and Jean-St\'ephane Varr\'e\
+
+
+\section{Abstract}
+
+\textbf{Motivation:} Genome assembly is increasingly performed on long, uncorrected reads. Assembly quality may be degraded due to unfiltered chimeric reads; also, the storage of all read overlaps can take up to terabytes of disk space. 
+\textbf{Results:} We introduce two tools, \yacrd and \fpa, to respectively perform chimera removal/read scrubbing, and filter out spurious overlaps. We show that \yacrd results in higher-quality assemblies and is two orders of magnitude faster than the best available alternative.\\
+\textbf{Availability:} \url{https://github.com/natir/yacrd} and \url{https://github.com/natir/fpa} \\
+\textbf{Contact:} \href{pierre.marijon@inria.fr}{pierre.marijon@inria.fr}\\
+\textbf{Supplementary information:} Supplementary data are available online.\\
+\textbf{Acknowledgements:}
+This work was supported by Inria and the INCEPTION project (PIA/ANR-16-CONV-0005) and the University of Lille HPC facility. The authors thank Maël Kerbiriou for algorithmic help.
+
+
+
+
+\section{Introduction}
+
+Third-generation DNA sequencing (PacBio, Oxford Nanopore) is increasingly becoming a go-to technology for the construction of reference genomes (\emph{de novo} assembly). New bioinformatics methods for this type of data are rapidly emerging.
+
+%A main usage of new long-reads technology was \textit{denovo} assembly, this reads can span more repetition than short read and improve assembly contiguity\pim{cité review}. Long reads assembly tools are mainly based on Overlap Layout Consensus (OLC) paradigm, if two reads share a common region (design by overlap after) they probably comme form the same genomic region and we can merge. OLC paradigm requeried to find common region between all of reads, this hard tasks was performed by overlapper (\pim{ajouter outils et citation}), but generaly all overlap aren't usefull for assembly and can be filtered.
+
+Some long-read assemblers perform error-correction on reads prior to assembly. Correction helps reduce the high error rate of third-generation reads and make assembly tractable, %. is either hybrid (using short Illumina reads) or stand-alone, and 
+but is also a time and memory-consuming step. Recent assemblers (e.g. \cite{minimap,wtdbg2} among others) have found ways to directly assemble raw uncorrected reads. Here we will therefore focus only on \textbf{correction-free assembly}. In this setting, assembly quality may become affected by e.g. chimeric reads and %\pim{ajouté citation}, 
+highly-erroneous regions~\citep{blog_post_error_repartition}, 
+%or the presence of adaptators, 
+as we will see next.%~\pim{ajouté citation}.
+
+The \dascrubber program \citep{dascrubber} introduced the concept of read "scrubbing", which consists of quickly removing problematic regions in reads without attempting to otherwise correct bases.  The idea is that scrubbing reads is a more lightweight operation than correction, and is therefore suitable for high-performance and correction-free genome assemblers.
+
+\dascrubber performs all-against-all mapping of reads and constructs a pileup for each read. Mapping quality is then analyzed to determinate putatively high error rate regions, which are replaced by equivalent and higher-quality regions from other reads in the pileup. 
+\miniscrub\citep{miniscrub} is another scrubbing tool that uses a modified version of \minimap \citep{minimap2} to record positions of the anchors used in overlap detection. For each read, \miniscrub converts anchors positions to an image. A convolutional neural network then detects and removes of low quality read regions.
+
+Another problem that is even more upstream of read scrubbing is the computation of overlaps between reads. The storage of overlaps is disk-intensive and to the best of our knowledge, there has never been an attempt at optimizing its potentially high disk space.
+
+In this paper we present two tools that together optimize the early steps of long-read assemblers. One is \yacrd (for Yet Another Chimeric Read Detector) for fast and effective scrubbing of reads, and the other is \fpa (for Filter Pairwise Alignment) which filters overlaps found between reads. 
+
+%Both tools can work separately but their effect was increase when they use in same time.
+
+% Argument pour le scrubbing:
+% - plus rapide que la correction
+% - assembleur sans correction ces région pose problème
+% - on corrige pas les bases
+
+%This two tools was based on patern recognition in multi-alignment or pseudo-alignment instead \yacrd study only the coverage curve as proxy to this "alignment".
+
+\section{Materials \& Methods}
+
+Similarly to \dascrubber and \miniscrub, \textbf{\yacrd} is based on the assumption that low quality regions in reads are not well-supported by other reads. To detect such regions \yacrd performs all-against-all read mapping using \minimap and then computes the base coverage of each read. Contrarily to \dascrubber and \miniscrub, \yacrd  only uses approximate positional mapping information given by \minimap, which avoids the time-expensive alignment step. This comes at the expense of not having base-level alignments, but this will turn out to be sufficient for performing scrubbing. Reads are split at any location where coverage drops below a certain threshold (set to 4 by default), and the low-coverage region is removed entirely. A read is completely discarded if less than 40\% of its length is below the coverage threshold. \yacrd time complexity is linear in the number of overlaps.
+
+\yacrd performance is directly linked to the overlapper performance. We tuned \minimap parameters (especially the maximal distance between two minimizers, \texttt{-g} parameter) to find similar regions between reads and not to create bridges over low quality regions (see Supplementary Section \ref{appendix:yacrd_parameter_optimisation}).
+\yacrd takes reads and their overlaps as input, and produces scrubbed reads, as well as a report. %about each read.
+
+\begin{table*}[htbp]
+    \centering
+    \begin{tabular}{ll|rrr|rrr}
+~ & ~ & \multicolumn{3}{c}{\hsapiens chr1 (ONT ultra-long R9.4)} &  \multicolumn{3}{c}{\celegans (Pacbio P6-C4)} \\
+~ & ~ & raw & dascrubber & yacrd & raw & dascrubber & yacrd\\ \hline
+\multirow{5}{*}{Reads} & \# reads & 1,075,867 & 819,798 & 1,044,848 & 740,776 & 660,766 & 751,750 \\
+ & Relative \# bases & 1.00 & 0.71 & 0.80 & 1.00 & 0.84 & 0.84 \\
+ & N50 & 10,568 & 9,858 & 9,520 & 16,572 & 15,667 & 15,845 \\
+ & \# chimera & 25,888 & 6 \% & 20 \% & 71,704 & 13 \% & 21 \% \\
+ & Time & ~ & \textbf{3 days 2 hours} & \textbf{27 mins} & ~ & \textbf{1 day 20 hours} & \textbf{33 mins} \\ \hline
+\multirow{4}{*}{\miniasm} & \# contigs & 184 & 184 & 394 & 226 & 131 & 154\\
+ & NGA50 & 96,225 & 410,37 & 453,748 & 432,112 & 544,677 & 440,776\\
+ & Asm/Ref size & 81 \% & 78 \% & 81 \% & 113 \% & 108 \% & 110 \% \\
+ & \# misassemblies & 1,745 & 209 & 432 & 1,396 & 754 & 1,015 \\ \hline
+% & Time & 25 mins & 14 mins & 20 mins & 22 mins & 14 mins & x\\ \hline
+\multirow{5}{*}{\wtdbg} & \# contigs & 810 & 496 & 485 & 139 & 100 & 122 \\
+ & NGA50 & 1,513,450 & 545,902 & 1,482,513 & 565,278 & 578,041 & 593,039 \\
+ & Asm/Ref size & 87 \% & 80 \% & 84 \% & 106 \% & 104 \% & 106 \% \\
+ & \# misassembly & 1,316 & 177 & 582 & 614 & 485 & 577 \\
+% & Time & 1 hours & 1 hours & 45 mins & 18 mins & 18 mins & x\\
+    \end{tabular}
+    \caption{Performance of \yacrd compared to \dascrubber on an ONT and a PacBio dataset. Relative \#bases indicates the proportion of raw read bases kept after scrubbing. \# chimera indicates the number of chimeric reads detected in the dataset using \minimap (see Supplementary Section~\ref{appendix:result_scrubbed_reads}) and the proportion of remaining chimeric reads after scrubbing.
+    NGA50 is the N50 of aligned contigs, and \# misassemblies are the number of misassemblies, both metrics were computed by QUAST~\citep{QUAST}. Asm/Ref size indicates the relative length of the assembly divided the reference length.}
+    \label{tab:summary_result}
+\end{table*}
+
+
+\textbf{\fpa} operates between the overlapper and the assembler. It filters out overlaps based on a highly customizable set of parameters, such as overlap length, length of reads names, etc. \fpa can remove self-overlaps, end-to-end overlaps, containment overlaps, internal matches (when e.g. two reads share a repetitive region) as defined in \citep{minimap}. 
+\fpa supports the PAF or BLASR m4 formats as inputs and outputs, with optional compression. %compressed (gzip, bzip2, lzma) or not. 
+\fpa can also rename reads, generate an index of overlaps and output an overlap graph in GFA format.
+
+%\subsection{Evaluation method}
+
+%After running \yacrd with some set of parametre, \dascrubber and \miniscrub with recommended parameter on each dataset we perform comparaison of scrubbed reads on number of read mapped, sum of edit distance, sum of mapping length, the error rate, the number of chimera in this read.
+
+%\subsection{Evaluation datasets}
+
+%The following datasets were used to evaluate the tools: %\textit{E. coli} CFT073 strain PacBio and ONT reads, 
+%\dmelano PacBio reads, 
+\yacrd and \fpa are evaluated on several datasets (details provided in Supplementary Section \ref{appendix:sec:dataset}), and here we highlight their performance on two of them: 
+\hsapiens chromosome 1 Oxford Nanopore (ONT) ultra-long reads, and \celegans PacBio reads.
+All tools were run on a single cluster node %\miniscrub ran in CPU mode which increases its computation time. 
+ with recommended parameters (see Supplementary Section \ref{appendix:sec:tech_info}). Scrubbed reads were then assembled using both \miniasm and \wtdbg with recommended parameters for each sequencing technology. 
+
+
+\section{Result \& Discussion}
+
+Table 1 compares the results of \textbf{\yacrd} and \dascrubber. 
+We also evaluated \miniscrub (see Supplementary Section \ref{appendix:tab:mapping_post_scrubbing} and \ref{appendix:assembly_qual}), but its memory usage exceeded 256 GB on the two datasets of Table 1. %the largest datasets (\hsapiens, \dmelano and \celegans).
+
+The main feature of \yacrd is that its total execution time, which is essentially that of \minimap, is two orders of magnitude faster than \dascrubber. We next evaluate whether running \yacrd results in higher-quality reads and assemblies. \yacrd removes 20-27\% of the bases in raw reads, comparably to \dascrubber. Both scrubbers significantly reduce chimeras: only  6-13\% of those in raw reads remain with \dascrubber and 18-20\% with \yacrd. The impact of removing chimeras is directly seen on assembly metrics: both scrubbers produce significantly less misassemblies with \miniasm and \wtdbg than with direct assembly of raw reads.
+Both \yacrd and \dascrubber resulted in increased contiguity (NGA50) with \miniasm, and equivalent (or significantly degraded for \dascrubber) contiguity with \wtdbg, and comparable assembly lengths.
+
+On ONT reads, \dascrubber reduces the number of misassemblies by a factor of 2-3 more than \yacrd. However, given that all assemblies in Table 1 completed in less than an hour and \dascrubber took 3 days, running this tool on larger datasets would become a significant performance bottleneck.
+In Supplementary Section~\ref{appendix:yacrd_parameter_optimisation} we examine the behavior of \yacrd across its parameter space. We observe that different parameters worked best for different datasets, one of which is actually a parameter for \minimap. 
+% \yacrd performance in term of computation time, memory usage and capacity to detect and remove bad quality region are directly link to overlapper used. Replace the overlap by another quality region proxy, like kmer or seeds with error frequency, can improve \yacrd performance. 
+
+\textbf{\fpa} reduced the size of reads overlap file (PAF file produced by \minimap) by 40-79\% on the evaluated datasets, without any significant effect on quality assembly. As a consequence this reduces the memory usage of \miniasm by 13-67\%. Other performance metrics are presented in Supplementary Table~\ref{appendix:tab:fpa:effect}.
+
+
+Finally, we examine the effect of combining both \yacrd and \fpa. We propose a pipeline based on \miniasm (Supplementary Section \ref{appendix:sec:combo}) and show that it results in improved assembly contiguity, comparable assembly size, less mismatches and indels, less misassemblies, at the cost of a reasonable increase in running time (around 2x).
+
+
+
+% Rajouté :
+% - L'éssentiel du temps de calcule et de la consomation mémoire de yacrd est du a \minimap si un overlapper plus efficace arrive il pourra être remplacé facilement contrairement au autres …
+% - le scrubbing n'écrasse pas l'hétérozygotie
+
+% 28 threads (contre 16 pour nous) sur a peut près les même cpu, Metrics obtenu avec Quast-LG et pas QUAST
+% Assemblage miniasm 0.2-r168-dirty alors que la notre est 0.3-r179
+% Corrector Contigs   Aligned contigs NGA50    NGA75    Genome coverage   indels + mismatches / 100 kbp     temps        RAM
+% FLAS 	    237	      237	          1698601  289968	94.97	          4,404                             5 heure      14 G
+% MECAT 	249	      247	          1672967  424788	95.66	          3,781                             2 heure      11 G
+% CONSENT 	182	      177	          2663412  439178	90.49	          4,543                             8 heure 30   45 G
+
+
+\end{document}

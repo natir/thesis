@@ -1,0 +1,77 @@
+{\small
+    \ttfamily
+    \begin{tikzpicture}[scale=0.8]
+        \draw (0,0) node (1Left) {};
+        \draw (7,0) node (1Right) {};
+        
+        \draw (7.3, 0) node (2Left) {};
+        \draw (13.5, 0) node (2Right) {};
+        
+        \draw (13.7, 0) node (9Left) {};
+        \draw (14.9, 0) node (9Right) {};
+        
+        \draw (1, 0.1) node (1215Left) {};
+        \draw (1.3, 0.1) node (1215Right) {};
+        
+        % dessin des contigs
+        \draw[fill] (1Left) ++ (0,0.1) rectangle node[above] {tig1} (1Right);
+        \draw[fill] (2Left) ++ (0,0.1) rectangle node[above] {tig2} (2Right);
+        \draw[fill] (9Left) ++ (0,0.1) rectangle node[above] {tig9} (9Right);
+                
+        % dessing des containments
+        \draw[fill,color=black!20] (1215Left) ++ (0, 0.1) rectangle node[above,color=black] {tig1215, tig1216} (1215Right);
+        
+        % liens canu qui respectent la reference NCTC
+        \draw (1Left)
+        .. controls +(up:35mm) and +(up:35mm) ..
+        node[above] {ovl} (9Right);
+        
+        \draw (1Right)
+        .. controls +(up:5mm) and +(up:5mm) ..
+        node[above] {18769} (2Left);
+        
+        \draw (2Right)
+        .. controls +(up:5mm) and +(up:5mm) ..
+        node[above] {ovl} (9Left);
+        
+        % liens canu qui ne respectent pas la reference NCTC
+        \draw[dotted] (1Left)
+        .. controls +(up:22mm) and +(up:32mm) ..
+        node[above] {108282} (2Right);
+
+		\draw[dotted] (1Left)
+        .. controls +(up:10mm) and +(up:10mm) ..
+        node[above] {13825} (2Left);
+        
+        \draw[dotted] (1Right)
+        .. controls +(up:15mm) and +(up:15mm) ..
+        node[above] {2842} (9Right);
+       
+         \draw[dotted] (1Right)
+        .. controls +(up:5mm) and +(up:5mm) ..
+        node[above] {106196} (2Right);
+
+		\draw[dotted] (1Right)
+        .. controls +(up:10mm) and +(up:10mm) ..
+        node[above] {115108} (9Left);
+        
+        \draw[dotted] (2Left)
+        .. controls +(up:20mm) and +(up:20mm) ..
+        node[above] {22210} (9Right);
+        
+        \draw[dotted] (2Left)
+        .. controls +(up:25mm) and +(up:25mm) ..
+        node[above] {125105} (9Left);
+        
+        \draw[dotted] (2Right)
+        .. controls +(up:15mm) and +(up:15mm) ..
+        node[above] {104568} (9Right);
+        
+        \draw[dotted] (1Left)
+        .. controls +(up:20mm) and +(up:20mm) ..
+        node[above] {112742} (9Left);
+
+        % dessin du gÃ©nome (en dernier pour masquer)
+        \draw (0,-0.3) -- node[below] {NCTC tig 1} (14.2,-0.3);
+        \draw (14.5,-0.3) -- node[below] {NCTC tig 2} (15,-0.3);   
+    \end{tikzpicture}}
