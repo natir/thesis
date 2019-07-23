@@ -4,11 +4,10 @@
 
 \chapter{Long reads assembly tools state of the art}\label{chapter:sota}
 
-In this chapter we present some long-read assembly tools we select this tools because method and algorithm used in it was representative how other tools work in addition, these tools are recognized by the community for their quality.
-
+In this chapter we present some long-read assembly tools we select this tools because method and algorithm used in it was representative how other tools work in addition, these tools are recognized by the community for their quality. 
 \section{A Pipeline with correction \canu} \label{section:sota:canu}
 
-\canu is based on \toolsname{Celera} \cite{celera_first, celera_second}, we can split the \canu pipeline in three step, correction, trimming, assembly, before each step \canu search overlap between reads.
+\canu is based on \toolsname{Celera} \cite{celera_first, celera_second}, we can split the \canu pipeline in three step, correction, trimming and assembly, before each step \canu search overlap between reads.
 
 \paragraph{Overlapping}
 
@@ -28,7 +27,7 @@ J(A,B) = \frac{|A \cap B|}{|A \cup B|} \approx \frac{|S(A \cup B) \cap S(A) \cap
 
 $S(A)$ is a \kmers set compose by $s$ first \kmers of set $A$. \citeauthor{mash_distance} evaluate the error between mash distance and jaccard distance was in $\mathcal{O}(\frac{1}{\sqrt{s}})$, by default in \mhap $s=512$ so the error was smaller than 0.05.
 
-In \mhap order \kmer with a \texttt{tf-idf} score, see equation \ref{sota:equ:tf_idf_def}. The \texttt{tf-idf} score come for text search domain, try to say if this term is specific to this document. \texttt{tf} for term frequency indicate if the term was present many times in document, $n_{i,j}$ how many time the term $i$ was present in document $j$ divide by the number of term in document $j$. \texttt{idf} for inverse document frequency evaluate if the term was present in many document or just in some document, $|\mathcal{D}|$ the number of document in dataset divide by $|\{d_{j}:t_{i}\in d_{j}\}|$ the number of document where the term $i$ was present.
+In \mhap order \kmer with a \texttt{tf-idf} score, see equation \ref{sota:equ:tf_idf_def}. The \texttt{tf-idf} score come for text search domain. \texttt{tf-idf} evaluate if this term is specific to this document. \texttt{tf} for term frequency indicate if the term was present many times in document, $n_{i,j}$ how many time the term $i$ was present in document $j$ divide by the number of term in document $j$. \texttt{idf} for inverse document frequency evaluate if the term was present in many document or just in some document, $|\mathcal{D}|$ the number of document in dataset divide by $|\{d_{j}:t_{i}\in d_{j}\}|$ the number of document where the term $i$ was present.
 
 \begin{equation}
 \mathrm{tf-idf_{i,j}} = \mathrm{tf_{i,j}} \cdot \mathrm{idf_{i}} = \frac{n_{i,j}}{\sum_{k}n_{k,j}} \cdot \log{\frac  {|\mathcal{D}|}{|\{d_{j}:t_{i}\in d_{j}\}|}}
@@ -67,7 +66,7 @@ The trimming step will remove the parts of the reads that are not supported by t
 
 \paragraph{Assembly}
 
-\canu assembly step is based on \OLC paradigm, with some specificity \canu build a Best Overlap Graph (BOG) for each not contained read only two overlap are kept in the graph, the best overlap for each read extremity, in \canu the best overlap was the longest overlap. After this graph construction step performed, some clean step was run, remove tips (a read with no sucessor), little buble.
+\canu assembly step is based on \OLC paradigm, with some specificity. \canu build a Best Overlap Graph (BOG) for each not contained read only two overlap are kept in the graph, the best overlap for each read extremity, in \canu the best overlap was the longest overlap. After this graph construction step performed, some clean step was run, remove tips and little buble.
 
 This BOG was used as a scaffold to generate assembly, by remapping read against this scaffold, \canu try to detect repetition, larger than read not show in BOG as loop, and to call read to build a consensus after. Each simple path in BOG was used to build a contig. 
 
@@ -131,7 +130,7 @@ Figure \ref{sota:fig:miniasm:ovl_classification} show some exemple of this overl
 
 \toolsname{Ra}\cite{Ra} was a tools create to replace \miniasm in \minimap \miniasm pipeline. \toolsname{Ra} use an analysis of coverage curve of each reads to trimm not supported region, detect chimera and repeat region. Overlap on region marked as repeat are marked in string graph and not trusted. \toolsname{Ra} perform a real consensus step and run many polishing step with \toolsname{Racon}.
 
-\section{\DBG and \DBG like long reads assembly approach} \label{section:sota:wtdbg}
+\section{\DBG like long reads assembly approach} \label{section:sota:wtdbg}
 
 The \DBG approach was not the preferred one for the assembly of long reads because :
 \begin{itemize}
@@ -145,17 +144,18 @@ Some \flye and \wtdbg use \DBG approach with some modification to adapt this ide
 
 \subsection{\flye}
 
-\flye\cite{Flye} was based on \abruijn\cite{abruijn} assembly tools. \abruijn didn't use a \DBG but a similar concept a \abreviation{ABG} (for A-Bruijn Graphs), in place of use a set of kmers as node \abreviation{ABG} use a set of chosen kmers, in place of build an edge between each kmer they share a k-1 overlap they use \abreviation{ABG} build an edge with a weight equal to the distance of kmer in the original string between without create transitive edge.
+\flye\cite{Flye} was based on \abruijn\cite{abruijn} assembly tools. \abruijn didn't use a \DBG but a similar concept a \abreviation{ABG} (for A-Bruijn Graphs), in place of use a set of kmers as node \abreviation{ABG} use a set of chosen kmers, in place of build an edge between each kmer they share a k-1 overlap they build an edge with a weight equal to the distance of kmer in the original string between without create transitive edge.
 
-To build the chosen kmers set, \abruijn select kmers present many times in dataset this kmers was called in many tools \textit{solid} kmers. The more a kmers is present in the dataset, the more sure you may be that this kmers does not contain a sequencing error, if I sequence my genome with 40x I can hope see kmer, not include in a repetition, 40 times. Because when we sequence at 40x we didn't really read each base 40 times and when a sequence error appear we lost an occurrence of the kmers where this base was present, choose the number of times a kmer need to be present in dataset to be \textit{solid} was an hard task.
+To build the chosen kmers set, \abruijn select kmers present many times in dataset this kmers was called in many tools \textit{solid} kmers. The more a kmers is present in the dataset, the more sure you may be that this kmers does not contain a sequencing error, if the genome coverage is 40x we can hope see kmer, not include in a repetition, 40 times. Because when we sequence at 40x we didn't really read each base 40 times and when a sequence error appear we lost an occurrence of the kmers where this base was present, choose the number of times a kmer need to be present in dataset to be \textit{solid} was an hard task.
 
 This modification help to clean sequencing error, but reduce the set of kmer fragment \DBG graphes it's why \abreviation{ABG} create edge not only when kmers share k-1 overlap. 
 
 During the \abreviation{ABG} construction \abruijn store wich read generate wich graph path, this structure was usefull to found speedly overlap between reads. To build contigs \abruijn take a read $R_1$ found all overlap with help of \abreviation{ABG} if this local overlap graph didn't denote a fork, we have one read without successor and all reads have path in graph to this read, \abruijn extend the contig.
 
-\abruijn can be rugly resume as mix of all assembly strategy, use \DBG to found overlap between read, build contigs by extension like \textit{greedy} technique but use \OLC to check they aren't integrate a repetition and a potential missassembly in contigs.
+\abruijn can be roughly resume as mix of all assembly strategy, use \DBG to found overlap between read, build contigs by extension like \textit{greedy} methode but use \OLC to check they aren't integrate a repetition and a potential missassembly in contigs.
 
-\flye was build on top of \abruijn by building a repetition graph of \abruijn contig, to try to solve it.
+\flye was build on top of \abruijn, after \abruijn assembly \flye search self alignment in assembly. If extremity of contig are similar they are tag as repetition. \flye build a repetition graph, where repetition extremity as node and a edge was build when to repetition extremity was link in a contig. \flye use coverage information to take a clue on contig succession over untangle repetition. By analysis the topology of repetition graph \flye like \hinge can found a uniq traversal path to explain all repetition and found the genomic order of contig.
+
 
 \subsection{\wtdbg}
 
@@ -165,6 +165,46 @@ To find overlap between reads wtdg2 use an hash table to compare the kmer compos
 After this alignment step \wtdbg keep only in memory wich bin are align to which bin, and they build a k-bins each k-bins is a sequence of k successive bin in a read, \wtdbg can infer if two k-bins overlap if some bin in this two k-bins share an ovelap.
 
 A group of k-bins are a node of \abreviation{FDBG}, \wtdbg build an edge between two node if a k-bins in each node are succesive in a read, after some cleanning step (pops bubbles, tips cleanning) \wtdbg build a consensus sequence with each simple path in \abreviation{FDBG}.
+
+\section{New long read assembly}
+
+\subsection{Peregrine}
+
+\newcommand{\shimmer}{\toolsname{SHIMMER}}
+
+\peregrine \cite{Peregrine} use \shimmer overlapper. \shimmer extend idea of minimizer, we can have a minimizer of minimizer.
+The layer-0 of minimizer was a basic minmizer process, like \minimap. After this step \shimmer, select minimizer they participate to the layer-1, they use a reduction factor, for a reduction factor $x$, $x$ minimizer was represent by the minimal minimizer of this set, this process can be repeat with many layer. When they choose the minimizer of $layer_n$ minimizer of $layer_{n-1}$ \shimmer take care of distance between each $layer_n$ minimizer to be shure they represent a distinct part of the read.
+
+After this indexing step, \shimmer group reads they share many minimizer of last layer and perform a classic alignment to confirm overlap between reads. After this step \peregrine run a classic \OLC strategy to perform assembly.
+
+\shimmer overlapping tools can be use to perform a mapping of read against contig or genome, after this remapping a poolshing step was perform, without a take an account to heterozygotie.
+
+\peregrine was actually test only Circular Consensus (CCS) Pacbio data. Reads was sequence multiple time and a consensus was perform on all this sequencing, this technique reduce length of read but reduce the error level of sequencing too. Found overlap between reads with less error was easier and faster. This methode create by \peregrine tools was very interesting, but they need to be validate on other type of data before they are generalize.
+
+\subsection{Shasta}
+
+\newcommand{\shasta}{\toolsname{Shasta}}
+
+\shasta\footnote{https://github.com/chanzuckerberg/shasta/} isn't yet publish but the documentation present a huge overview of algorithm and method use by this assembly tools.
+
+\shasta use read-length representation of reads, read-length representation was a loss-less compression method for text was contains a large repetition of same character. For example sequence \texttt{ACCTTTGAA}, was represent by two string $Sb$ \texttt{A C T G A} and $St$ \texttt{1 2 3 1 2}. To reconstruct original sequence we repeat $St_i$ time the $Sb_i$ letre.
+
+This representation was interesting for long-reads data, because DNA contains sometimes same character repetition (called an homopolymer) and long-reads make many times error in homopolymer, read-length representation by squashing this region can avoid this type of error, and facilitate alignment of long-reads.
+
+To perform read overlapping \shasta, didn't use a minimizer approach but something very close, the $Sb$ string of read was split in kmer and some kmer was selected randomly, and called marker, the set of marker was the same for all data set. Reads was now represent by a succession of marker it's a destructive compression.
+Before search a colinear match of marker, to select reads with higher probability of match \shasta compute a modification of MiniHash Jaccard estimation to avoid bias create by difference of length between reads.
+
+To perform assembly \shasta create a marker graph, it's something similar to \DBG, where kmer was marker and an edge was build between two marker if a read contains this succession of marker, each edge was weighted by the number of reads they contains this succession, after a cleaning step of marker graph (removing transitive edge, tips and bubble) path in marker graph was select and reads participate to building of edge of this path was used to build a consensus sequence of contigs.
+
+\shasta isn't yet publish they contains mainy interesting idea and author's plan some improvement for heterozygotie detection, resolution and performance improvement.
+
+\section{Conclusion}
+
+
+Long read assembly was an active field of search many tools was create each year, and long read and long read assembly tools was used to improve genome and build draft genome.
+But some challenge need to be address, many assembly step have important cost in computation time and memory usage. For exemple get an overlap search with high precision and recall and without excessive cost in computation time and memory usage. \cite{bench_ovl}.
+
+The only one assembly they try to take in account heterozygotie was \toolsname{FALCON}, and in future \shasta, make difference between an sequencing error and a natural variant or heterozygotie. Get heterozygotie and variant phased or genome graph after assembly was interesting. But tools to extract all this information from read didn't exist yet
 
 \onlyinsubfile{
 \bibliographystyle{plainnat}
