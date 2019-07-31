@@ -14,6 +14,8 @@ And in overlap found by this tools not all of them are useful to each downstream
 
 Our paper "\yacrd and \fpa: upstream tools for long-read genome assembly" focus on two tools \yacrd (for Yet Another Chimeric Read Detector) and \fpa (for Filter Pairwise Alignment). \yacrd focus on detection and elimination of very poor quality region, \fpa focus on filtering of overlap.
 
+
+Have better read and no unnecessary overlap can help to produce faster better assembly but if overlapping tools mis an important overlap your assembly can be fragmented.
 In \cite{ovl_bench} \citeauthor{ovl_bench} compare state of the art of overlapper on simulated dataset and on real dataset, a drop in the accuracy and recall of these algorithms can be observed between real and simulated data \ref{preassembly:tab:ovl_result}.
 
 \begin{table}[ht]
@@ -41,6 +43,11 @@ In this chapter we present first \yacrd and \fpa with publication we send to Oxf
 
 \section{Overlapping consensus}\label{section:preassembly:ovl_consensus}
 
+This work begin as an extension of a \citeauthor{bench_ovl} publications \cite{bench_ovl}. Author creaete a benchmark of overlapping tools, they compare \mhap, \minimap, \toolsname{Blasr}\cite{blasr}, \toolsname{Daligner}\cite{daligner} and \toolsname{Graphmap}\cite{graphmap}. This tools was compare on computation time memory usage, sensibility and precision on simulated and real dataset.
+
+An interesting result was a lost of precission and recall between synthetic and real dataset until 25 \% of sensibility for \toolsname{Blasr} on pacbio data. This tools miss some overlap but they miss same overlap ? To answer to this question we write a blog post with some set analysis.
+
+\subfile{paper/blog_post.tex}
 
 
 \onlyinsubfile{

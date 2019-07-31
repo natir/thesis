@@ -25,7 +25,7 @@ J(A,B) = \frac{|A \cap B|}{|A \cup B|} \approx \frac{|S(A \cup B) \cap S(A) \cap
 \label{sota:equ:mash_dist_def}
 \end{equation}
 
-$S(A)$ is a \kmers set compose by $s$ first \kmers of set $A$. \citeauthor{mash_distance} evaluate the error between mash distance and jaccard distance was in $\mathcal{O}(\frac{1}{\sqrt{s}})$, by default in \mhap $s=512$ so the error was smaller than 0.05.
+$S(A)$ is a \kmers set compose by $s$ first \kmers of set $A$. \citeauthor{mash_distance} evaluate the error between mash distance and Jaccard distance was in $\mathcal{O}(\frac{1}{\sqrt{s}})$, by default in \mhap $s=512$ so the error was smaller than 0.05.
 
 In \mhap order \kmer with a \texttt{tf-idf} score, see equation \ref{sota:equ:tf_idf_def}. The \texttt{tf-idf} score come for text search domain. \texttt{tf-idf} evaluate if this term is specific to this document. \texttt{tf} for term frequency indicate if the term was present many times in document, $n_{i,j}$ how many time the term $i$ was present in document $j$ divide by the number of term in document $j$. \texttt{idf} for inverse document frequency evaluate if the term was present in many document or just in some document, $|\mathcal{D}|$ the number of document in dataset divide by $|\{d_{j}:t_{i}\in d_{j}\}|$ the number of document where the term $i$ was present.
 
@@ -34,11 +34,11 @@ In \mhap order \kmer with a \texttt{tf-idf} score, see equation \ref{sota:equ:tf
 \label{sota:equ:tf_idf_def}
 \end{equation}
 
-In \mhap term was \kmer and document was read, this technique permit to reduce the number of kmer in set and keep kmer specific to a read. If two read share specific kmer they probably share a common part.
+In \mhap term was \kmer and document was read, this technique permit to reduce the number of \kmer in set and keep \kmer specific to a read. If two read share specific \kmer they probably share a common part.
 
 If two reads have a small mash distance \mhap compare the position of each \kmer in reads to determinate the overlap position.
 
-The size of kmer was very important to if k is too large many kmer contains error the size of intersection was reduce and \mhap can miss overlap. Moreover size of sketch have a huge impact if it's to small the read was sub-sample if it's to large compute mash distance take more time, but with long-reads dataset the length of reads can be very different choose a good sketch size for this type of data isn't easy.
+The size of \kmer was very important to if k is too large many \kmer contains error the size of intersection was reduce and \mhap can miss overlap. Moreover size of sketch have a huge impact if it's to small the read was sub-sample if it's to large compute mash distance take more time, but with long-reads dataset the length of reads can be very different choose a good sketch size for this type of data isn't easy.
 
 \paragraph{Correction}
 
@@ -90,7 +90,7 @@ A minimal kmer is a the kmer for a set of consecutive kmer than minimize her sco
     \label{sota:fig:miniasm:minimizer}
 \end{figure}
 
-The minimal kmer can represent many other read, this technique can be compare to a loosly compression.
+The minimal \kmer can represent many other read, this technique can be compare to a loosly compression.
 
 \minimap build an index where each minimizer are associate to reads where minimizer is present and position of this minimizer in reads.
 
@@ -146,7 +146,7 @@ Some \flye and \wtdbg use \DBG approach with some modification to adapt this ide
 
 \flye\cite{Flye} was based on \abruijn\cite{abruijn} assembly tools. \abruijn didn't use a \DBG but a similar concept a \abreviation{ABG} (for A-Bruijn Graphs), in place of use a set of kmers as node \abreviation{ABG} use a set of chosen kmers, in place of build an edge between each kmer they share a k-1 overlap they build an edge with a weight equal to the distance of kmer in the original string between without create transitive edge.
 
-To build the chosen kmers set, \abruijn select kmers present many times in dataset this kmers was called in many tools \textit{solid} kmers. The more a kmers is present in the dataset, the more sure you may be that this kmers does not contain a sequencing error, if the genome coverage is 40x we can hope see kmer, not include in a repetition, 40 times. Because when we sequence at 40x we didn't really read each base 40 times and when a sequence error appear we lost an occurrence of the kmers where this base was present, choose the number of times a kmer need to be present in dataset to be \textit{solid} was an hard task.
+To build the chosen \kmers set, \abruijn select kmers present many times in dataset this kmers was called in many tools \textit{solid} \kmers. The more a \kmers is present in the dataset, the more sure you may be that this \kmers does not contain a sequencing error, if the genome coverage is 40x we can hope see \kmer, not include in a repetition, 40 times. Because when we sequence at 40x we didn't really read each base 40 times and when a sequence error appear we lost an occurrence of the kmers where this base was present, choose the number of times a kmer need to be present in dataset to be \textit{solid} was an hard task.
 
 This modification help to clean sequencing error, but reduce the set of kmer fragment \DBG graphes it's why \abreviation{ABG} create edge not only when kmers share k-1 overlap. 
 
