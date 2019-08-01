@@ -1,0 +1,73 @@
+\documentclass[main.tex]{subfiles}
+
+\begin{document}
+
+\chapter{Other contribution}
+
+This chapter haven't any linked to other one they talks about my contribution on some project where I spent some times durring my phd with out sufficient large contribution to have a specific chapter.
+
+\section{labsquare}
+
+Labsquare was a community for genomics software, I participate to developping of two tools.
+
+\newcommand{\fastqt}{\toolsname{FastQt}}
+\newcommand{\cutevariant}{\toolsname{CuteVariant}}
+
+\paragraph{fastQt} is a rewrite of \toolsname{FastQC} in C++ with framework \toolsname{Qt}. \fastqt was a tool to check the quality of sequencing data by providing some statistics, GC\% distribution, read length distribution, error rate repartition along the length of reads. At the moment \fastqt development was stopped.
+
+\paragraph{CuteVariant} is a tool to visualize and analyze \toolsname{VCF} (for Variant Call Format) file, this file store variant found between an individual or a dataset of reads against a reference genome. \cutevariant allows selecting annotation, genotype, filter variant, sort and group variants, query variant with \abreviation{VQL} (for Variant Query Language), set operation between VCF file.
+\cutevariant is still in development and it was the subject of a poster during jobim 2019.
+
+\section{CAMI challenge 2}
+
+\abreviation{CAMI} challenge was an assembly challenge of metagenomics data, I participate in the second edition of CAMI challenge with Camille Marchet, Antoine Limaset, Pierre Peterlongo, Claire Lemaitre and Rayan Chikhi. We try different strategies to perform an assembly of metagenomics dataset.
+
+\subsection{Dataset description}
+
+In this challenge, we have two dataset with similar reads composition. A set of Illumina Hiseq like reads and a set of Pacbio like reads, simulated by \toolsname{CAMISIM}\cite{camisim}.
+
+We have two dataset, Marine Dataset build to correspond to the composition of a metagenomics sequencing of seawater, and Strain Madness Dataset with very important strain-level variation.
+
+\subsection{Assembly strategy}
+
+On the one hand we perform a short reads assembly with \toolsname{gatb-pipeline} \footnote{https://github.com/GATB/gatb-minia-pipeline}, it's a multi-kmer size short read assembly based on \toolsname{Bloocoo} \cite{bloocoo} for read correction, \toolsname{Minia 3} \cite{minia, bcalm} for contig assembly and \toolsname{BESST} for scaffolding \cite{besst1, besst2, besst3}.
+
+On the second hand, my main contribution in this challenge, we build a long-read assembly pipeline with \toolsname{fmlrc} \cite{fmlrc} a hybrid corrector long-read corrector, and assembly of corrected long read with a pipeline \minimap, \fpa (no internal match and overlap lower than 2000 bases), \miniasm or a \wtdbg assembly. We try to perform read classification before correction and assembly with \toolsname{centrifuge}\cite{centrifuge} to avoid the complexity of metagenomics dataset because our correction assembly tools aren't build to use this type of data, but we didn't use this strategy due to lack of time.
+
+Finally, we submit a reconciliation of short reads assembly made by \toolsname{gatb-pipeline} and \wtdbg assembly of corrected long-read, if a short read contigs map in a long reads contigs the short reads contigs were discarded. This strategy should have allowed us to have good quality contigs (from long reads assemblies) on the most present strains without losing the information of the least present strains (contained in the short reads contigs). Indeed, long reads sequencing technologies have lower sequencing depths which can't allow the detection and assembly of the least present strains.
+
+We didn't haven't when we write this document the result of other team or an idea of quality of our assembly.
+
+\section{10X linked-read deconvolution}
+
+10X linked-read was a sequencing technique developed by 10X genomics. Figure \label{fig:other_contribution:10x} present the main idea of 10X linked-read sequencing. After purification DNA was fragmented in large molecule ($\approx$100 kb length), by microfluidic method each large molecule was separate in individuals bubble each bubble was associated with a barcode in this bubble DNA was fragmented in shorter fragment (compatible with Illumina sequencing method) and barcode was add to extremity. After a classic short-read sequencing, we can use barcode information to determinate if read comes from the same large fragment or not.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{other_contribution/images/Linked_reads.png}
+    \caption{10X linked-read sequencing idea. Source: \url{https://ucdavis-bioinformatics-training.github.io/2018-Dec-Genome-Assembly/10x-supernova/10x-supernova.html}}
+    \label{fig:other_contribution:10x}
+\end{figure}
+
+Unfortunately, there is not a barcode for each large DNA molecule and therefore several fragments will share the barcode. The task of assigning each reads its original molecule is called deconvolution. Knowing exactly the original molecule of each reads is useful to: 
+\begin{itemize}
+    \item assembly and scaffollding by allowing to solve repetitions that are span by large molecule
+    \item variant phasing all reads come from same molecule, come for same individuals/cells
+\end{itemize}
+ 
+If we have access to a good genome reference deconvolution was easy by mapping reads against reference each read with same barcode mapped in approximately 100 kb range on the reference genome come from same molecule, it's general idea used by \toolsname{EMA}\cite{ema} and \toolsname{Lariat}\cite{lariat} to assign a read to a molecule.
+
+But when haven't good reference genome we can't use this idea. 
+
+% 10x data
+% CAMI 2
+% hackseq
+% labsquare
+
+\onlyinsubfile{
+\bibliographystyle{plainnat}
+\bibliography{main}
+\addcontentsline{toc}{chapter}{Bibliography}
+}
+
+\end{document}

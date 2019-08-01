@@ -1241,3 +1241,190 @@ Eprint = {arXiv:1303.3997},
 	title = {Microbiota profiling with long amplicons using Nanopore sequencing: full-length 16S {rRNA} gene and whole rrn operon},
 	journal = {F1000Research}
 }
+
+@article{camisim,
+	doi = {10.1186/s40168-019-0633-6},
+	url = {https://doi.org/10.1186%2Fs40168-019-0633-6},
+	year = 2019,
+	month = {feb},
+	publisher = {Springer Nature},
+	volume = {7},
+	number = {1},
+	author = {Adrian Fritz and Peter Hofmann and Stephan Majda and Eik Dahms and Johannes Dröge and Jessika Fiedler and Till R. Lesker and Peter Belmann and Matthew Z. DeMaere and Aaron E. Darling and Alexander Sczyrba and Andreas Bremges and Alice C. McHardy},
+	title = {{CAMISIM}: simulating metagenomes and microbial communities},
+	journal = {Microbiome}
+}
+
+@article{besst1,
+author = {Sahlin, Kristoffer and Chikhi, Rayan and Arvestad, Lars}, 
+title = {Assembly scaffolding with PE-contaminated mate-pair libraries},
+year = {2016}, 
+doi = {10.1093/bioinformatics/btw064}, 
+abstract ={Motivation: Scaffolding is often an essential step in a genome assembly process, in which contigs are ordered and oriented using read pairs from a combination of paired-end libraries and longer-range mate-pair libraries. Although a simple idea, scaffolding is unfortunately hard to get right in practice. One source of problems is so-called PE-contamination in mate-pair libraries, in which a non-negligible fraction of the read pairs get the wrong orientation and a much smaller insert size than what is expected. This contamination has been discussed before, in relation to integrated scaffolders, but solutions rely on the orientation being observable, e.g. by finding the junction adapter sequence in the reads. This is not always possible, making orientation and insert size of a read pair stochastic. To our knowledge, there is neither previous work on modeling PE-contamination, nor a study on the effect PE-contamination has on scaffolding quality.Results: We have addressed PE-contamination in an update to our scaffolder BESST. We formulate the problem as an integer linear program which is solved using an efficient heuristic. The new method shows significant improvement over both integrated and stand-alone scaffolders in our experiments. The impact of modeling PE-contamination is quantified by comparing with the previous BESST model. We also show how other scaffolders are vulnerable to PE-contaminated libraries, resulting in an increased number of misassemblies, more conservative scaffolding and inflated assembly sizes.Availability and implementation: The model is implemented in BESST. Source code and usage instructions are found at https://github.com/ksahlin/BESST. BESST can also be downloaded using PyPI.Contact: ksahlin@kth.seSupplementary information: Supplementary data are available at Bioinformatics online.}, 
+URL = {http://bioinformatics.oxfordjournals.org/content/early/2016/03/09/bioinformatics.btw064.abstract}, 
+eprint = {http://bioinformatics.oxfordjournals.org/content/early/2016/03/09/bioinformatics.btw064.full.pdf+html}, 
+journal = {Bioinformatics} 
+}
+
+@article{besst2,
+	author = {Sahlin, K. and Vezzi, F. and Nystedt, B. and Lundeberg, J. and Arvestad, L.},
+	title = {{BESST}--efficient scaffolding of large fragmented assemblies.},
+	journal = {BMC Bioinformatics},
+	volume = {15},
+	year = {2014},
+	pages = {281},
+	pmid = {25128196},
+	doi = {10.1186/1471-2105-15-281},
+	abstract = {BACKGROUND: The use of short reads from High Throughput Sequencing
+(HTS) techniques is now commonplace in de novo assembly. Yet,
+obtaining contiguous assemblies from short reads is challenging,
+thus making scaffolding an important  step in the assembly pipeline.
+Different algorithms have been proposed but many of them use the
+number of read pairs supporting a linking of two contigs as an
+indicator of reliability. This reasoning is intuitive, but fails
+to account for variation in link count due to contig features.We
+have also noted that published  scaffolders are only evaluated
+on small datasets using output from only one assembler. Two issues
+arise from this. Firstly, some of the available tools are not
+well suited for complex genomes. Secondly, these evaluations provide
+little support for inferring a software's general performance.
+RESULTS: We propose a new algorithm, implemented in a tool called
+BESST, which can scaffold genomes of all  sizes and complexities
+and was used to scaffold the genome of P. abies (20 Gbp).  We
+performed a comprehensive comparison of BESST against the most
+popular stand-alone scaffolders on a large variety of datasets.
+Our results confirm that  some of the popular scaffolders are
+not practical to run on complex datasets. Furthermore, no single
+stand-alone scaffolder outperforms the others on all datasets.
+However, BESST fares favorably to the other tested scaffolders
+on GAGE  datasets and, moreover, outperforms the other methods
+when library insert size distribution is wide. CONCLUSION: We
+conclude from our results that information sources other than
+the quantity of links, as is commonly used, can provide useful
+information about genome structure when scaffolding.}
+}
+
+@article{besst3,
+	author = {Sahlin, K. and Street, N. and Lundeberg, J. and Arvestad, L.},
+	title = {Improved gap size estimation for scaffolding algorithms.},
+	journal = {Bioinformatics},
+	volume = {28},
+	number = {17},
+	year = {2012},
+	month = {Sep},
+	pages = {2215-2222},
+	pmid = {22923455},
+	doi = {10.1093/bioinformatics/bts441},
+	abstract = {MOTIVATION: One of the important steps of genome assembly is scaffolding,
+in which contigs are linked using information from read-pairs.
+Scaffolding provides  estimates about the order, relative orientation
+and distance between contigs. We  have found that contig distance
+estimates are generally strongly biased and based on false assumptions.
+Since erroneous distance estimates can mislead in subsequent analysis,
+it is important to provide unbiased estimation of contig distance.
+RESULTS: In this article, we show that state-of-the-art programs
+for scaffolding are using an incorrect model of gap size estimation.
+We discuss why current maximum likelihood estimators are biased
+and describe what different cases of bias we are facing. Furthermore,
+we provide a model for the distribution of reads that span a gap
+and derive the maximum likelihood equation for the gap length.
+We motivate why this estimate is sound and show empirically that
+it outperforms gap estimators in popular scaffolding programs.
+Our results have consequences both for scaffolding software, structural
+variation detection and for library insert-size estimation as
+is commonly performed by read aligners. AVAILABILITY: A reference
+implementation is provided at \verb+https://github.com/SciLifeLab/gapest.+
+SUPPLEMENTARY INFORMATION: Supplementary data are availible at
+Bioinformatics online.}
+}
+
+@misc{bloocoo,
+  TITLE = {{Bloocoo, a memory efficient read corrector}},
+  AUTHOR = {Benoit, Ga{\"e}tan and Lavenier, Dominique and Lemaitre, Claire and Rizk, Guillaume},
+  URL = {https://hal.inria.fr/hal-01092960},
+  NOTE = {Poster},
+  HOWPUBLISHED = {{European Conference on Computational Biology (ECCB)}},
+  YEAR = {2014},
+  MONTH = Sep,
+  PDF = {https://hal.inria.fr/hal-01092960/file/bloocoo_poster_ECCB.pdf},
+  HAL_ID = {hal-01092960},
+  HAL_VERSION = {v1},
+}
+
+@article{minia,
+	doi = {10.1186/1748-7188-8-22},
+	url = {https://doi.org/10.1186%2F1748-7188-8-22},
+	year = 2013,
+	month = {jan},
+	publisher = {Springer Nature},
+	volume = {8},
+	number = {1},
+	author = {Rayan Chikhi and Guillaume Rizk},
+	title = {Space-efficient and exact de Bruijn graph representation based on a Bloom filter},
+	journal = {Algorithms for Molecular Biology}
+}
+
+@article{bcalm,
+	doi = {10.1093/bioinformatics/btw279},
+	url = {https://doi.org/10.1093%2Fbioinformatics%2Fbtw279},
+	year = 2016,
+	month = {jun},
+	publisher = {Oxford University Press ({OUP})},
+	volume = {32},
+	number = {12},
+	pages = {i201--i208},
+	author = {Rayan Chikhi and Antoine Limasset and Paul Medvedev},
+	title = {Compacting de Bruijn graphs from sequencing data quickly and in low memory},
+	journal = {Bioinformatics}
+}
+
+@article{fmlrc,
+	doi = {10.1186/s12859-018-2051-3},
+	url = {https://doi.org/10.1186%2Fs12859-018-2051-3},
+	year = 2018,
+	month = {feb},
+	publisher = {Springer Nature},
+	volume = {19},
+	number = {1},
+	author = {Jeremy R. Wang and James Holt and Leonard McMillan and Corbin D. Jones},
+	title = {{FMLRC}: Hybrid long read error correction using an {FM}-index},
+	journal = {{BMC} Bioinformatics}
+}
+
+@article{centrifuge,
+	doi = {10.1101/gr.210641.116},
+	url = {https://doi.org/10.1101%2Fgr.210641.116},
+	year = 2016,
+	month = {oct},
+	publisher = {Cold Spring Harbor Laboratory},
+	volume = {26},
+	number = {12},
+	pages = {1721--1729},
+	author = {Daehwan Kim and Li Song and Florian P. Breitwieser and Steven L. Salzberg},
+	title = {Centrifuge: rapid and sensitive classification of metagenomic sequences},
+	journal = {Genome Research}
+}
+
+@Article{ema,
+   Author="Shajii, A.  and Numanagi?, I.  and Berger, B. ",
+   Title="{{L}atent {V}ariable {M}odel for {A}ligning {B}arcoded {S}hort-{R}eads {I}mproves {D}ownstream {A}nalyses}",
+   Journal="Res Comput Mol Biol",
+   Year="2018",
+   Volume="10812",
+   Pages="280--282",
+   Month="Apr"
+}
+
+@article{lariat,
+	doi = {10.1101/gr.191189.115},
+	url = {https://doi.org/10.1101%2Fgr.191189.115},
+	year = 2015,
+	month = {aug},
+	publisher = {Cold Spring Harbor Laboratory},
+	volume = {25},
+	number = {10},
+	pages = {1570--1580},
+	author = {Alex Bishara and Yuling Liu and Ziming Weng and Dorna Kashef-Haghighi and Daniel E. Newburger and Robert West and Arend Sidow and Serafim Batzoglou},
+	title = {Read clouds uncover variation in complex regions of the human genome},
+	journal = {Genome Research}
+}
