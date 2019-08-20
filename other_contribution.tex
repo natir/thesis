@@ -55,14 +55,13 @@ Unfortunately, there is not a barcode for each large DNA molecule and therefore 
     \item variant phasing all reads come from same molecule, come for same individuals/cells
 \end{itemize}
  
-If we have access to a good genome reference deconvolution was easy by mapping reads against reference each read with same barcode mapped in approximately 100 kb range on the reference genome come from same molecule, it's general idea used by \toolsname{EMA}\cite{ema} and \toolsname{Lariat}\cite{lariat} to assign a read to a molecule.
+If we have access to a good genome reference deconvolution was easy by mapping reads against reference each read with same barcode mapped in approximately 100 kb range on the reference genome come from same molecule, it's general idea used by \toolsname{ema}\cite{ema} and \toolsname{Lariat}\cite{lariat} to assign a read to a molecule.
 
-But when haven't good reference genome we can't use this idea. 
+But when haven't good reference genome we can't use this method. To solve this problem, in colaboration with Chen Sun, Rayan Chikhi , Paul Medvedev and Yoann Dufresne, we try to propose some different techniques to perform a 10x linked-reads deconvolution. I propose a method based on graph assembly analysis.
 
-% 10x data
-% CAMI 2
-% hackseq
-% labsquare
+After a classic \DBG assembly (we use \toolsname{bcalm}), we remap reads against contigs with \toolsname{ema}, to reads with same barcode and map on same contig \toolsname{ema} assign same premolecule identifier. We try to glue premolecule cluster of reads by analyze contigs graph. For all premolecule cluster with same barcode we search shortest path in contigs graph between cluster, if the length (in number of bases) of this path is shortest than a threshold we merge this cluster. 
+
+This method perform some result, but we didn't have time to finish and evaluate methods.
 
 \onlyinsubfile{
 \bibliographystyle{plainnat}
