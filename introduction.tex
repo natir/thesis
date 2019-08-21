@@ -267,33 +267,22 @@ Before third generation sequencing the maximum length of read is lower than 2 kb
     \label{intro:fig:whylongreads}
 \end{figure}
 
-Third generation read aren't larger than all repetition but larger than many repetition and they help to produce better genome assembly. Table \
+Third generation read aren't larger than all repetition but larger than many repetition and they help to produce better genome assembly. Table \ref{intro:tab:sr_lr_assembly} show improvement in term of N50 between short-read assembly and long-read assembly for some case.
 
 \begin{table}[]
     \centering
-    \begin{tabular}{c|c}
-         &  \\
-         & 
+    \begin{tabular}{c|lll}
+        Species & Short read N50 (bp) & Long read N50 (bp) & factor \\ \hline
+        \textit{Gorilla gorilla gorilla} & 913,458 \cite{gorilla_sr_assembly} & 23,141,960 \cite{gorilla_genome} & 25 \\
+        \textit{Schistosoma japonicum} & 176,869 \cite{s_japonicum_sr_assembly} & 1,093,989 \cite{s_japonicum_3rd_gene_improvement} & 6 \\
     \end{tabular}
-    \caption{Caption}
+    \caption{N50 scaffold of some genome assembly with short and long reads}
     \label{intro:tab:sr_lr_assembly}
 \end{table}
 
-We can take as an example the gorilla genome where N50 was increase by a factor 1000 with an pacbio assembly with Falcon \cite{gorilla_genome}.
+Recently a high quality human genome assembly (CHM13 cell line), telomere to telomere gaps less assembly, was produce with a combination of Nanopore and Pacbio reads \cite{telomere2telomere}. Author of this paper focus her effort on X chromosome, they reconstruct ~2.8 megabase centromeric satellite DNA array and closed all 29 remaining gaps in the current reference X \textit{H. sapiens} reference. Nanopore data by analysis of raw signal provide an access of DNA methylation this study confirm some previous epigenomic result observe X chromosome.
 
-\pim{Complété avec}
-
-\cite{Bresler_Tse}
-
-\pim{Ajouté un tableau de comparaison assemblage short read long read}
-
-S. japonicom \cite{s_japonicum_3rd_gene_improvement} \cite{telomer2telomer}
-
-Séquencage riz \cite{basamti_rice_assembly}
-
-Long read impacte sur le séquencage RNA
-
-Long read technology didn't perform a huge improvement on genome assembly, they have a important impact in RNA study, sequencing mRNA from begin to end help to detect new isoform and splicing structure, by sequencing without PCR long reads help to remove bias in RNA quantification. But long read sequencing error rate and and large input material requirements (compared with short-read RNA-seq) require mainy new developement \cite{review_lr_rna}. 
+Long read technology not only help to improvement genome assembly. They also have a important impact in RNA study, sequencing mRNA from begin to end help to detect new isoform and splicing structure, by sequencing without PCR long reads help to remove bias in RNA quantification. But long read sequencing error rate and and large input material requirements (compared with short-read RNA-seq) require new analysis methodology development \cite{review_lr_rna}. 
 
 \section{Assembly Trouble}
 
@@ -305,13 +294,18 @@ During my thesis I focus only on a solve of this trouble, by work before assembl
 
 Sequencing generate more and more data, and long-read sequencing technology work how to increase the throughout of sequencer. Tools around long-read assembly generate more data (overlap, assembly graph, contigs, hétérozygotie), and many times all this data isn't useful for a specific downstream analysis.
 
+For example Figure \ref{intro:fig:length_overlap_histogram} show an histogram of overlap length found by \minimap on \textit{E. coli} Nanopore dataset (acession number SRR8494940), 33.51 \% of overlap are shorter than 2000 bases. By default \miniasm ignore all overlap shorter than 2000 bases, if we only want run basic \miniasm pipeline 33 \% of this overlap can be remove by a simple filter. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{introduction/images/overlap_length.png}
+    \caption{C'est un place holder j'ai utilisé un subsampling des données d'origine les calcules sont en cours. Histogram of overlap length found by \minimap, the black line represent the \miniasm length threshold. The fasta file weight 3.1 Go, complete PAF file generate by \minimap weight XX Go, with overlap lower than 2000 bases weight XX Go.}
+    \label{intro:fig:length_overlap_histogram}
+\end{figure}
+
 Can we filter overlapping information with a positive (or not very bad) impact on assembly result, to increase speed of assembly and the impact of assembly step on disk space ?
 
 We present our solution of this problem \fpa in section \ref{section:preassembly:yacrd_fpa}, overlaper output can by pipe directly in \fpa (for Filter Pairwise Alignment), \fpa can filter overlap with some filter, length of read, length of overlap, type of overlap, read name. Some simple \fpa filter reduce the computation time of assembly without effect (or a small positif effect) on assembly, read section \ref{section:preassembly:yacrd_fpa} for more details on this tools.
-
-\pim{Complété avec} 
-
-\cite{review_bacterial_asm}
 
 \subsection{Correction work but not good enough}
 
