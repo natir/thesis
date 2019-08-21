@@ -23,7 +23,7 @@ With mainy complexe and not details her, information contains in DNA was used to
 
 To read this information we have many biochemical techniques that we group under the term Sequencing techniques will allow us to read fractions of DNA fragments more or less long and with a variable error rate.
 
-\section{Sequencing}
+\section{Sequencing} \label{section:introduction:sequencing}
 
 Sequencing technology evolve quickly since 1977\cite{sanger_sequencing}, even if it is an a posteriori reconstruction, three generations can be distinguished, based on reads property. In this section we didn't detail the biochemical methods we just focus on reads property and her impact on different bioinformatics task.
 
@@ -254,7 +254,11 @@ If bubble are large it can be harder to detect, with small bubble one version of
 
 \section{Why people use long reads}
 
-The length of read have a huge impact on assembly, before third generation sequencing the maximum length of read is lower than 2 kb (for Sanger read) or a majority of repetition in genome are larger than this length. \citeauthor{one_chromosome_one_contig} in \cite{one_chromosome_one_contig} indicate a theoretical length of read to obtain a perfect genome assembly for bacteria, read need to be upper than 7 kb, this limit not work in all practical case. If read are longer than repetition read can have a sufficient length before repetition cover all repetition and sufficient length after repetition we can solve the repetition see Figure \ref{intro:fig:whylongreads}.
+We say in Section \ref{section:introduction:sequencing} the main property of reads technology was length and error rate, the impact of error rate on read mapping and overlap search, was easy to understand, if reads contains many error it's harder to find the good mapping position and overlap.
+
+Reads length have an very important impact on assembly quality \citeauthor{Bresler_Tse} in \cite{Bresler_Tse} introduce a notion of genome assembly \textbf{feasibility}, it's possible to reconstruct the genome from a reads set with this length and this coverage. To summarize very roughly, to get a good assembly reads need bridge must of repetion, so reads must be larger than the largest repetition. This idea was extend to reads with error in \cite{feasibility_with_error} and demonstrate we need increase coverage when error rate increase.
+
+Before third generation sequencing the maximum length of read is lower than 2 kb (for Sanger read) or a majority of repetition in genome are larger than this length. \citeauthor{one_chromosome_one_contig} in \cite{one_chromosome_one_contig} indicate a theoretical length of read to obtain a perfect genome assembly for bacteria, read need to be upper than 7 kb, this limit not work in all practical case. If read are longer than repetition read can have a sufficient length before repetition cover all repetition and sufficient length after repetition we can solve the repetition see Figure \ref{intro:fig:whylongreads}.
 
 \begin{figure}[ht]
     \centering
@@ -263,13 +267,33 @@ The length of read have a huge impact on assembly, before third generation seque
     \label{intro:fig:whylongreads}
 \end{figure}
 
-Third generation read aren't larger than all repetition but larger than many repetition and they help to produce better genome assembly. We can take as an example the gorilla genome where N50 was increase by a factor 1000 with an pacbio assembly with Falcon \cite{gorilla_genome}.
+Third generation read aren't larger than all repetition but larger than many repetition and they help to produce better genome assembly. Table \
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{c|c}
+         &  \\
+         & 
+    \end{tabular}
+    \caption{Caption}
+    \label{intro:tab:sr_lr_assembly}
+\end{table}
+
+We can take as an example the gorilla genome where N50 was increase by a factor 1000 with an pacbio assembly with Falcon \cite{gorilla_genome}.
 
 \pim{Complété avec}
 
 \cite{Bresler_Tse}
 
 \pim{Ajouté un tableau de comparaison assemblage short read long read}
+
+S. japonicom \cite{s_japonicum_3rd_gene_improvement} \cite{telomer2telomer}
+
+Séquencage riz \cite{basamti_rice_assembly}
+
+Long read impacte sur le séquencage RNA
+
+Long read technology didn't perform a huge improvement on genome assembly, they have a important impact in RNA study, sequencing mRNA from begin to end help to detect new isoform and splicing structure, by sequencing without PCR long reads help to remove bias in RNA quantification. But long read sequencing error rate and and large input material requirements (compared with short-read RNA-seq) require mainy new developement \cite{review_lr_rna}. 
 
 \section{Assembly Trouble}
 
