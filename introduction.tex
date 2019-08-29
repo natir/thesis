@@ -128,7 +128,7 @@ NG50 was same thing of N50, but the total sum of contigs length was replace by t
 
 N50 family metrics wasn't perfect but they help to represent the contig length distribution, and compare result of different assembly tools on same dataset. N50 was usefull to analyse assembly quality without any external information.
 
-By adding other information we can evaluate assembly not only on size of contigs. \toolsname{BUSCO}\cite{busco} evaluate the assembly completeness with presence or absence of core genes. By mapping contigs against reference genome or close reference genome \toolsname{Quast} compute many metrics like number of misassembly, NGA50, identity level of contigs, …. 
+By adding other information we can evaluate assembly not only on size of contigs. \toolsname{BUSCO}\cite{busco} evaluate the assembly completeness with presence or absence of core genes. By mapping contigs against reference genome or close reference genome \toolsname{Quast}\cite{quast} compute many metrics like number of misassembly, NGA50, identity level of contigs, …. 
 
 Some other tools and technique exist and was usefull, some of them was present in more details \cite{seq_assembly_demystified}
 
@@ -165,7 +165,7 @@ Figure \ref{intro:fig:greedy:repetition} present a case where reads $R_0$ $R_1$ 
     \label{intro:fig:greedy:repetition}
 \end{figure}
 
-\subsection{Overlap Layout Consensus}
+\subsection{Overlap Layout Consensus} \label{intro:subsec:OLC}
 
 An alternative of \textbf{Greedy} approach was Overlap Graph Consensus (\OLC). We can found a first \OLC definition in \cite{OLC_myers} in 1995, a probably most popular assembly pipeline based on OLC was Celera \cite{celera_first, celera_second}. This approch was based on a graph where read was a node and we build a edge between node if reads share an overlap. Figure \ref{intro:fig:olc:graph}, present the \OLC corresponding to ovelap present in \ref{intro:fig:greedy:repetition}.
 
@@ -211,7 +211,7 @@ Moreover the overlap between word in \DBG must exact (without error) and with a 
 
 Graph structure was usefull to have complete view on all information provide by reads, but having too much information can create problems, slow down the assembly tools and increase their costs in memory or at worst lead to misassembly or to unnecessary fragmentation of the assembly.
 
-\subsubsection{Transitive edge}
+\subsubsection{Transitive edge}  \label{intro:subsubsec:transitive_edge}
 
 In Figure \ref{intro:fig:olc:graph} you can notice edge from $R_1$ to read $R_3$, this overlap was exact we can found an overlap between $R_1$ and $R_3$. But this edge didn't provides a new information we know $R_1$ is before $R_3$, this edge was call a transitive edge. More formally we can define a transitive edge, in a directed graph if we have this set of edge $(a, b)$ $(b, c)$ and $(a, c)$ the edge $(a, c)$ is transitive.
 
@@ -219,11 +219,11 @@ In Figure \ref{intro:fig:olc:graph} you can notice edge from $R_1$ to read $R_3$
 
 With string graph we just need follow simple path (path were all nodes have just one successor), to build assembly without misassembly.
 
-\subsubsection{Contained reads}
+\subsubsection{Contained reads} \label{intro:subsubsec:contained_reads}
 
 In third generation technology, the crazy copyist monk provide fragment with different size and choose the begin of fragment randomly, so it's possible to have a read is contained in another one. All information (kmer or overlap with other reads) in contained reads was present in the container read for assembly task we can remove contained read, and save memory and time.
 
-\subsubsection{Bubble and tips}
+\subsubsection{Bubble and tips} \label{intro:subsubsec:bubble_tips}
 
 \OLC and \DBG was based on graph, the meaning of nodes and edges are different in this type of graph. But we can found same structure in them, bubbles and tips.
 
@@ -294,12 +294,12 @@ During my thesis I focus only on a solve of this trouble, by work before assembl
 
 Sequencing generate more and more data, and long-read sequencing technology work how to increase the throughout of sequencer. Tools around long-read assembly generate more data (overlap, assembly graph, contigs, hétérozygotie), and many times all this data isn't useful for a specific downstream analysis.
 
-For example Figure \ref{intro:fig:length_overlap_histogram} show an histogram of overlap length found by \minimap on \textit{E. coli} Nanopore dataset (acession number SRR8494940), 33.51 \% of overlap are shorter than 2000 bases. By default \miniasm ignore all overlap shorter than 2000 bases, if we only want run basic \miniasm pipeline 33 \% of this overlap can be remove by a simple filter. 
+For example Figure \ref{intro:fig:length_overlap_histogram} show an histogram of overlap length found by \minimap on \textit{E. coli} Nanopore dataset (acession number SRR8494940), 33 \% of overlap are shorter than 2000 bases. By default \miniasm ignore all overlap shorter than 2000 bases, if we only want run basic \miniasm pipeline 33 \% of this overlap isn't used but it's write on the disk.
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{introduction/images/overlap_length.png}
-    \caption{C'est un place holder j'ai utilisé un subsampling des données d'origine les calcules sont en cours. Histogram of overlap length found by \minimap, the black line represent the \miniasm length threshold. The fasta file weight 3.1 Go, complete PAF file generate by \minimap weight XX Go, with overlap lower than 2000 bases weight XX Go.}
+    \includegraphics[width=\textwidth]{introduction/images/overlap_length.pdf}
+    \caption{Histogram of overlap length found by \minimap, the black line represent the \miniasm length threshold. The fasta file weight 3.1 Go, complete PAF file generate by \minimap weight 5.5 Go, without overlap lower than 2000 bases weight was 3.7 Go.}
     \label{intro:fig:length_overlap_histogram}
 \end{figure}
 

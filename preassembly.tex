@@ -7,7 +7,7 @@
 % Assembly are based on :
 % - reads, reads contains error, this error isn't rept
 % - overlaps
-Assembly are based on reads if your reads are bad your assembly are bad you can't reconstruct the book if the crazy monk give to you only a sequence of letter, with an half of them is an error. Correction of read with a mix of sequencing technology or not, can help you to get better read but actualy tools have an important cost in term of computation time and memory usage, moreover it's hard to differentiate natural mutation to sequencing error and sometimes natural interesting mutation was consider as error and corrected.
+Assembly are based on reads if your reads are bad your assembly are bad you can't reconstruct the book if the crazy monk give to you only a sequence of letter, with an half of them is an error. Correction of read with a mix of sequencing technology or not, can help you to get better read but actually tools have an important cost in term of computation time and memory usage, moreover it's hard to differentiate natural mutation to sequencing error and sometimes natural interesting mutation was consider as error and corrected.
 
 With long-read, reads contain many error and these errors are not uniformly distributed in read along the read \cite{blog_post_error_repartition}, these errors make it more difficult to search overlaps between reads and current heuristics can further improve their results on real data \cite{ovl_bench}.
 And in overlap found by this tools not all of them are useful to each downstream analysis, for example \miniasm keep only end to end overlap and \canu two longest end to end overlap for each read (see \ref{chapter:sota} for more details).
@@ -45,9 +45,13 @@ In this chapter we present first \yacrd and \fpa with publication we send to Oxf
 
 This work begin as an extension of a \citeauthor{bench_ovl} publications \cite{bench_ovl}. Author creaete a benchmark of overlapping tools, they compare \mhap, \minimap, \toolsname{Blasr}\cite{blasr}, \toolsname{Daligner}\cite{daligner} and \toolsname{Graphmap}\cite{graphmap}. This tools was compare on computation time memory usage, sensibility and precision on simulated and real dataset.
 
-An interesting result was a lost of precission and recall between synthetic and real dataset until 25 \% of sensibility for \toolsname{Blasr} on pacbio data. This tools miss some overlap but they miss same overlap ? To answer to this question we write a blog post with some set analysis.
+An interesting result was a lost of precision and recall between synthetic and real dataset until 25 \% of sensibility for \toolsname{Blasr} on pacbio data. This tools miss some overlap but they miss same overlap ? To answer to this question we write a blog post with some set analysis.
 
 \subfile{paper/blog_post.tex}
+
+\section{Conclusion}
+
+
 
 
 \onlyinsubfile{
