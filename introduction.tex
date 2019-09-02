@@ -4,13 +4,13 @@
 
 \chapter{Introduction}\label{chapter:introduction}
 
-"Only what is evolving is alive" \footnote{Pierre Kerner translation from french, original quote "N'est vivant que ce qui évolue"} this definition of life, like many others, is incomplete and we can probably found some corner case. This definition is based on the definition of evolution, we can try to define evolution of a thing, as the change on the thing to optimize her capability to conserve her self. To do that a thing need a memory.
+"Only what is evolving is alive" \footnote{Pierre Kerner translation from french, original quote "N'est vivant que ce qui évolue"} this definition of life, like many others, is incomplete and we can probably find some corner case. This definition is based on the definition of evolution. We can try to define the evolution of a thing as the change on the thing to optimize its capability to conserve itself. To do that a thing need a memory.
 
-In majority of actual know life the physical support of this memory was DNA for DeoxyriboNucleic Acid. DNA is a molecule compose by two strain, each strain was composed by phosphate backbone, along of these backbone we have sugar linked to a nucleic acid. We have four type on nucleic acid: Adenine (A), Thymine (T), Cytosine (C) and Guanine (G), Figure \ref{intro:fig:dna_rna_pres} show 3d structure of DNA.
+In the majority of current know life, the physical support of this memory was DNA for DeoxyriboNucleic Acid. DNA is a molecule composed of two strains. Each strain is composed of a phosphate backbone. Along these backbones, we have a sugar linked to a nucleic acid. We have four types of nucleic acid: Adenine (A), Thymine (T), Cytosine (C) and Guanine (G), Figure \ref{intro:fig:dna_rna_pres} shows the 3d structure of DNA.
 
-The two strands of DNA are linked by their nucleic acid, with some rules in front of an A we will always have a T in front of a C we will always have a G and vice versa, a DNA strain was a complementary of the other. But we cannot add a new DNA base to each DNA strain at the same end, for some of chemical properties that we will not detail here, we say DNA was composed by two anti-parallel strain, by convention we represent DNA always in the same orientation.
+The two strands of DNA are linked by their nucleic acids, with some rules. In front of an, A we will always have a T, in front of a C we will always have a G and vice versa. A DNA strain is a complementary of the other. But we cannot add a new DNA base to each DNA strain at the same end, for some of chemical properties that we will not detail here. We say DNA is composed of two anti-parallel strains. By convention we always represent DNA in the same orientation.
 
-In bioinformatics we generally represent a DNA strain by string in a four letter alphabet (A, C, T, G) the two property describe earlier allow us to reconstruct the composition of one strand from the other by apply complementary (replace A by T, T by A, C by G and G by C) and reverse order.
+In bioinformatics, we generally represent a DNA strain by a string an a four letter alphabet (A, C, T, G). The two property describe earlier allow us to reconstruct the composition of one strand from the other by  complementary (replace A by T, T by A, C by G and G by C) and reverse order.
 
 \begin{figure}[ht]
     \centering
@@ -19,9 +19,9 @@ In bioinformatics we generally represent a DNA strain by string in a four letter
     \label{intro:fig:dna_rna_pres}
 \end{figure}
 
-With mainy complexe and not details her, information contains in DNA was used to build essential molecules that keep the organism alive, reproduce it. This information is therefore the basis of the organism's functioning, if this information is destroyed or modified, the living organism will behave differently or died. So knowing and understanding the succession of DNA bases and therefore (but not the one) an effective entry point for analyzing many biological phenomena, disease, evolution,…
+With mainy complexe and not details her, information contained in DNA is used to build essential molecules that keep the organism alive, reproduce it. This information is therefore the basis of the organism's functioning. If this information is destroyed or modified, the living organism will behave differently or die. So, knowing and understanding the succession of DNA bases is therefore (but not the only one) an effective entry point for analyzing many biological phenomena, disease, evolution,…
 
-To read this information we have many biochemical techniques that we group under the term Sequencing techniques will allow us to read fractions of DNA fragments more or less long and with a variable error rate.
+To read this information, we have many biochemical techniques that we group under the term Sequencing techniques. There technics will allow us to read fractions of DNA fragments more or less long and with a variable error rate.
 
 \section{Sequencing} \label{section:introduction:sequencing}
 
@@ -50,40 +50,40 @@ Second generation increase the throughput and reduce the cost per base, by reduc
 The third generation has greatly increased the size of the reads but also the error rate while maintaining a descent throughput. Error in third generation are mostly insertion deletion, sequencer didn't read a part of sequence or generate random base not present in original sequence. Table \ref{intro:tab:technology_property} present read length and error rate on many sequencing technology.
 
 DNA sequencing was very useful tools for many analysis, and in some cases is mandatory to be able to understand biological mechanisms. 
-In important majority of case down stream analysis required:
+In the most majority of case downstream analysis requires:
 \begin{itemize}
-    \item mapping against a reference genome, found a subsequence in reference genome similar to the read
-    \item found overlap between reads (or other set of reads), found similar sequence between reads 
+    \item mapping against a reference genome, find a subsequence in reference genome similar to the read
+    \item find overlaps between reads (or other set of reads), find similar sequences between reads 
 \end{itemize}
  
-\subsection{How to found similar region between sequence} 
+\subsection{How to find similar regions between sequence} 
 
-When two sequence share a common subsequence we say they overlap or one of them map in the other. \ref{intro:fig:overlap:perfect}. Yet it possible for sequence to share a common subsequence just because alphabet have a fixed size, but the probability of this event decrease when the length of common subsequence increase. Intuitively, this probability gets smaller as common subsequence get longer. In perfect word, the only criteria to evaluate whether if a common subsequence is "real" or not should be the length of this subsequence. However the number of errors in reads sequencing broke this paradigm and force us to build yet an important factor do consider is that reads contain errors \ref{intro:fig:overlap:erroneous}.
+When two sequences share a common subsequence, we say that they overlap or that one of them maps on the other see \ref{intro:fig:overlap:perfect}. Yet, it possible for sequences to share a common subsequence just because the alphabet has a fixed size, but the probability of this event decreases when the length of the common subsequence increases. Intuitively, this probability gets smaller as common subsequence gets longer. In perfect word, the only criteria to evaluate whether a common subsequence is "real" or not should be the length of this subsequence. However the number of errors in reads sequencing breake this paradigm and forces us to build yet an important factor do consider is that reads contain errors \ref{intro:fig:overlap:erroneous}.
 
 \begin{figure}[ht]
     \centering
-    \subfloat[ht][$R_1$ share 7 bases at its end with the beginning of $R_2$, without any error]{
+    \subfloat[ht][$R_1$ shares 7 bases at its end with the beginning of $R_2$, without any error]{
         \subfile{introduction/tikz/perfect_overlap.tex}
         \label{intro:fig:overlap:perfect}
     }
-    \subfloat[ht][$R_1$ share 5 bases at its end with $R_3$, with one substitution and one deletion]{
+    \subfloat[ht][$R_1$ shares 5 bases at its end with $R_3$, with one substitution and one deletion]{
         \subfile{introduction/tikz/erroneous_overlap.tex}
         \label{intro:fig:overlap:erroneous}
     }
-    \caption{When reads didn't contains error overlap look like (a) but sequencing technology make error and overlap present in (b) can be a real overlap}
+    \caption{When reads don't contain error, overlaps look like (a), but sequencing technologies make errors and the overlap present in (b) can be a real overlap.}
     \label{intro:fig:overlap}
 \end{figure}
 
-In this document we distinguish two task in similarity search between two sequence:
+In this document we distinguish two tasks in similarity search between two sequences:
 \begin{itemize}
-    \item mapping: when we try to found the position of a reads in larger sequence, reference genome, contigs
-    \item overlapping: when we try to found wich reads to share a common subsequence with another reads. 
+    \item mapping: when we try to find the position of a read in a larger sequence, reference genome, contigs
+    \item overlapping: when we try to find wich reads share a common subsequence with other reads. 
 \end{itemize}
-When we try to found common subsequence in the same dataset we use term overlapping, when we try to found common subsequnece between different dataset, different sequencing generation or between assembly and reads used for this assembly, we use mapping.
+When we try to find common subsequences in the same dataset, we use term overlapping. When we try to find common subsequences between different datasets, different sequencing generations or between an assembly and the reads used for this assembly, we use mapping.
 
-Search of similarity between two or more DNA sequence have many link to plain text search.
+Search of similarity between two or more DNA sequences has many links to plain text search.
 
-\paragraph{Seed and extend} was an approch use by many tools to perform found similar sequence between a target (for exemple a genome reference) and a query (for exemple a read in reads set), tools create an index of the target, this index need to answer to a simple question this subsequence was present in target and at which position. With this index and for each reads (called query) tools take one or many substring of query and ask index where this substring was present in reference. Tools use this exact match as anchor to run a \citeauthor{smith_waterman}\cite{smith_waterman} dynamic programming alignment between query and target, if the alignment score between is sufficient position and mapping was report.
+\paragraph{Seed and extend} to an approch used by many tools to find similar sequences between a target (for exemple a genome reference) and a query (for exemple a read in reads set). Tools create an index of the target, this index need to answer to a simple question this subsequence was present in target and at which position. With this index and for each reads (called query) tools take one or many substring of query and ask index where this substring was present in reference. Tools use this exact match as anchor to run a \citeauthor{smith_waterman}\cite{smith_waterman} dynamic programming alignment between query and target, if the alignment score between is sufficient position and mapping was report.
 
 Main tools for mapping and overlapping use seed-and-extend strategy. We can cite \toolsname{Blast} \cite{blast_one, blast_two}, \toolsname{BWA} \cite{bwa_mem}, \toolsname{blasr} \cite{blasr}. Implementation details of index, size and number of anchor change for example \toolsname{BWA}, \toolsname{blasr} use an FM-index \cite{fm-index} to perform anchor search. An is a compressed full-text sub string index based on idea we can use Burrows-Wheeler transform of text as a suffix array to perform an exact text search. 
 
@@ -105,14 +105,14 @@ The assembly task can be summary has a ordering problem we try to put the text f
 
 Assembly community like any other scientific community create her own slang, to designate object they manipulate.
 
-We see \textbf{reads} designate a fragment of DNA produce by sequencer.
+We see \textbf{reads} designate a fragment of DNA produced by sequencer.
 
-A \textbf{contig} designate a sequence of DNA produce by an assembly tools, exact definition of what is a \textbf{contig} change between each assembly tools. We can see in some publication the term \textbf{unitig} the only thing common in \textbf{unitig} definition was \textbf{contig} was builded from \textbf{unitig}.
+A \textbf{contig} designates a sequence of DNA produced by an assembly tools. Exact definition of what is a \textbf{contig} changes between each assembly tool. We can see in some publication the term \textbf{unitig}. The only thing common in \textbf{unitig} definition was \textbf{contig} was builded from \textbf{unitig}.
 
-A \textbf{scaffold} designate an ordering of contig many time we can't reconstruct each chromosome in one contig, we describe some reason of this fragmentation later. But with external information, restriction card, linked read, target sequencing, we can order contig and determinate approximately the number of base between each of them and become near to the true genome easily.
+A \textbf{scaffold} designates an ordering of contigs many times we can't reconstruct each chromosome in one contig. We describe some reasons of this fragmentation later. But with external informations, restriction card, linked read, target sequencing, we can order contigs and determinate approximately the number of bases between each of them and become near to the real genome easily.
 
-To compare and evaluate, assembly some different metrics was develop, the most common metrics used is N50.
-To compute N50, take a list of your contigs length, sort them, when the cumulative sum of contigs is larger than the sum of all contigs length the last added contigs length is the N50 value. For example $L$ is the sorted list of contigs length: 
+To compare and evaluate assembly, different metrics whe developed. The most common metric used is N50.
+To compute N50, take a list of your contigs length and sort them. When the cumulative sum of contigs is larger than the sum of all contigs, the length the last added contig is the N50 value. For example, $L$ is the sorted list of contigs length: 
 \begin{equation}
 \begin{aligned}
 L &= \{20, 30, 40, 50, 70, 80\} \\
@@ -122,19 +122,19 @@ L_{sum} &= \sum\limits_{i=0}^{|L|} L_i = 290 \\
 \end{aligned}
 \end{equation}
 
-70 was the last length add in cumulative length before this cumulative length are upper than the half of total sum of assembly. N25, N75 or NX correspond at same metrics than N50 for 25\%, 75\% or X\% of total length of contig. L50 was the position of the N50 contigs in $L$.
+70 was the last length added in cumulative length before this cumulative length is larger than half of the total sum of assembly. N25, N75 or NX correspond to the same metrics as N50 for 25\%, 75\%, or X\% of total length of contigs. L50 is the position of the N50 contig in $L$.
 
-NG50 was same thing of N50, but the total sum of contigs length was replace by the genome length. NGA50 was same as NG50 but we the contig length was replace by the length of contig map against reference genome. We can cite U50 as another metrics similar metrics where overlapping region between contigs was ignored \cite{U50}.
+NG50 is the same thing as N50, but the total sum of contigs length is replaced by the genome length. NGA50 is the same as NG50, but the contigs length is replaced by the length of contig that map against the reference genome. We can cite U50 as another metric similar to N50 where overlapping region between contigs was ignored \cite{U50}.
 
-N50 family metrics wasn't perfect but they help to represent the contig length distribution, and compare result of different assembly tools on same dataset. N50 was usefull to analyse assembly quality without any external information.
+N50 family metrics are not perfect, but they help to represent the contigs length distribution, and to compare the results of different assembly tools on the same dataset. N50 is useful to analyze assembly quality without any external information.
 
-By adding other information we can evaluate assembly not only on size of contigs. \toolsname{BUSCO}\cite{busco} evaluate the assembly completeness with presence or absence of core genes. By mapping contigs against reference genome or close reference genome \toolsname{Quast}\cite{quast} compute many metrics like number of misassembly, NGA50, identity level of contigs, …. 
+By adding other information, we can evaluate assembly not only on size of contigs. \toolsname{BUSCO}\cite{busco} evaluates the assembly completeness with the presence or the absence of core genes. By mapping contigs against reference genome or close reference genome, \toolsname{Quast}\cite{quast} computes many metrics like the number of misassembly, NGA50, the identity level of contigs, …. 
 
-Some other tools and technique exist and was usefull, some of them was present in more details \cite{seq_assembly_demystified}
+Some other tools and techniques exist and is usefull. Some of them was present in more details publication \cite{seq_assembly_demystified}
 
 \subsection{\textit{Greedy} assembly algorithm}
 
-The \textbf{Greedy} assembly algorithm are the first type of assembly tools, used on Sanger data. For exemple GigAssembler was used to assembly the first human genome data \cite{GigAssembler}. Algorithm \ref{intro:algo:greedy} present global idea how \textbf{Greedy} algorithm work.
+The \textbf{Greedy} assembly algorithm is the first type of assembly tools, used on Sanger data. For example, GigAssembler was used to assemble the first human genome data \cite{GigAssembler}. Algorithm \ref{intro:algo:greedy} present the global idea of how the \textbf{Greedy} algorithm work.
 
 The BEST\_OVERLAP function is the main part of algorithm the best overlap is the larger one or the overlap with less error, each algorithm have her own choose method.
 
@@ -167,30 +167,30 @@ Figure \ref{intro:fig:greedy:repetition} present a case where reads $R_0$ $R_1$ 
 
 \subsection{Overlap Layout Consensus} \label{intro:subsec:OLC}
 
-An alternative of \textbf{Greedy} approach was Overlap Graph Consensus (\OLC). We can found a first \OLC definition in \cite{OLC_myers} in 1995, a probably most popular assembly pipeline based on OLC was Celera \cite{celera_first, celera_second}. This approch was based on a graph where read was a node and we build a edge between node if reads share an overlap. Figure \ref{intro:fig:olc:graph}, present the \OLC corresponding to ovelap present in \ref{intro:fig:greedy:repetition}.
+An alternative to the \textbf{Greedy} approach is the Overlap Graph Consensus (\OLC). We can find a first \OLC definition in \cite{OLC_myers} in 1995. The a probably most popular assembly pipeline based on OLC is Celera \cite{celera_first, celera_second}. This approch is based on a graph where a read is a node and we build an edge between nodes if reads share an overlap. Figure \ref{intro:fig:olc:graph}, present the \OLC corresponding to ovelap present in \ref{intro:fig:greedy:repetition}.
 
-We can see this graph like an ordering of piece of book provide by crazy copyist monk, an edge indicate this piece of text was before this piece of text in the original book.
+We can see this graph like an ordering of pieces of book provided by a crazy copyist monk. An edge indicates that piece of text was before this piece of text in the original book.
 
-The repetition create a fork in \OLC, a node with two successor, it's easy to detect this case in graph and stop this contig construction. The result of assembly of this graph was 3 sequences with white node, green node and red node. The assembly was more fragmented than \textit{Greedy} algorithm but the assembly didn't contains misassembly.
+The repetition creates a fork in \OLC, a node with two successor. It's easy to detect this case in the graph and stop this contig construction. The assembly result of this graph is 3 sequences with white node, green node and red node. The assembly is more fragmented than with the \textit{Greedy} algorithm but the assembly does not contain any misassembly.
 
 \begin{figure}[ht]
     \centering 
     \subfile{introduction/tikz/overlap_graph.tex}
-    \caption{Each node are a read and an edge was build between two read if they share an overlap.}
+    \caption{Each node is a read and an edge is built between two read if they share an overlap.}
     \label{intro:fig:olc:graph}
 \end{figure}
 
-By analyzing the graph we will be able to detect the paths with out branching node in the graph and reconstruct the corresponding sequence by merging the sequences present in the graph.
+By analyzing the graph we will be able to detect the paths without branching node in the graph, and reconstruct the corresponding sequence by merging the sequences present in the graph.
 
-\OLC based tools allow to avoid misassembly but the search for overlap between reads is still expensive in time. The graph construction consumes a lot of memory, and more cleaning steps and graph analysis are expensive in computation time compared to a \textbf{Greedy} approach. 
+\OLC based tools allow to avoid misassemblies but the search for overlap between reads is still expensive in time. The graph construction consumes a lot of memory, and more cleaning steps and graph analysis are expensive in computation time compared to a \textbf{Greedy} approach. 
 
 \subsection{DeBruijn Graph}
 
-\DBG tools try to speed up assembly by simplify overlap search step, this method was propose in \toolsname{EULER} \cite{eulerian_approach}.
+\DBG tools try to speed up assembly by simplify the overlap search step. This method was proposed in \toolsname{EULER} \cite{eulerian_approach}.
 
-This approach was based on DeBruijn Graph (or \DBG), for an alphabet with $n$ symbol a \DBG represent each word of length $k$ as node and build a directed edges if node share $k - 1$ symbol at extremity, for example in Figure \ref{intro:fig:dbg:graph} node \texttt{ATCG} and \texttt{TCGG} share \texttt{TCG}. A word of length $k$ was called a \kmer.
+This approach is based on a DeBruijn Graph (or \DBG). For an alphabet with $n$ symbols a \DBG represents each word of length $k$ as node and builds a directed edge if node share $k - 1$ symbol at them extremities. For example, in Figure \ref{intro:fig:dbg:graph}, node \texttt{ATCG} and \texttt{TCGG} share \texttt{TCG}. A word of length $k$ is called a \kmer.
 
-In assembly problem $n = 4$ (${A, C, T, G}$), and we can choose a value of k between 1 and the length of read. In practice this size is often smaller than the size of a reads is the choice of the right values of k, depending on the use that we will have of the \DBG graph could be the subject of a completed thesis.
+In assembly problems, $n = 4$ (${A, C, T, G}$), and we can choose a value of k between 1 and the read length. In practice, this size is often smaller than the size of a read the choice of the right values of k, depending on the use that we will have of the \DBG could be the subject of a complete thesis.
 
 To build the \DBG we choose a value of $k$ and we add all \kmer present in reads in the \DBG. The \DBG used in assembly contains only \kmer present in dataset not all possible \kmer, and edge can be only edge present in dataset or all possible edges.
 

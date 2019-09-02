@@ -47,13 +47,11 @@ In \mhap term was \kmer and document was read, this technique permit to reduce t
 
 If two reads have a small mash distance \mhap compare the position of each \kmer in reads to determinate the overlap position.
 
-The size of \kmer was very important to if k is too large many \kmer contains error the size of intersection was reduce and \mhap can miss overlap. Moreover size of sketch have a huge impact if it's to small the read was sub-sample if it's to large compute mash distance take more time, but with long-reads dataset the length of reads can be very different choose a good sketch size for this type of data isn't easy.
-
-\pim{Rajoute comment est choisie la longueur des kmers}
+The size of \kmer was very important to if k is too large many \kmer contains error the size of intersection was reduce and \mhap can miss overlap. Moreover size of sketch have a huge impact if it's to small the read was sub-sample if it's to large compute mash distance take more time, but with long-reads dataset the length of reads can be very different choose a good sketch size for this type of data isn't easy. To found optimal value of this two variable authors of \mhap perform many empirical test.
 
 \subsection{Correction}
 
-In \canu correction was performed by a part of \toolsname{FALCON} \cite{falcon}, \toolsname{falcon\_sense}. \jsv{On en déduit que FALCON précède Canu, ce serait bien de dire en un mot pourquoi tu ne décris pas FALCON} In this section we didn't present in details how \toolsname{falcon\_sense} work but only the main idea.
+In \canu correction was performed by a part of \toolsname{FALCON} \cite{falcon}, \toolsname{falcon\_sense}. The development of \toolsname{FALCON} and \canu where develop simultaneously, we choose to describe \canu in detail in place of \toolsname{FALCON} because we work principaly with \canu. In this section we didn't present in details how \toolsname{falcon\_sense} work but only the main idea.
 
 Some correction tools as \toolsname{falcon\_sense} use a Partial Order Alignment (POA) (introduce in \cite{poa}) to perform long read correction. For each read \texttt{$R_1$} we recruit all read share an overlap with him, and perform an exact alignment with him. This alignment was use to build a POA graph, in POA graph each base was a node and a direct edge was create between two base if the first base was before the second one in an alignment. If an edge was present in two alignment her weight was increment. After all alignment was add in the POA graph, we search weighed path in this graph, and follow to reconstruct the corrected sequence. An example of POA graph construction was present in figure \ref{sota:fig:canu:correction}
 
@@ -182,9 +180,9 @@ During the \abreviation{ABG} construction \abruijn store wich read generate wich
 
 \abruijn can be roughly resume as mix of all assembly strategy, use \DBG to found overlap between read, build contigs by extension like \textit{greedy} methode but use \OLC to check they aren't integrate a repetition and a potential missassembly in contigs.
 
-\flye was build on top of \abruijn, after \abruijn assembly \flye search self alignment in assembly. If extremity of contig are similar they are tag as repetition. \flye build a repetition graph, where repetition extremity as node and a edge was build when to repetition extremity was link in a contig. \flye use coverage information to take a clue on contig succession over untangle repetition. By analysis the topology of repetition graph \flye like \hinge can found a uniq traversal path to explain all repetition and found the genomic order of contig.
+\flye was build on top of \abruijn, after \abruijn assembly \flye search self alignment in assembly. If extremity of contig are similar they are tag as repetition. \flye build a repetition graph, where repetition extremity as node and a edge was build when to repetition extremity was link in a contig. \flye use coverage information to take a clue on contig succession over untangle repetition. By analysis the topology of repetition graph \flye like \hinge\cite{hinge} can found a uniq traversal path to explain all repetition and found the genomic order of contig.
 
-\jsv{citer hinge. hinge n'est pas décrit, sauf dans le papier, y faire référence. D'autre part est-ce le même graphe de répétitions ? Sinon, il est inutile de citer hinge ici.} \pim{Hinge detecete les répétition dans le graph et les represente dans le BOG grace au fameuse hinge, alors que flye le fais en cherchant des similarité entre les contigs de \abruijn du coup c'est un peut différent mais l'idée de cherché le chemins hamiltonien est la même, du coup je sais pas.}
+\jsv{citer hinge. hinge n'est  pas décrit, sauf dans le papier, y faire référence. D'autre part est-ce le même graphe de répétitions ? Sinon, il est inutile de citer hinge ici.} \pim{Hinge detecete les répétition dans le graph et les represente dans le BOG grace au fameuse hinge, alors que flye le fais en cherchant des similarité entre les contigs de \abruijn du coup c'est un peut différent mais l'idée de cherché le chemins hamiltonien est la même, du coup je sais pas.}
 
 \subsection{\wtdbg}
 
@@ -235,13 +233,16 @@ To perform assembly \shasta create a marker graph, it's something similar to \DB
 
 Long read assembly was an active field of search many tools was create each year, and long read and long read assembly tools was used to improve genome and build draft genome.
 
-\jsv{il est nécessaire ici de synthétiser les idées des différents algos avant de dire qu'il reste des choses à faire}
+To perform overlap detection a majority of tools use k-mer, to found reads with an high similarity and avoid all-versus-all overlapping search. To further reduce the space search some tools filtering based on minimizing, we keep kmer with the lowest score, this score can be based on information contains in dataset or be determinate by an arbitrary function. The choose of k-mer size, filtering method, minimizing function, can have many impact on result of each tools. 
 
-But some challenge need to be address, many assembly step have important cost in computation time and memory usage \jsv{c'est justement une remarque que je e me faisais en lisant, à aucun moment tu ne discutes du temps pris pour assembler un génome ou bien de la mémoire nécessaire, que ce soit du temps/mémoire réel ou de la complexité algo, je pense crucial que tu abordes cette question, avec plus de détails que tu ne le fais dans la phrase suivante}. For exemple get an overlap search with high precision and recall and without excessive cost in computation time and memory usage \cite{bench_ovl}.
+The \OLC approach has proven its effectiveness in assembling third generation reads. Several modifications have been made to support these new reads but efforts are mainly focused on reducing the computation time of memory usage. This modification lead to hybrid \OLC algorithm with \DBG and Greedy, (cf \flye and \wtdbg) idea. But the step this take the most time and memory isn't the graph construction and contig construction but search of overlap and the correction.
+
+Isn't only the challenge need to be address, many assembly step have important cost in computation time and memory usage. For exemple get an overlap search with high precision and recall and without excessive cost in computation time and memory usage \cite{bench_ovl}.
 
 The only one assembly they try to take in account heterozygotie was \toolsname{FALCON}, and in future \shasta, make difference between an sequencing error and a natural variant or heterozygotie. Get heterozygotie and variant phased or genome graph after assembly was interesting. But tools to extract all this information from read didn't exist yet
 
-\jsv{si tu conclues ton chapitre comme cela alors le lecteur pense que les chapitres suivants vont essayer de présenter des méthodes plus efficaces et de traiter de l'hétérozygtie, ce qui n'est pas tout à fait le cas. Je pense qu'il faut terminer avec ton point de vue concernant de nouvelles méthodes : pas nécessaire obligatoirement de créer de nouvelles choses mais aller vers du raffinement de résultats existants. Appuyer sur l'importance de la prise en compte des "bons" overlap pour assembler.}
+Another step of assembly improvement was increase the contiguity, assembly tools by reduce the information to reduce computation time and memory usage can have an effect on assembly quality. Correction of long-read can by trimming unsuffisent covered data can increase the size of coverage gap.
+By come back to all read information or use overlap found by another tools, help to solve assembly trouble, create by heuristic in assembly and correction tools. The next chapter are focus on this points.
 
 
 \onlyinsubfile{
