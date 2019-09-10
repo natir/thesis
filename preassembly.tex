@@ -14,7 +14,6 @@ And in overlap found by this tools not all of them are useful to each downstream
 
 Our paper "\yacrd and \fpa: upstream tools for long-read genome assembly" focus on two tools \yacrd (for Yet Another Chimeric Read Detector) and \fpa (for Filter Pairwise Alignment). \yacrd focus on detection and elimination of very poor quality region, \fpa focus on filtering of overlap.
 
-
 Have better read and no unnecessary overlap can help to produce faster better assembly but if overlapping tools mis an important overlap your assembly can be fragmented.
 In \cite{ovl_bench} \citeauthor{ovl_bench} compare state of the art of overlapper on simulated dataset and on real dataset, a drop in the accuracy and recall of these algorithms can be observed between real and simulated data \ref{preassembly:tab:ovl_result}.
 
@@ -33,7 +32,6 @@ In \cite{ovl_bench} \citeauthor{ovl_bench} compare state of the art of overlappe
 In the blog post "State-of-the-art long reads overlapper-compare" \footnote{\url{https://blog.pierre.marijon.fr/long-reads-overlapper-compare/}} we take same data as \cite{ovl_bench} but we didn't search if overlapper found good and wrong overlap we search if they found the same overlap. There were differences large enough to justify the idea of creating an overlap reconciler a prototype was created by a master student. 
 This blog post was present as poster during JOBIM (Journée Ouverte de Bioinformatique \& Mathematique) 2018.
 
-
 In this chapter we present first \yacrd and \fpa with publication we send to Oxford Bioinformatics journals, and our work on Overlapping consenus.
 
 
@@ -51,7 +49,7 @@ An interesting result was a lost of precision and recall between synthetic and r
 
 \section{Conclusion}
 
-
+\yacrd and \fpa have an important impact on assembly 
 
 
 \onlyinsubfile{

@@ -9,7 +9,7 @@ Originaly publish in: Oxford Bioinformatics doi: \href{https://doi.org/10.1101/6
 Author: Pierre Marijon\, Rayan Chikhi\, and Jean-St\'ephane Varr\'e\
 
 
-\section{Abstract}
+\subsection{Abstract}
 
 \textbf{Motivation:} Genome assembly is increasingly performed on long, uncorrected reads. Assembly quality may be degraded due to unfiltered chimeric reads; also, the storage of all read overlaps can take up to terabytes of disk space. 
 \textbf{Results:} We introduce two tools, \yacrd and \fpa, to respectively perform chimera removal/read scrubbing, and filter out spurious overlaps. We show that \yacrd results in higher-quality assemblies and is two orders of magnitude faster than the best available alternative.\\
@@ -22,7 +22,7 @@ This work was supported by Inria and the INCEPTION project (PIA/ANR-16-CONV-0005
 
 
 
-\section{Introduction}
+\subsection{Introduction}
 
 Third-generation DNA sequencing (PacBio, Oxford Nanopore) is increasingly becoming a go-to technology for the construction of reference genomes (\emph{de novo} assembly). New bioinformatics methods for this type of data are rapidly emerging.
 
@@ -52,7 +52,7 @@ In this paper we present two tools that together optimize the early steps of lon
 
 %This two tools was based on patern recognition in multi-alignment or pseudo-alignment instead \yacrd study only the coverage curve as proxy to this "alignment".
 
-\section{Materials \& Methods}
+\subsection{Materials \& Methods}
 
 Similarly to \dascrubber and \miniscrub, \textbf{\yacrd} is based on the assumption that low quality regions in reads are not well-supported by other reads. To detect such regions \yacrd performs all-against-all read mapping using \minimap and then computes the base coverage of each read. Contrarily to \dascrubber and \miniscrub, \yacrd  only uses approximate positional mapping information given by \minimap, which avoids the time-expensive alignment step. This comes at the expense of not having base-level alignments, but this will turn out to be sufficient for performing scrubbing. Reads are split at any location where coverage drops below a certain threshold (set to 4 by default), and the low-coverage region is removed entirely. A read is completely discarded if less than 40\% of its length is below the coverage threshold. \yacrd time complexity is linear in the number of overlaps.
 
@@ -104,7 +104,7 @@ All tools were run on a single cluster node %\miniscrub ran in CPU mode which in
  with recommended parameters (see Supplementary Section \ref{appendix:sec:tech_info}). Scrubbed reads were then assembled using both \miniasm and \wtdbg with recommended parameters for each sequencing technology. 
 
 
-\section{Result \& Discussion}
+\subsection{Result \& Discussion}
 
 Table 1 compares the results of \textbf{\yacrd} and \dascrubber. 
 We also evaluated \miniscrub (see Supplementary Section \ref{appendix:tab:mapping_post_scrubbing} and \ref{appendix:assembly_qual}), but its memory usage exceeded 256 GB on the two datasets of Table 1. %the largest datasets (\hsapiens, \dmelano and \celegans).

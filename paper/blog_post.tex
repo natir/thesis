@@ -194,10 +194,10 @@ overlaps.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\textwidth]{paper/blog_post/mhap_venn_same.png}
-\caption{venn diagram for mhap compare same parameter}
+\caption{Jaccard similarity 0.72, 0.26}
 \end{figure}
 
-Jaccard similarity 0.72, 0.26
+
 
 mhap 2.1 found many more overlaps than mhap 1.6. But it turns out that
 this is because mhap 1.6 calculates a similarity score between reads and
@@ -215,10 +215,9 @@ nanopore.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\textwidth]{paper/blog_post/mhap_venn.png}
-\caption{venn diagram for mhap compare}
+\caption{Jaccard similarity 0.84, 0.96}
 \end{figure}
 
-Jaccard similarity 0.84, 0.96
 
 Both software find roughly the same set of overlaps, with the trend that
 mhap1.6 tended to find a bit more (it would be interesting to evaluate
@@ -229,10 +228,9 @@ And another comparison between minimap and minimap2:
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\textwidth]{paper/blog_post/minimap_venn.png}
-\caption{venn diagram for mhap compare}
+\caption{Jaccard similarity 0.71, 0.98}
 \end{figure}
 
-Jaccard similarity 0.71, 0.98
 
 For the pacbio dataset, minimap2 finds significantly (1.6M) more
 overlaps than minimap (which found 4M overlaps). But for the nanopore
