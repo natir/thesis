@@ -18,7 +18,7 @@ Many improvements can be made on \yacrd pipeline, to detect bad quality region \
 
 \bigskip
 
-This idea to go back to all information can be the main trouble of \knot, the size of \knot \OLC was very important for example for a dataset Nanopore \textit{E. coli} coverage \pim{chiffre manquant calcule en cours}
+This idea to go back to all information can be the main trouble of \knot, the size of \knot \OLC was very important for example for a dataset Pacbio \textit{E. coli} coverage XX 47032 Nodes 254859 Edges, Nanopore \textit{E. coli} coverage XX  24966 Nodes 158628 Edges 
 
 To use \knot on a large dataset, we need to change how we use this graph, actually \knot load all graph in memory or we don't need all this information to be permanently loaded into memory we could load only part of the graph at a time. Another trouble with larger dataset concern genome with more than one chromosome, at this time we didn't try to prevent the creation of false links between contigs for different chromosomes. To adapt \knot to larger genomes we have to solve a technical problem on how to represent these very large graphs in memory, and this more theoretical problem of how to ensure that we do not create links between contigs of different chromosomes.
 
