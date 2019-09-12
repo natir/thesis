@@ -1,0 +1,63 @@
+\usetikzlibrary{decorations.markings}
+
+\tikzset{middlearrow/.style={
+        decoration={markings,
+            mark= at position 0.5 with {\arrow{#1}} ,
+        },
+        postaction={decorate}
+    }
+  }
+  
+\begin{figure}[htbp]
+	\centering
+    \begin{tikzpicture}
+       \draw (0,0) node (1Left) {};
+       \draw (5,0) node (1Right) {};
+
+       \draw (6,1) node (R1Left) {};
+       \draw (8,1) node (R1Right) {};
+
+       \draw (6,0) node (R2Left) {};
+       \draw (8,0) node (R2Right) {};
+       
+       \draw (9,0) node (5Left) {};
+       \draw (11,0) node (5Right) {};
+
+       % dessin des contigs
+        \draw[middlearrow={latex}] (1Left) -- node[above] {tig1} (1Right);
+        \draw[middlearrow={latex}] (R1Left)
+        .. controls +(up:25mm) and +(up:25mm) ..
+        node[above] {tig1} (R1Right);
+        \draw[middlearrow={latex}] (R2Right) -- node[above] {tig1} (R2Left);
+        \draw (5Left) -- node[above] {tig8} (5Right);
+
+        % reads at tig extremities
+        \draw[fill] (1Left) +(0.1,0.1)
+        rectangle
+        +(0.5,0.2);
+        \draw[fill] (R2Left) +(0.1,0.1)
+        rectangle
+        +(0.5,0.2);
+        \draw[fill] (5Left) +(0.1,0.1)
+        rectangle
+        +(0.5,0.2);
+        
+        % links
+        \draw[dashed] (1Right)
+        .. controls +(up:5mm) and +(left:5mm) ..
+        (R1Left);
+        
+        \draw[dashed] (R1Right)
+        .. controls +(right:5mm) and +(right:5mm) ..
+        (R2Right);
+        \draw[dashed] (R1Right)
+        .. controls +(right:5mm) and +(up:5mm) ..
+        (5Left);
+        \draw[dashed] (1Right)
+        .. controls +(down:5mm) and +(down:5mm) ..
+        (R2Left);
+        
+    \end{tikzpicture}
+    \caption{Canu \textsl{T. roseus} tig1 reconstruction. Plain lines denote path without branches in the SG (the one shown Figure \ref{fg:t_roseus_projection}). Boxes denote reads at contig extremities. Dashed lines denote overlaps between reads (and then contig extremities). Arrows show the path used by Canu to build tig1: it goes through the "loop" before going back.} 
+    \label{fg:appendix:t_roseus_tig1}
+\end{figure}

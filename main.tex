@@ -9,7 +9,8 @@
 \usepackage{hyperref}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-\usepackage{pdfpages}
+\usepackage{csvsimple}
+\usepackage{supertabular}
 
 \usepackage{xr}
 \makeatletter
@@ -41,8 +42,8 @@
 % todonotes package and macro
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Switch comment to enable or disable comment
-%\usepackage[disable]{todonotes}
-\usepackage[colorinlistoftodos,prependcaption,textwidth=6cm]{todonotes}
+\usepackage[disable]{todonotes}
+%\usepackage[colorinlistoftodos,prependcaption,textwidth=6cm]{todonotes}
 
 \newcommandx{\jsv}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red]{#2}{#1}}
 \newcommandx{\rc}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue]{#2}{#1}}
@@ -122,4 +123,13 @@ France
 \bibliography{main}
 \addcontentsline{toc}{chapter}{Bibliography}
 }
+
+\appendix
+
+\chapter{\knot}
+\subfile{supplemental/knot/supplemental.tex}
+
+\chapter{\yacrd and \fpa}
+\subfile{supplemental/yacrd_fpa/supplemental.tex}
+
 \end{document}

@@ -1,0 +1,395 @@
+\documentclass[../../main.tex]{subfiles}
+
+\begin{document}
+
+%%%
+%%% DATASET
+%%%
+
+\newcommand{\bwa}{\toolsname{BWA}}
+
+\newpage
+\section{Datasets}\label{appendix:sec:dataset}
+
+This section provides metrics about each dataset.
+The \ecoli original dataset had large coverage ($> 200$x)  so we subsampled it dataset with seqtk\footnote{\small \url{https://github.com/lh3/seqtk}} down to target 50x.
+
+
+\begin{table}[ht]
+    \small
+    \centering
+    \begin{tabular}{l|rrrrr}
+    ~ & \celegans & \dmelano & \hsapiens & \ecoliont & \ecolipb \\ \hline
+    \csvreader[head to column names]{supplemental/yacrd_fpa/data/dataset_stat.csv}{}%
+    {\fields & \Celegans & \Dmelanogaster & \Hsapiens & \Ecolinanopore & \Ecolipacbio \\}%
+    \end{tabular}
+    \caption{Information and metrics about the dataset using in our evaluation of \yacrd and \fpa. * The \celegans dataset come from Pacbio DevNet \protect\url{https://github.com/PacificBiosciences/DevNet/wiki/C.-elegans-data-set}.}
+    \label{appendix:tab:length_dataset_info}
+\end{table}
+
+\newpage
+\section{Repeatability information}\label{appendix:sec:tech_info}
+
+\subsection{\dascrubber}
+
+\dascrubber commit number \texttt{0e90524} was used, and a custom pipeline was built using \toolsname{DASCRUBBBER-wrapper}\footnote{\url{https://github.com/rrwick/DASCRUBBER-wrapper}} as an inspiration, as well as recommendations from the authors: \url{https://github.com/thegenemyers/DASCRUBBER/issues/7} and \url{https://github.com/thegenemyers/DASCRUBBER/issues/20}. See below (section \ref{sub:repro-everything}) for the URL of the custom pipeline.
+
+\subsection{\miniscrub}
+
+We use version of commit \texttt{3d11d3e}. We did not run \miniscrub in GPU mode so we followed te  authors instructions for installation and run \url{https://bitbucket.org/berkeleylab/jgi-miniscrub/}.
+
+\subsection{\yacrd}
+
+We use version 0.5.1.
+
+\subsection{\fpa}
+
+We use version 0.5.
+
+\subsection{\bwa}
+
+We use version 0.7.17-r1188.
+
+\subsection{\minimap}
+
+We use version 2.16-r922.
+
+\subsection{\miniasm}
+
+We use version 0.3-r179
+
+\subsection{\wtdbg}
+
+We use version 2.3.
+
+\subsection{QUAST}
+
+We use version v5.0.2.
+
+\subsection{Porechop}
+
+We use version 0.2.3\_seqan2.1.1
+
+\subsection{Script and reproduction of analysis}\label{sub:repro-everything}
+
+All information to repeat our analysis can be found at this address
+
+\url{https://gitlab.inria.fr/pmarijon/yacrd-and-fpa-upstream-tools-for-lr-genome-assembly}
+
+
+%%%
+%%% YACRD PARAMETER OPTIMIZATION
+%%%
+
+\newpage
+\section{\yacrd parameter optimisation}\label{appendix:yacrd_parameter_optimisation}
+
+\yacrd is very dependent on the mechanism used to find common regions between reads. We rely on \minimap for this task. \minimap is based on short sequence seeds to find common regions between reads. In all-against-all alignment, it takes as parameter a distance between two seeds (\texttt{-g}, default: 10,000 bases). In \yacrd we assume that regions with low seed coverage have low quality, and therefore need to be scrubbed. Yet with the default seed distance, it may happen that \minimap finds two consecutive seeds that correspond to two "good" read regions separated by one "bad" read region. Therefore this parameter needs to be tuned.
+
+Another important parameter is the read coverage threshold to consider that a read region is of sufficient quality (\yacrd parameter \texttt{-c}).
+
+We have changed these two parameters as follows: i) the maximum distance between the two seeds from 50 to 2450 with a step of 100, ii) the minimum coverage before eliminating the region from 1 to 15 with a step of 1.
+
+We evaluated the influence of these parameters on several metrics:
+\begin{itemize}
+    \item Number of chimeric reads
+    \item Number of reads
+    \item Number of bases
+    \item And in \miniasm and \wtdbg assemblies,
+    \begin{itemize}
+        \item NGA50
+        \item Total length
+        \item Number of contigs
+        \item Number of indels per 100 kpb
+        \item Number of mismatches per 100 kbp
+    \end{itemize}
+\end{itemize}
+
+We ran this evaluation on \hsapiens, \celegans and \ecolipb dataset. The raw data is available in:
+\begin{itemize}
+    \item \hsapiens (ONT ultra-long R9.4): \url{https://gitlab.inria.fr/pmarijon/yacrd-and-fpa-upstream-tools-for-lr-genome-assembly/raw/master/data/yacrd_parameter_test_h_sapiens_ont.csv}
+    \item \celegans (Pacbio P6-C4): \url{https://gitlab.inria.fr/pmarijon/yacrd-and-fpa-upstream-tools-for-lr-genome-assembly/blob/master/data/yacrd_parameter_test_c_elegans_pb.csv}
+    \item \ecoli (Pacbio Sequel): \url{https://gitlab.inria.fr/pmarijon/yacrd-and-fpa-upstream-tools-for-lr-genome-assembly/blob/master/data/yacrd_parameter_test_e_coli_pb.csv}
+\end{itemize}
+
+For \hsapiens Nanopore dataset we find that a value of 500 for the \texttt{-g} parameter and 4 for the \texttt{-c} parameter optimizes the number of contigs in \miniasm assembly and NGA50, and remains reasonable across the other metrics. We therefore recommend to use this value for Nanopore data and we used it in all of our results.
+
+For \celegans PacBio dataset P6-C4, using a similar reasoning, optimal values are different and are 800 for the \texttt{-g} parameter and 4 for the \texttt{-c} parameter.
+
+For \ecoli PacBio Sequel dataset, using similar reasoning, optimal values are different and are 5000 for the \texttt{-g} parameter and 3 \texttt{-c} parameter.
+
+We therefore used the above values for all datasets obtained with the same sequencing technology.
+
+%%%
+%%% SCRUBBED READ MAPPING
+%%%
+
+\newpage
+\section{Mapping of scrubbed reads}\label{appendix:result_scrubbed_reads}
+
+To compute quality metrics, for each dataset we mapped both scrubbed and raw reads against their respective  reference genomes with \bwa (we used \texttt{ont2d} preset for Nanopore reads, and \texttt{pacbio} preset for Pacbio reads). The mapping results were analyzed using a custom Python script\footnote{\url{https://gitlab.inria.fr/pmarijon/optimizing-early-steps-of-lr-assembly/blob/master/script/get_mapping_info.py}} which reports the number of mapped reads, the sum of edit distances between each read and the matching reference sequence, the sum of positions of the genome mapped by a read, and the error rate.
+
+To count the number of chimeric reads for each dataset, we remapped reads against each reference genome with \minimap (we used \texttt{map-ont} preset for Nanopore reads, and \texttt{map-pb} preset for Pacbio reads). We analyzed the PAF (Pairwise Alignment Format) file outputted by \minimap with a custom Python script\footnote{\url{https://gitlab.inria.fr/pmarijon/optimizing-early-steps-of-lr-assembly/blob/master/script/found_chimera.py}}. This script parses a PAF file and associates to each read a list of pairs of starting/ending mapping positions. For each read, if two pairs of positions overlap in the corresponding list, they are merged. If, after merging, there remains more than one pair of positions, the read is marked as chimeric. To manage circular genomes we ignore reads with mapping positions near to the beginning/ending of the genome (within a distance of $\mbox{\texttt{reference length}} - 0.1 \times \mbox{\texttt{reference length}}$ from the beginning/ending).
+
+To count the number of adapters in Nanopore reads we use \toolsname{Porechop} \cite{porechop} with out any specific parameter and we sum the number of adapters at start and end of reads, we ignore the count of middle adapters.
+
+Table~\ref{appendix:tab:mapping_post_scrubbing} shows that scrubbing reduces the number of reads and the number of bases mapped against the reference, but the error rate is reduced too (at least 1\% for \yacrd and at least 2\% for \dascrubber) and the number of chimeric reads was reduced by two or more.
+ 
+\begin{table}[ht]
+    \scriptsize
+    \centering
+    \begin{tabular}{ll|rrrr|r|r}
+    & & \multicolumn{4}{c|}{\bwa} & \minimap & \toolsname{Porechop} \\
+Dataset & Scrubber & \# reads mapped & Edit distance & Mapping length & Error rate & \# chimeric reads & \# adaptaters \\ \hline
+\multirow{3}{*}{\celegans} & raw & 643138 & 903621479 & 6542507928 & 13.8115 & 71704 & \textit{n/a} \\
+ & yacrd & 575517 & 758579062 & 5932958881 & 12.7858 & 15157 & \textit{n/a} \\
+ & dascrubber & 576467 & 700895648 & 6128772910 & 11.4361 & 9285 & \textit{n/a} \\ \hline
+\multirow{3}{*}{\dmelano} & raw & 954622 & 1238009380 & 7353191408 & 16.8364 & 59864 & 891571 \\
+ & yacrd & 843483 & 968115342 & 6468730379 & 14.9661 & 28076 & 0 \\
+ & dascrubber & 792138 & 857944894 & 6543861920 & 13.1107 & 24826 & 246779 \\ \hline
+\multirow{3}{*}{\hsapiens} & raw & 808709 & 1274720337 & 6053626797 & 21.0571 & 25888 & 947531 \\
+ & yacrd & 698139 & 929843201 & 4889850725 & 19.0158 & 5216 & 153255 \\
+ & dascrubber & 615789 & 813646386 & 4823555914 & 16.8682 & 1640 & 311007 \\ \hline
+\multirow{4}{*}{\ecoliont} & raw & 19873 & 36411589 & 232858822 & 15.6368 & 351 & 39596 \\
+ & yacrd & 18790 & 29819875 & 207863123 & 14.3459 & 64 & 12132 \\
+ & dascrubber & 18275 & 29216052 & 223383847 & 13.0789 & 50 & 6222 \\
+ & miniscrub & 24242 & 15740209 & 136642860 & 11.5192 & 58 & 36776 \\ \hline
+\multirow{4}{*}{\ecolipb} & raw & 31945 & 29162389 & 175640234 & 16.6035 & 7374 & \textit{n/a} \\
+ & yacrd & 24728 & 22150527 & 146552898 & 15.1143 & 15157 & \textit{n/a} \\
+ & dascrubber & 26883 & 20315636 & 158261992 & 12.8367 & 63 & \textit{n/a} \\
+ & miniscrub & 10304 & 3050308 & 32249990 & 9.4583 & 37 & \textit{n/a} \\
+    \end{tabular}
+    \caption{Statistics of reads mapped to their respective reference, before and after scrubbing.}
+    \label{appendix:tab:mapping_post_scrubbing}
+\end{table}
+
+
+% raw
+% 22949 + 11140 = 34089
+%
+% yacrd
+% 1641 + 1730 = 3371
+%
+% dascrubber
+% 938 + 2296 = 3234
+%
+
+%%%
+%%% QUALITY OF ASSEMBLY
+%%%
+ 
+\newpage
+\section{Quality of assembly}\label{appendix:assembly_qual}
+
+To assess the quality of assemblies with and without scrubbing, we ran both \miniasm and \wtdbg from scrubbed reads and raw reads with recommended parameters for each sequencing technology. After assembly we ran QUAST with parameter \texttt{--min-identity 80.0}. 
+
+
+Table \ref{appendix:tab:assembly_qual:miniasm} shows a summary of outputted metrics for \miniasm. Scrubbing increases both the NGA50 and the length of the largest alignment. The size of the largest contig is often decreased but the contigs quality seems better as the number of misassemblies decreases. Finally the number of indels and mismatches per 100kb are quite stable. We thus observe that scrubbing improves assembly metrics, \yacrd and \dascrubber having similar results, better than \miniscrub. 
+    
+Table \ref{appendix:tab:assembly_qual:wtdbg2} shows a summary of outputted metrics for \wtdbg. Contrarily to \miniasm, NGA50 is not always improved by scrubbing.  The size of the largest contig increases while the number of misassemblies decreases. This could be interpreted as a better assembly. Regarding these two metrics, \yacrd has better results than \dascrubber.
+
+\begin{table}[ht]
+    \centering
+    \tiny
+    \subfloat[Ratio of assembly metrics after scrubbing on assembly without scrubbing. Column Asm/Ref length report the total length of assembly against reference length, not against raw assembly length.]{
+        \begin{tabular}{ll|rrrrrrrrr}
+ &  &  &  & Largest & Largest & Asm/Ref & Indels & Mismatches & \# mis- \\
+Dataset & Scrubber & \#contigs & NGA50 & contig & alignment &length & per 100kb & per 100kb & assemblies\\ \hline
+\multirow{2}{*}{\shortstack[l]{\celegans\\(Pacbio P6-C4)}} & yacrd & 0.68 & 1.02 & 1.48 & 1.1 & 1.1 & 0.96 & 0.94 & 0.72\\
+ & dascrubber & 0.58 & 1.26 & 0.97 & 1.55 & 1.08 & 0.94 & 0.9 & 0.54\\ \hline
+\multirow{2}{*}{\shortstack[l]{\dmelano\\(ONT Minion)}} & yacrd & 0.8 & 1.57 & 0.64 & 1.27 & 0.93 & 0.96 & 0.96 & 0.65\\
+ & dascrubber & 0.84 & 2.41 & 1.45 & 2.48 & 0.96 & 0.96 & 0.94 & 0.83\\ \hline
+\multirow{2}{*}{\shortstack[l]{\hsapiens\\(ONT ultra-long R9.4)}} & yacrd & 2.14 & 4.72 & 0.38 & 5.19 & 1.41 & 0.97 & 0.95 & 0.25\\
+ & dascrubber & 2.78 & 4.26 & 0.32 & 4.48 & 1.36 & 0.97 & 0.95 & 0.12\\ \hline
+\multirow{3}{*}{\shortstack[l]{\ecoli\\(ONT Minion)}} & yacrd & 1 & 2.6 & 1 & 2.43 & 0.99 & 0.96 & 0.95 & 0.6\\
+ & dascrubber & 1 & 2.65 & 1 & 2.48 & 0.99 & 0.97 & 0.96 & 0.6\\
+ & miniscrub & 9 & 0.46 & 0.62 & 1.6 & 0.98 & 0.83 & 0.77 & 0.8\\ \hline
+\multirow{2}{*}{\shortstack[l]{\ecoli\\(Pacbio Sequel)}} & yacrd & 1 & 1.96 & 0.96 & 1 & 1.02 & 0.99 & 0.99 & 0.63\\
+ & dascrubber & 0.75 & 2.73 & 2.55 & 2.36 & 1.02 & 0.99 & 1.01 & 0.36\\
+        \end{tabular}
+    }
+    
+    \subfloat[Exact value of assembly metrics without scrubbing and with scrubbing]{
+        \begin{tabular}{ll|rrrrrrrrr}
+ &  &  &  & Largest & Largest & Total & Indels & Mismatches & \# mis-\\
+Dataset & Scrubber & \#contigs & NGA50 & contig & alignment & length & per 100kb & per 100kb & assemblies \\ \hline
+\multirow{3}{*}{\shortstack[l]{\celegans\\(Pacbio P6-C4)}} & raw & 226 & 432112 & 5422030 & 1231264 & 114194187 & 7842.91 & 1944.78 & 1396\\
+ & yacrd & 154 & 440776 & 8039734 & 1362861 & 110987109 & 7587.54 & 1827.39 & 1015  \\ 
+ & dascrubber & 131 & 544677 & 5262439 & 1907915 & 108636024 & 7405.35 & 1744.85 & 754\\ \hline
+\multirow{3}{*}{\shortstack[l]{\dmelano\\(ONT Minion)}} & raw & 423 & 423007 & 8745435 & 2396453 & 138733599 & 5789.82 & 4233.35 & 2126\\
+ & yacrd & 339 & 664130 & 5559421 & 3053469 & 134302689 & 5587.09 & 4044.89 & 1375\\
+ & dascrubber & 357 & 1018097 & 12708694 & 5953687 & 137569022 & 5537.66 & 3988.95 & 1765\\ \hline
+\multirow{3}{*}{\shortstack[l]{\hsapiens\\(ONT ultra-long R9.4)}} & raw & 184 & 96225 & 15987693 & 857015 & 202082384 & 6554.02 & 4089.56 & 1745\\
+ & yacrd & 394 & 453748 & 6008000 & 4444926 & 203039148 & 6366.5 & 3891.98 & 432\\
+ & dascrubber & 512 & 410370 & 5041373 & 3837755 & 195781855 & 6377.04 & 3887.84 & 209\\ \hline
+\multirow{4}{*}{\shortstack[l]{\ecoli\\(ONT Minion)}} & raw & 1 & 1450762 & 5147604 & 1553466 & 5147604 & 5279.79 & 4341.81 & 5\\
+ & yacrd & 1 & 3775907 & 5161073 & 3775907 & 5161073 & 5083.69 & 4104.31 & 3\\
+ & dascrubber & 1 & 3850663 & 5168753 & 3850663 & 5168753 & 5113.64 & 4160.78 & 3\\
+ & miniscrub & 9 & 670066 & 3172759 & 2478579 & 5136537 & 4382.29 & 3337.49 & 4\\ \hline
+\multirow{3}{*}{\shortstack[l]{\ecoli\\(Pacbio Sequel)}} & raw & 4 & 499610 & 1974889 & 1083557 & 5417095 & 8011.42 & 1856.96 & 11\\
+ & yacrd & 4 & 983113 & 1910204 & 1089886 & 5345453 & 7974.73 & 1856.19 & 7 \\
+ & dascrubber & 3 & 1362738 & 5042223 & 2552164 & 5331569 & 7963.32 & 1870.92 & 4\\
+       \end{tabular}
+    }
+    \caption{\miniasm assembly statistics. }
+    \label{appendix:tab:assembly_qual:miniasm}
+\end{table}
+
+
+\begin{table}[ht]
+    \centering
+    \tiny
+    \subfloat[Ratio of assembly metrics after scrubbing on assembly without scrubbing. Column Asm/Ref length report the total length of assembly against reference length, not against raw assembly length.]{
+        \begin{tabular}{ll|rrrrrrrrr}
+ &  &  &  & Largest & Largest & Asm/Ref & Indels & Mismatches & \# mis-\\
+Dataset & Scrubber & \#contigs & NGA50 & contig & alignment &length & per 100kb & per 100kb & assemblies\\ \hline
+\multirow{2}{*}{\shortstack[l]{\celegans\\(Pacbio P6-C4)}} & yacrd & 0.87 & 1.05 & 1.09 & 1 & 1.06 & 0.93 & 0.93 & 0.93 \\
+ & dascrubber & 0.72 & 1.02 & 1.04 & 1.11 & 0.98 & 0.9 & 0.7 & 0.35\\ \hline
+\multirow{2}{*}{\shortstack[l]{\dmelano\\(ONT Minion)}} & yacrd & 0.51 & 1.02 & 1.09 & 0.98 & 0.93 & 0.84 & 0.57 & 0.43\\ 
+ & dascrubber & 0.61 & 0.87 & 0.83 & 0.98 & 0.93 & 0.85 & 0.62 & 0.41\\ \hline
+\multirow{2}{*}{\shortstack[l]{\hsapiens\\(ONT ultra-long R9.4)}} & yacrd & 0.6 & 0.98 & 11.68 & 1 & 0.97 & 0.94 & 0.86 & 0.44\\
+ & dascrubber & 0.61 & 0.36 & 2.97 & 0.49 & 0.92 & 0.9 & 0.82 & 0.13\\ \hline
+\multirow{3}{*}{\shortstack[l]{\ecoli\\(ONT Minion)}} & yacrd & 0.56 & 1.57 & 1.7 & 1.7 & 1.02 & 1.01 & 1 & 0\\
+ & dascrubber & 1.11 & 0.81 & 0.64 & 0.57 & 0.87 & 1.06 & 1.18 & 1.5\\
+ & miniscrub & 1 & 1.65 & 1.13 & 1.13 & 0.95 & 1.2 & 1.77 & 2\\ \hline
+\multirow{3}{*}{\shortstack[l]{\ecoli\\(Pacbio RS II)}} & yacrd & 0.27 & 5.49 & 1.65 & 2.42 & 0.98 & 1.55 & 1.99 & 1.5 \\
+ & dascrubber & 0.64 & 1.14 & 0.43 & 0.67 & 1.01 & 1.24 & 1.46 & 0.75\\
+        \end{tabular}
+    }
+    
+    \subfloat[Exact value of assembly metrics without scrubbing and with scrubbing]{
+        \begin{tabular}{ll|rrrrrrrrr}
+ &  &  &  & Largest & Largest &  & Indels & Mismatches & \# mis-\\
+Dataset & Scrubber & \#contigs & NGA50 & contig & alignment & Total length & per 100kb & per 100kb & assemblies \\ \hline
+\multirow{3}{*}{\shortstack[l]{\celegans\\(Pacbio P6-C4)}} & raw & 139 & 565278 & 6301328 & 1880328 & 106873707 & 212.25 & 114.82 & 1396\\
+ & yacrd & 122 & 593039 & 6919398 & 1880831 & 106276350 & 106,89 & 198,35 & 577 \\
+ & dascrubber & 100 & 578041 & 6577520 & 2084274 & 105265557 & 191.21 & 79.93 & 485\\ \hline
+\multirow{3}{*}{\shortstack[l]{\dmelano\\(ONT Minion)}} & raw & 945 & 1274655 & 22883959 & 5747639 & 144439108 & 1589.69 & 523.13 & 3938\\
+ & yacrd & 484 & 1305125 & 24923636 & 5624012 & 135024912 & 1331.34 & 298.73 & 1675\\
+ & dascrubber & 578 & 1114519 & 18994352 & 5625082 & 134142906 & 1348.97 & 324.48 & 1633\\ \hline
+\multirow{3}{*}{\shortstack[l]{\hsapiens\\(ONT ultra-long R9.4)}} & raw & 810 & 1513450 & 2435917 & 9247318 & 217462699 & 3588.91 & 368.93 & 1316\\
+ & yacrd & 485 & 1482513 & 28462688 & 9268500 & 210552669 & 3370.08 & 318.69 & 582\\
+ & dascrubber & 496 & 545902 & 7234785 & 4524362 & 200220997 & 3224.69 & 302.44 & 177\\ \hline
+\multirow{4}{*}{\shortstack[l]{\ecoli\\(ONT Minion)}} & raw & 9 & 678871 & 1434432 & 1432545 & 5045762 & 767.87 & 156.21 & 2\\
+ & yacrd & 5 & 1068201 & 2435917 & 2434921 & 5133519 & 778.16 & 155.46 & 0\\
+ & dascrubber & 10 & 546569 & 917645 & 821696 & 4395460 & 817.43 & 184.84 & 3\\
+ & miniscrub & 9 & 1117217 & 1621361 & 1619652 & 4773046 & 924.23 & 275.84 & 4\\ \hline
+\multirow{4}{*}{\shortstack[l]{\ecoli\\(Pacbio RS II)}} & raw & 11 & 583235 & 2474045 & 1323293 & 5021940 & 170.49 & 46.03 & 4\\
+ & yacrd & 3 & 3207692 & 4100960 & 3207692 & 5134707 & 264,26 & 91,77 & 3 \\
+ & dascrubber & 7 & 664896 & 1075736 & 892884 & 5093533 & 211.5 & 67.38 & 3\\
+        \end{tabular}
+    }
+    \caption{\wtdbg assembly statistics. }
+    \label{appendix:tab:assembly_qual:wtdbg2}
+\end{table}
+
+\newpage
+~
+
+%%%
+%%% FPA
+%%%
+
+\newpage
+\section{\fpa}\label{appendix:sec:fpa}
+
+To evaluate \fpa, we ran two different pipelines. The first one uses directly \miniasm without \fpa and with recommended parameters. The second one runs \fpa to filter out reads (\minimap output is piped to \fpa directly) before running \miniasm on filtered reads with recommended parameters. Using \fpa we removed \texttt{internal match} and overlap shorter than 2000 (options \texttt{drop -i -l 2000}). This sort of overlap is ignored by \miniasm during the assembly step but is used during the read filtering step.
+%so this \fpa filtering have probably an impact on assembly.
+
+Table ~\ref{appendix:tab:fpa:effect} shows the impact of using \fpa on time, memory and assembly metrics.
+Using \fpa decreases both disk usage and total computation time of downstream analysis while having no impact or a positive one on assembly metrics.
+Usage of \fpa does not radically affect mapping wall-clock time and memory usage, but it reduces by ~13\% to 67\% the memory usage and CPU time of the assembly step (the computation time of \fpa is included in the mapping time). Moreover the size of the PAF file produced by \minimap is reduced by ~40\% to 79 \%.  
+
+\begin{table}[ht]
+    \footnotesize
+    \centering 
+    \begin{tabular}{ll|rr|rr|rr|}
+   &  Dataset  &  \multicolumn{2}{c|}{\celegans} & \multicolumn{2}{c|}{\dmelano} & \multicolumn{2}{c|}{\hsapiens chr 1} \\ 
+  &  Pipeline  &  w/o \fpa  &  \fpa  &  w/o \fpa  &  \fpa  &  w/o \fpa  &  \fpa \\ \hline
+Time (s)  &  Mapping  & 3296 & 3247 & 3510 & 3659 & 1570 & 1558 \\
+  &  Assembly  & 297 & 139 & 782 & 186 & 103 & 50\\
+ \cline{2-8} 
+  &  Total  & 3593 & 3386 & 4292 & 3845 & 1673 & 1608 \\ \hline
+Memory  &  Mapping (GB)  & 51 & 51 & 53 & 54 & 41 & 40 \\
+  &  Assembly (Mbp)  & 4788 & 2594 & 13836 & 5335 & 1797 & 587 \\
+  &  \textbf{PAF size}  &  32G  &  9.5G  &  54G  &  11G  &  8.9G  &  3.2G \\ \hline
+ Assembly  &  \# contigs  & 168 & 150 & 423 & 381 & 184 & 216 \\
+  &  NGA50  & 407821 & 438055 & 423007 & 455307 & 96225 & 106259 \\
+  &  \# misassemblies  & 1212 & 1149 & 2126 & 1840 & 1745 & 1502 \\
+  &  length  & 112248122 & 111641079 & 138733599 & 136623341 & 202082384 & 198386315 \\ \hline
+per 100kb  &  \# mismatches  & 1893.44 & 1854.95 & 4233.35 & 4190.43 & 4089.56 & 4065.95 \\
+  &  \# indels  & 7700.42 & 7628.39 & 5789.82 & 5742.05 & 6554.02 & 6534.92 \\ \hline
+ \multicolumn{8}{c}{~} \\
+   &  Dataset  &  \multicolumn{2}{c|}{\ecoliont} & \multicolumn{2}{c}{\ecolipb} &  & \\
+  &  Pipeline  &  w/o \fpa  &  \fpa  &  w/o \fpa  &  \fpa & & \\ \hline
+Time (s)  &  Mapping  & 26 & 29 & 23 &  24 & & \\
+  &  Assembly  & 4 & 2 & 2 &  1 &  & \\
+ \cline{2-8}
+  &  Total  & 30 & 31 & 25 &  25 &  & \\ \hline
+Memory  &  Mapping (GB)  & 3 & 3 & 4 &  4 &  & \\
+  &  Assembly (Mbp)  & 52 & 45 & 33 &  22 &  & \\
+  &  \textbf{PAF size}  &  141M  &  82M  &  85M  &  38M &  & \\ \hline
+ Assembly  &  \# contigs  & 5 & 5 & 8 &  9 &  & \\
+  &  NGA50  & 1450762 & 1246808 & 562741 &  292111 &  & \\
+  &  \# misassemblies  & 5 & 5 & 8 &  9 &  & \\
+  &  length  & 5147604 & 5283927 & 5394119 &  5395896 &  & \\ \hline
+per 100kb  &  \# mismatches  & 4341.81 & 4425.24 & 1862.72 &  1841.66 &  & \\
+  &  \# indels  & 5279.79 & 5376.03 & 7968.63 &  7945.11 &  & \\
+    \end{tabular}
+    \caption{Impact of \fpa on assembly using \miniasm.}
+    \label{appendix:tab:fpa:effect}
+\end{table}
+
+
+%%%
+%%% COMBO
+%%%
+
+\newpage
+\section{Combination of \yacrd and \fpa}\label{appendix:sec:combo}
+
+To evaluate the effect of running both \yacrd and \fpa, we ran two different pipelines. The first one uses a  standard \miniasm pipeline (called 'basic'): \minimap plus \miniasm with recommended parameters. The second one (called 'extended') runs \yacrd with best parameters for each dataset, then \minimap with recommend parameter on scrubbed reads and pipes the results in \fpa to filter out \texttt{internal matches} and overlaps shorter than 2000 (option \texttt{drop -i -l 2000}), and finally runs \miniasm on scrubbed reads with filtered overlap. 
+
+Table \ref{appendix:tab:combo:effect} shows how the integration of both \yacrd and \fpa in \miniasm pipeline ('extended' row) compares against standard \miniasm ('simple' row). Each pipeline is based on \minimap so their memory usages are equivalent. The extended pipeline takes twice more time because \minimap is run twice (once for \yacrd and once for \miniasm). \minimap is a time bottleneck in both pipelines. 
+
+The extended pipeline improves the quality of assemblies, in terms of NGA50, number of indels and mismatches per 100 kbp, and misassemblies. It also decreases the number of contigs while keeping the total length of assemblies similar.
+
+\begin{table}[ht]
+    \centering 
+    \begin{tabular}{l|rr|rr|rr|}
+Dataset & \multicolumn{2}{c}{\celegans} & \multicolumn{2}{c}{\dmelano} & \multicolumn{2}{c}{\hsapiens} \\ 
+Pipeline & simple & extended & simple & extended & simple & extended \\ \hline
+\# contigs & 226 & 171 & 423 & 345 & 184 & 367 \\
+NGA50 & 432112 & 451479 & 423007 & 715276 & 96225 & 488573 \\
+Largest contig & 5422030 & 4224860 & 8745435 & 5559611 & 15987693 & 6875897 \\
+Largest alignment & 1231264 & 1527213 & 2396453 & 3053469 & 857015 & 4444801 \\
+Total length & 114194187 & 110177189 & 138733599 & 134443509 & 202082384 & 202405973 \\
+\# indels per 100 kbp & 7842.91 & 7380.12 & 5789.82 & 5593.09 & 6554.02 & 6359.25 \\
+ & & & & & & \\
+\# mismatches per 100 kbp & 1944.78 & 1720.16 & 4233.35 & 4052.42 & 4089.56 & 3884.23 \\
+\# misassemblies & 1396 & 907 & 2126 & 1412 & 1745 & 363 \\
+\multicolumn{7}{c}{~} \\
+Dataset & \multicolumn{2}{c}{\ecoliont} & \multicolumn{2}{c}{\ecolipb} & & \\
+Pipeline & simple & extended & simple & extended & & \\ \hline
+\# contigs  & 1 & 1 & 4 & 3 & & \\
+NGA50  & 1450762 & 3775889 & 499610 &  1271550 & & \\
+Largest contig  & 5147604 & 5186180 & 1974889 &  4960107 & & \\
+Largest alignment  & 1553466 & 3775889 & 1083557 &  1465922 & & \\
+Total length  & 5147604 & 5186180 & 5417095 &  5355278 & & \\
+\# indels per 100 kbp  & 5279.79 & 5097.12 &  8011.42  &  7969.99 & & \\
+ & & & & & & \\
+\# mismatches per 100 kbp  & 4341.81 & 4113.01 &  1856.96  &  1844.42 & & \\
+\# misassemblies  & 5 & 3 & 11 & 8 & & \\
+\end{tabular}
+    \caption{Impact of \yacrd and \fpa on assembly using \miniasm. Simple match to basic \miniasm pipeline and extend match to version with \yacrd and \fpa.
+    }
+    \label{appendix:tab:combo:effect}
+\end{table}
+
+\onlyinsubfile{
+\bibliographystyle{plainnat}
+\bibliography{main}
+\addcontentsline{toc}{chapter}{Bibliography}
+}
+
+\end{document}

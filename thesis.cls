@@ -19,7 +19,7 @@
 %Packages that are used
 %---------------------------------------------------------------------------
 %Couleurs
-\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage[dvipsnames, table]{xcolor}
 
 %Mise en page
 \RequirePackage{setspace}

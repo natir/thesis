@@ -1,0 +1,17 @@
+fields,Celegans,Dmelanogaster,Hsapiens,Ecolinanopore,Ecolipacbio
+$|$sequences$|$,740774,1327569,1075867,25469,37404
+Total length (Mb),"8117,663505","9064,470438","7256,24442","257,508441","257,882884"
+Longest sequence (Kb),"55,46","446,05",340704,137142,38331
+Shortest sequence (b),35,5,30,152,35
+Mean Length (Kb),10958,6827,6744,10110,6894
+Median Length (Kb),9822,4568,5089,5515,6672
+N10 (Kb),"2,5549",25964,23578,51316,15591
+N50 (Kb),16572,11853,10568,20073,9064
+N90 (Kb),6502,3533,3537,4701,4218
+L10 (sequences),27013,29049,21703,400,1354
+L50 (sequences),191637,243356,220369,3807,10502
+L90 (sequences),480553,779045,652055,13969,25787
+Reference length (Mb),"100,286401","143,726002","248,956422","5,231428","5,231428"
+Coverage,~81x,~63x,~29x,~49x,~49x
+Accession,*,SRR6702603,PRJEB23027,SRR8494911,SRR8494940
+Publication,~,~,\cite{h_sapiens_ont_reads},\cite{publi_dataset},\cite{publi_dataset}
