@@ -18,7 +18,20 @@ Many improvements can be made on \yacrd pipeline, to detect bad quality region \
 
 \bigskip
 
-This idea to go back to all information can be the main trouble of \knot, the size of \knot \OLC was very important for example for a dataset Pacbio \textit{E. coli} coverage XX 47032 Nodes 254859 Edges, Nanopore \textit{E. coli} coverage XX  24966 Nodes 158628 Edges 
+This idea to go back to all information can be the main trouble of \knot, the size of \knot \OLC was very important for example in Table \ref{conclusion:tab:AAG_building} we can see two Nanopore dataset one from \textit{E. coli} one from \textit{D. melanogaster} we can see \textit{D. melanogaster} dataset is larger than \textit{E. coli} dataset, less than 10 times. But the computation time to build \knot \OLC from overlap found by minimap2 was increase by 30 times.
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{c|ll|ll|l}
+        & &  & \multicolumn{2}{c|}{In \knot \OLC} & \knot \OLC \\
+        & \# bases & \# reads & \# Nodes & \# Edges & construction time \\ \hline
+        \textit{E. coli} & 1621000527 & 158590 & 24966 & 158590 & ~ 2 hours \\
+        \textit{D. melanogaster} & 9064470438 & 1327569 & 234253 & 956929 & ~ 3 days \\ \hline 
+        ratio & 5.59 & 8.37 & 9.38 & 6.03 & ~36 \\
+    \end{tabular}
+    \caption{A comparaison of two Nanopore dataset. Ratio was compute by divide \textit{D. melanogaster} value by \textit{E. coli} value. The size of data increase by less than an order of magnitude but the construction time increase more than 2 order of magnitude}
+    \label{conclusion:tab:AAG_building}
+\end{table}
 
 To use \knot on a large dataset, we need to change how we use this graph, actually \knot load all graph in memory or we don't need all this information to be permanently loaded into memory we could load only part of the graph at a time. Another trouble with larger dataset concern genome with more than one chromosome, at this time we didn't try to prevent the creation of false links between contigs for different chromosomes. To adapt \knot to larger genomes we have to solve a technical problem on how to represent these very large graphs in memory, and this more theoretical problem of how to ensure that we do not create links between contigs of different chromosomes.
 
@@ -36,5 +49,4 @@ By using the contigs generate by assembly tools has scaffold of genome graph and
 \addcontentsline{toc}{chapter}{Bibliography}
 }
 
-\end{document}\pim{Synthetisé les algo}
-
+\end{document}

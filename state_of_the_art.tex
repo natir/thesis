@@ -4,19 +4,13 @@
 
 \chapter{Long reads assembly tools state of the art}\label{chapter:sota}
 
-In this chapter we present some long-read assembly tools we select this tools because method and algorithm used in it was representative how other tools work in addition, these tools are recognized by the community for their quality.
-
-\jsv{Etoffer l'intro. Faire le lien avec les chapitres précédents et le chapitre suivant. Dire par exemple qu'une fois un ensemble de reads propres est disponible on peut alors réaliser l'assemblage. Redire en quoi consiste l'assemblage. Puis indiquer en quelques mots en quoi les longs reads ont nécessité de construire de nouveaux outils. C'est aussi le moment de citer Celera comme tu le fais. Ensuite, tu peux dire qu'il y a pléthore d'outils mais que tu te concentre sur certains. Tu les cites avec les numéros de section afin de donner le plan de lecture. Enfin tu termines avec l'objectif de cette description : montrer qu'on peut aller chercher/intervenir sur des phases intermédiaires, ce qui sera abordé dans le chapitre suivant.}
-
-\pim{DBG utilisé surtout dans les short reads mais des méthodes sont aussi utilisé pour les long reads parler de la section}
+In previous chapter we see how we can clean data before run assembly. In this chapter we present some long-read assembly tools we select this tools because method and algorithm used in it was representative how other tools work in addition, these tools are recognized by the community for their quality. We can see assembly tools can be split in step and between assembly we can found some similarity between step but we can observe in new assembly tools the steps can no longer be separated so easily.
 
 \section{A Pipeline with correction \canu} \label{section:sota:canu}
 
-\jsv{Idem, ajouter un peu de liant, une phrase suffit. Canu \cite{canu} a été proposé en 20XX et est l'un des tout premier assembleur long read populaire capable de traiter des reads ONT et PacBio après HGAP (pour PacBio)}
+Canu \cite{canu} was propose in 2016 is one of the first long reads assembly pipeline it's work with Pacbio and Nanopore reads after HGAP \cite{hgap}
 
-\canu is based on \toolsname{Celera} \cite{celera_first, celera_second}, we can split the \canu pipeline in three step, correction, trimming and assembly, before each step \canu search overlap between reads.
-
-\jsv{Juste avant tu indiques trois étapes, la première est correction, c'est troublant que le titre du premier paragraphe soit Overlapping. J'écrirai we can split the \canu pipeline in three steps, correction, trimming and assembly decribed below. Nevertheless, before each of these steps \canu search overlap between reads. We thus start by explaining how overlaps are computed.}
+\canu is based on \toolsname{Celera} \cite{celera_first, celera_second}, we can split the \canu pipeline in three steps, correction, trimming and assembly described below. Nevertheless, before each of these steps \canu search overlap between reads. We thus start by explaining how overlaps are computed.
 
 \subsection{Overlapping} \label{subsec:sota:canu:overlapping}
 

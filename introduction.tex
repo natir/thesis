@@ -87,7 +87,7 @@ Search of similarity between two or more DNA sequences has many links to plain t
 
 Main tools for mapping and overlapping use seed-and-extend strategy. We can cite \toolsname{Blast} \cite{blast_one, blast_two}, \toolsname{BWA} \cite{bwa_mem}, \toolsname{blasr} \cite{blasr}. Implementation details of index, size and number of anchor change for example \toolsname{BWA}, \toolsname{blasr} use an FM-index \cite{fm-index} to perform anchor search. An is a compressed full-text sub string index based on idea we can use Burrows-Wheeler transform of text as a suffix array to perform an exact text search. 
 
-To found overlap, similar sequence in a read dataset, FM-index was used too, for example \toolsname{SGA} \cite{SGA} to search exact overlap between low error read, by search a sub-sequence at end of read in a FM-index. This is a complete research field with many tools, and specificity of long-reads(length and high error rate) has relaunched this research field, \citeauthor{ovl_bench} produce an interesting review about some of third-generation overlap search in \cite{ovl_bench}. We details some long reads overlapper tools like (\mhap and \minimap) in section \ref{section:sota}.
+To found overlap, similar sequence in a read dataset, FM-index was used too, for example \toolsname{SGA} \cite{SGA} to search exact overlap between low error read, by search a sub-sequence at end of read in a FM-index. This is a complete research field with many tools, and specificity of long-reads(length and high error rate) has relaunched this research field, \citeauthor{ovl_bench} produce an interesting review about some of third-generation overlap search in \cite{ovl_bench}. We details some long reads overlapper tools like (\mhap and \minimap) in section \ref{chapter:sota}.
 
 \section{Assembly algorithm}
 
@@ -267,7 +267,7 @@ Before third generation sequencing the maximum length of read is lower than 2 kb
     \label{intro:fig:whylongreads}
 \end{figure}
 
-Third generation read aren't larger than all repetition but larger than many repetition and they help to produce better genome assembly. Table \ref{intro:tab:sr_lr_assembly} show improvement in term of N50 between short-read assembly and long-read assembly for some case.
+Third generation read aren't larger than all repetition but larger than many repetition and they help to produce better genome assembly. Table \ref{intro:tab:sr_lr_assembly} show improvement in term of N50 between short-read assembly and long-read assembly for some case. 
 
 \begin{table}[]
     \centering
@@ -279,6 +279,8 @@ Third generation read aren't larger than all repetition but larger than many rep
     \caption{N50 scaffold of some genome assembly with short and long reads}
     \label{intro:tab:sr_lr_assembly}
 \end{table}
+
+Moerver \citeauthor{dnAQET} in \cite{dnAQET}, perform an assessment of different version of some wheel know assembly, \citeauthor{dnAQET} notice an important improvement in this assembly after introduction of third generation reads and 10X data (for more information on 10X data read Section \ref{section:other_contribution:10x}).
 
 Recently a high quality human genome assembly (CHM13 cell line), telomere to telomere gaps less assembly, was produce with a combination of Nanopore and Pacbio reads \cite{telomere2telomere}. Author of this paper focus her effort on X chromosome, they reconstruct ~2.8 megabase centromeric satellite DNA array and closed all 29 remaining gaps in the current reference X \textit{H. sapiens} reference. Nanopore data by analysis of raw signal provide an access of DNA methylation this study confirm some previous epigenomic result observe X chromosome.
 
@@ -305,7 +307,7 @@ For example Figure \ref{intro:fig:length_overlap_histogram} show an histogram of
 
 Can we filter overlapping information with a positive (or not very bad) impact on assembly result, to increase speed of assembly and the impact of assembly step on disk space ?
 
-We present our solution of this problem \fpa in section \ref{section:preassembly:yacrd_fpa}, overlaper output can by pipe directly in \fpa (for Filter Pairwise Alignment), \fpa can filter overlap with some filter, length of read, length of overlap, type of overlap, read name. Some simple \fpa filter reduce the computation time of assembly without effect (or a small positif effect) on assembly, read section \ref{section:preassembly:yacrd_fpa} for more details on this tools.
+We present our solution of this problem \fpa in section \ref{section:preassembly:paper}, overlaper output can by pipe directly in \fpa (for Filter Pairwise Alignment), \fpa can filter overlap with some filter, length of read, length of overlap, type of overlap, read name. Some simple \fpa filter reduce the computation time of assembly without effect (or a small positif effect) on assembly, read section \ref{section:preassembly:paper} for more details on this tools.
 
 \subsection{Correction work but not good enough}
 
@@ -331,7 +333,7 @@ Table \ref{intro:tab:correctionvsassemblytime} we can see the correction take mo
 
 Correction of reads before assembly can generate some trouble in assembly and remove some important information. But long-reads still contains very low quality region \cite{blog_post_error_repartition} this region can lead to a fragmented assembly \cite{long_read_assembler_comparison}. An alternative to preassembly correction can be scrubbing, remove only very low quality region and keep all other information.
 
-To found and remove this very low quality region and read we create \yacrd, \yacrd use self overlapping information to compute a coverage curve and identify region with low coverage. We suppose this low coverage region is region with low quality, read section \ref{section:preassembly:yacrd_fpa} for more details on this tools.
+To found and remove this very low quality region and read we create \yacrd, \yacrd use self overlapping information to compute a coverage curve and identify region with low coverage. We suppose this low coverage region is region with low quality, read section \ref{section:preassembly:paper} for more details on this tools.
 
 \subsection{Trouble with heuristic algorithm}
 

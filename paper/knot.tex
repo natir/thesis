@@ -9,7 +9,7 @@
 
 %\subtitle{Sequence analysis}
 
-\section{Graph analysis of fragmented long-read bacterial genome assemblies}
+\section{Graph analysis of fragmented long-read bacterial genome assemblies} \label{section:postassembly:knot}
 
 Pierre Marijon, Rayan Chikhi, and Jean-St\'ephane Varr\'e\
 
@@ -110,7 +110,7 @@ We built a novel \modafterreview{algorithmic} framework to recover some of the '
 First, we eliminate chimeric reads from the raw data based on overlaps found by \minimap using a custom tool\footnote{\small \url{https://gitlab.inria.fr/pmarijon/yacrd}} (manuscript in preparation~\citep{yacrd}, see Supplemental Fig. \ref{fig:appendix:yacrd}).
 %because these chimeras create shortcuts and make paths falsely credible.
 \modafterreview{
-A string graph (SG) is then constructed using overlaps between \modafterreview{chimera-removed} reads \modafterreview{(here, overlaps found by \minimap)}, considering only the subset of reads not fully mapping inside contigs, i.e. just reads mapping to contig extremities (see Supplemental Section \ref{sec:appendix:read_filtering}).
+A string graph (SG) is then constructed using overlaps between \modafterreview{chimera-removed} reads \modafterreview{(here, overlaps found by \minimap)}.%, considering only the subset of reads not fully mapping inside contigs, i.e. just reads mapping to contig extremities (see Supplemental Section \ref{sec:appendix:read_filtering}).
 } %found by \canu (\canu SG) and the other using those found by \minimap (\minimap SG). 
 A stand-alone script was created to convert overlaps from the PAF format (defined in~\cite{miniasm}) to a graph in the GFA format\footnote{\small \url{https://gitlab.inria.fr/pmarijon/fpa}}. 
 Transitive reduction over the edges of this SG is performed using Myers' algorithm~\citep{myers2005fragment}.
@@ -257,14 +257,15 @@ As a side note, a \canu assembly of the same dataset with twice higher read cove
 We performed the same type of analysis on the 45 NCTC samples. A \minimap AAG was constructed for each dataset using SG and \canu contig extremities. Assembly and AAG statistics are presented in Table \ref{tab:file_assembly_and_path_search_resume} for an excerpt of the dataset. 
 \begin{table*}[htbp]
     \centering
-    \small
+    \scriptsize
     \modafterreview{
     \begin{tabular}{l|ccc|ccc|c|cc|ccc}
     \hline
      & \multicolumn{3}{c|}{NCTC contigs} & \multicolumn{3}{c|}{\canu contigs} &
      {\# nodes} &
      \multicolumn{2}{c|}{\# dead-ends in} & \multicolumn{3}{c}{\# edges in AAG} \\
-    NCTC ID & chr & pls & und & chr & pls & und & in AAG & contig graph &  AAG & total & single adjacency & multiple adjacency
+     & & & & & &  & & & & & single & multiple \\
+    NCTC ID & chr & pls & und & chr & pls & und & in AAG & contig graph & AAG & total & adjacency & adjacency
     \\\hline
     NCTC10006 & 1 & 0 & 0 & 3  & 0 & 0 &    4  & 2  & 2 & 4  & 2 & 0 \\
     NCTC10332 & 1 & 0 & 0 & 12 & 0 & 0 &    8  & 8  & 4 & 24 & 0 & 3 \\
