@@ -4,39 +4,39 @@
 
 \chapter{Other contribution}
 
-This chapter haven't any linked to other one they talks about my contribution on some project where I spent some times durring my phd with out sufficient large contribution to have a specific chapter.
+This chapter have not any link to other ones they presents about my contribution on some projects where I spent some time during my PhD without sufficiently large contribution to have a specific chapter.
 
 \section{labsquare}
 
-Labsquare was a community for genomics software, I participate in developpement of two tools.
+Labsquare is a community for genomics software, I participate in developpement of two tools.
 
 \newcommand{\fastqt}{\toolsname{FastQt}}
 \newcommand{\cutevariant}{\toolsname{CuteVariant}}
 
-\paragraph{fastQt} is a rewrite of \toolsname{FastQC} in C++ with framework \toolsname{Qt}. \fastqt was a tool to check the quality of sequencing data by providing some statistics, GC\% distribution, read length distribution, error rate repartition along the length of reads. At the moment \fastqt development was stopped.
-p
-\paragraph{CuteVariant} is a tool to visualize and analyze \toolsname{VCF} (for Variant Call Format) file, this file store variant found between an individual or a dataset of reads against a reference genome. \cutevariant allows selecting annotation, genotype, filter variant, sort and group variants, query variant with \abreviation{VQL} (for Variant Query Language), set operation between VCF file.
-\cutevariant is still in development and it was the subject of a poster during jobim 2019.
+\paragraph{\fastqt} is a rewrite of \toolsname{FastQC} in C++ with the framework \toolsname{Qt}. \fastqt is a tool to check the quality of sequencing data by providing some statistics, GC\% distribution, read length distribution, error rate repartition along the length of reads. At the moment \fastqt development was stopped.
+
+\paragraph{CuteVariant} is a tool to visualize and analyze \toolsname{VCF} (for Variant Call Format) files, these file store variants found between an individual or a dataset of reads against a reference genome. \cutevariant allows selecting annotation, genotype, filter variant, sort and group variants, query variant with \abreviation{VQL} (for Variant Query Language), set operation between VCF file.
+\cutevariant is still in development and it was the subject of a poster during the conference Jobim 2019.
 
 \section{CAMI challenge 2}
 
-\abreviation{CAMI} challenge was an assembly challenge of metagenomics data, I participate in the second edition of CAMI challenge with Camille Marchet, Antoine Limaset, Pierre Peterlongo, Claire Lemaitre and Rayan Chikhi. We try different strategies to perform an assembly of metagenomics dataset.
+\abreviation{CAMI} challenge is a metagenomics assembly challenge, I participate in the second edition of CAMI challenge with Camille Marchet, Antoine Limaset, Pierre Peterlongo, Claire Lemaitre and Rayan Chikhi. We tried different strategies to perform an assembly of metagenomics datasets.
 
 \subsection{Dataset description}
 
-In this challenge, we have two dataset with similar reads composition. A set of Illumina Hiseq like reads and a set of Pacbio like reads, simulated by \toolsname{CAMISIM}\cite{camisim}.
+In this challenge, we have two datasets with similar reads composition. A set of Illumina Hiseq like reads and a set of Pacbio like reads, simulated by \toolsname{CAMISIM}\cite{camisim}.
 
-We have two dataset, Marine Dataset build to correspond to the composition of a metagenomics sequencing of seawater, and Strain Madness Dataset with very important strain-level variation.
+We have two dataset, Marine Dataset built to correspond to the composition of a metagenomics sequencing of seawater, and Strain Madness Dataset with very important strain-level variation.
 
 \subsection{Assembly strategy}
 
-On the one hand we perform a short reads assembly with \toolsname{gatb-pipeline} \footnote{https://github.com/GATB/gatb-minia-pipeline}, it's a multi-kmer size short read assembly based on \toolsname{Bloocoo} \cite{bloocoo} for read correction, \toolsname{Minia 3} \cite{minia, bcalm} for contig assembly and \toolsname{BESST} for scaffolding \cite{besst1, besst2, besst3}.
+On the first hand we perform a short reads assembly with \toolsname{gatb-pipeline} \footnote{https://github.com/GATB/gatb-minia-pipeline}, that is a multi-kmer size short read assembly based on \toolsname{Bloocoo} \cite{bloocoo} for read correction, \toolsname{Minia 3} \cite{minia, bcalm} for contig assembly and \toolsname{BESST} for scaffolding \cite{besst1, besst2, besst3}.
 
-On the second hand, my main contribution in this challenge, we build a long-read assembly pipeline with \toolsname{fmlrc} \cite{fmlrc} a hybrid corrector long-read corrector, and assembly of corrected long read with a pipeline \minimap, \fpa (no internal match and overlap lower than 2000 bases), \miniasm or a \wtdbg assembly. We try to perform read classification before correction and assembly with \toolsname{centrifuge}\cite{centrifuge} to avoid the complexity of metagenomics dataset because our correction assembly tools aren't build to use this type of data, but we didn't use this strategy due to lack of time.
+On the second hand, my main contribution in this challenge, we build a long-read assembly pipeline with \toolsname{fmlrc} \cite{fmlrc} a hybrid long-read corrector, and assembly of corrected long read with a pipeline \minimap, \fpa (no internal match and overlap lower than 2000 bases), \miniasm or a \wtdbg assembly. We try to perform read classification before correction and assembly with \toolsname{centrifuge}\cite{centrifuge} to avoid the complexity of metagenomics dataset because our correction assembly tools are not built to use this type of data, but we did not use this strategy due to lack of time.
 
-Finally, we submit a reconciliation of short reads assembly made by \toolsname{gatb-pipeline} and \wtdbg assembly of corrected long-read, if a short read contigs map in a long reads contigs the short reads contigs were discarded. This strategy should have allowed us to have good quality contigs (from long reads assemblies) on the most present strains without losing the information of the least present strains (contained in the short reads contigs). Indeed, long reads sequencing technologies have lower sequencing depths which can't allow the detection and assembly of the least present strains.
+Finally, we submit a reconciliation of short reads assembly made by \toolsname{gatb-pipeline} and \wtdbg assembly of corrected long-read, if a short reads contig maps in a long reads contig the short reads contigs is discarded. This strategy should have allowed us to have good quality contigs (from long reads assemblies) on the most present strains without losing the information of the least present strains (contained in the short reads contigs). Indeed, long reads sequencing technologies have lower sequencing depths which cannot allow the detection and assembly of the least present strains.
 
-We didn't haven't when we write this document the result of other team or an idea of quality of our assembly.
+When writing this document, we do not have yet the result  of other team or an idea of quality of our assembly.
 
 \section{10X linked-read deconvolution} \label{section:other_contribution:10x}
 
