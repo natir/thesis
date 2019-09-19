@@ -7,15 +7,15 @@
 % Assembly are based on :
 % - reads, reads contains error, this error isn't rept
 % - overlaps
-Assembly are based on reads if your reads are bad your assembly are bad you can't reconstruct the book if the crazy monk give to you only a sequence of letter, with an half of them is an error. Correction of read with a mix of sequencing technology or not, can help you to get better read but actually tools have an important cost in term of computation time and memory usage, moreover it's hard to differentiate natural mutation to sequencing error and sometimes natural interesting mutation was consider as error and corrected.
+Assembly tools are based on reads. If your reads are bad, your assembly will be bad. To continue on the analogy given in the introduction, you probably cannot reconstruct a book if crazy monks gave to you only fragments with half of the letters being erroneous. Correction of reads, with a mix of sequencing technologies (or with a single technology), can help you to get better reads. But actually, correction tools have an important cost in term of computation time and memory usage. Moreover it's hard to differentiate natural mutations (e.g. real SNPs) to sequencing errors, and sometimes interesting mutations are consider as errors and are corrected (thus removed).
 
-With long-read, reads contain many error and these errors are not uniformly distributed in read along the read \cite{blog_post_error_repartition}, these errors make it more difficult to search overlaps between reads and current heuristics can further improve their results on real data \cite{ovl_bench}.
-And in overlap found by this tools not all of them are useful to each downstream analysis, for example \miniasm keep only end to end overlap and \canu two longest end to end overlap for each read (see \ref{chapter:sota} for more details).
+With long-reads, reads contain many errors. These errors are not quite uniformly distributed along the read \cite{blog_post_error_repartition}. This makes it more difficult to search overlaps between reads. Current techniques attempt to optimize results on real data \cite{ovl_bench}.
+Actually, a key observation is that within the overlaps found by state-of-the-art tools, not all of them are useful to downstream analysis. For example \miniasm keeps only end-to-end overlaps, and \canu keeps only the two longest end-to-end overlaps for each read (see \ref{chapter:sota} for more details).
 
-Our paper "\yacrd and \fpa: upstream tools for long-read genome assembly" focus on two tools \yacrd (for Yet Another Chimeric Read Detector) and \fpa (for Filter Pairwise Alignment). \yacrd focus on detection and elimination of very poor quality region, \fpa focus on filtering of overlap.
+Our paper "\yacrd and \fpa: upstream tools for long-read genome assembly" presents two tools, \yacrd (for Yet Another Chimeric Read Detector), and \fpa (for Filter Pairwise Alignment). \yacrd focuses on the detection and elimination of very poor quality regions. \fpa focuses on filtering 'useless' overlaps.
 
-Have better read and no unnecessary overlap can help to produce faster better assembly but if overlapping tools mis an important overlap your assembly can be fragmented.
-In \cite{ovl_bench} \citeauthor{ovl_bench} compare state of the art of overlapper on simulated dataset and on real dataset, a drop in the accuracy and recall of these algorithms can be observed between real and simulated data \ref{preassembly:tab:ovl_result}.
+Having better-quality reads and no unnecessary overlaps can help quickly produce high-quality assemblies. But if overlapping tools miss an important overlap, assembly can be fragmented.
+In \cite{ovl_bench}, \citeauthor{ovl_bench} compare the state of the art of overlappers on simulated datasets and on real datasets. A drop in the accuracy and recall of these algorithms can be observed between real and simulated data \ref{preassembly:tab:ovl_result}.
 
 \begin{table}[ht]
     \centering
@@ -29,10 +29,10 @@ In \cite{ovl_bench} \citeauthor{ovl_bench} compare state of the art of overlappe
     \label{preassembly:tab:ovl_result}
 \end{table}
 
-In the blog post "State-of-the-art long reads overlapper-compare" \footnote{\url{https://blog.pierre.marijon.fr/long-reads-overlapper-compare/}} we take same data as \cite{ovl_bench} but we didn't search if overlapper found good and wrong overlap we search if they found the same overlap. There were differences large enough to justify the idea of creating an overlap reconciler a prototype was created by a master student. 
+In the blog post "State-of-the-art long reads overlappers comparison" \footnote{\url{https://blog.pierre.marijon.fr/long-reads-overlapper-compare/}} we take  the same data as \cite{ovl_bench} but we didn't care if the overlappers found 'right' or 'wrong' overlaps. Instead we search if they found the same overlaps. There were differences large enough to justify the idea of creating an overlap 'reconciliation' step. A prototype was created by a master student. 
 This blog post was present as poster during JOBIM (Journée Ouverte de Bioinformatique \& Mathematique) 2018.
 
-In this chapter we present first \yacrd and \fpa with publication we send to Oxford Bioinformatics journals, and our work on Overlapping consenus.
+In this chapter we present first \yacrd and \fpa, in the form of a publication that has been sent to a journal. And finally, we mention our work on overlappers consensus.
 
 \subfile{paper/yacrd_fpa.tex}
 %\includepdf[pages=-]{paper/yacrd_fpa.pdf}
