@@ -89,7 +89,7 @@ Main tools for mapping and overlapping use seed-and-extend strategy. We can cite
 
 To found overlap, similar sequence in a read dataset, FM-index was used too, for example \toolsname{SGA} \cite{SGA} to search exact overlap between low error read, by search a sub-sequence at end of read in a FM-index. This is a complete research field with many tools, and specificity of long-reads(length and high error rate) has relaunched this research field, \citeauthor{ovl_bench} produce an interesting review about some of third-generation overlap search in \cite{ovl_bench}. We details some long reads overlapper tools like (\mhap and \minimap) in section \ref{chapter:sota}.
 
-\section{Assembly algorithm}
+\section{Algorithms for genome assembly}
 
 If you want study an organism, knowing the complete genome sequence is very useful for a lot of task like find the genes or the sequence variations across a population, understand how speciation affect genome. Yet, the best sequencing technologies still provide reads that are at least 2 orders of magnitude shorter than the genome. To understand the assembly problem, we provide a useful analogy which, to the best of our knowledge, has never been formulated before.
 
@@ -207,7 +207,7 @@ With \DBG strategy we didn't compute overlap between reads, but the length of wo
 
 Moreover the overlap between word in \DBG must exact (without error) and with a fixed length ($k - 1$), these two constraints are particularly problematic when the reads contain a lot of error or when the coverage of the region is low.
 
-\subsection{Graph cleaning}
+\subsection{Algorithms and heuristics to simplify assembly graphs}
 
 Graph structure was usefull to have complete view on all information provide by reads, but having too much information can create problems, slow down the assembly tools and increase their costs in memory or at worst lead to misassembly or to unnecessary fragmentation of the assembly.
 
@@ -252,7 +252,7 @@ We can define a bubble as a set of subpath in graph with same parent and same ch
 
 If bubble are large it can be harder to detect, with small bubble one version of the bubble are kept the choose of the version can be based on random choice or on coverage or other magic tricks.
 
-\section{Why people use long reads}
+\section{The advantages of long reads}
 
 We say in Section \ref{section:introduction:sequencing} the main property of reads technology was length and error rate, the impact of error rate on read mapping and overlap search, was easy to understand, if reads contains many error it's harder to find the good mapping position and overlap.
 
@@ -286,7 +286,7 @@ Recently a high quality human genome assembly (CHM13 cell line), telomere to tel
 
 Long read technology not only help to improvement genome assembly. They also have a important impact in RNA study, sequencing mRNA from begin to end help to detect new isoform and splicing structure, by sequencing without PCR long reads help to remove bias in RNA quantification. But long read sequencing error rate and and large input material requirements (compared with short-read RNA-seq) require new analysis methodology development \cite{review_lr_rna}. 
 
-\section{Assembly Trouble}
+\section{Troubles that occur during the assembly process}
 
 Third generation come with her own trouble, mainly a different error profile many insertion deletion low substitution than previous technology, reads with a different length, this difference required to devllop new tools for this type of data.
 
@@ -301,7 +301,7 @@ For example Figure \ref{intro:fig:length_overlap_histogram} show an histogram of
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{introduction/images/overlap_length.pdf}
-    \caption{Histogram of overlap length found by \minimap, the black line represent the \miniasm length threshold. The fasta file weight 3.1 Go, complete PAF file generate by \minimap weight 5.5 Go, without overlap lower than 2000 bases weight was 3.7 Go.}
+    \caption{Illustration that the correction (CONSENT/Canu/Mecat software) and/or consensus (Canu/wtdbg2 software) steps are time-expensive compared to the time taken to perform an initial assembly (e.g. miniasm software). Histogram of overlap length found by \minimap, the black line represent the \miniasm length threshold. The fasta file weight 3.1 Go, complete PAF file generate by \minimap weight 5.5 Go, without overlap lower than 2000 bases weight was 3.7 Go.}
     \label{intro:fig:length_overlap_histogram}
 \end{figure}
 
@@ -337,7 +337,6 @@ To found and remove this very low quality region and read we create \yacrd, \yac
 
 \subsection{Trouble with heuristic algorithm}
 
-Assembly tools perform a great job, but they can't explore all space.
 Due to memory constraint and cpu usage you can't build and store all overlap.
 Due to theoretical limit, how many of base need to be share between to read to create an overlap how many error we can accept in this overlap.
 
@@ -376,9 +375,15 @@ We notice some times an overlapping tools mis an overlap found by another on and
 
 Analysis and understanding of data produce by assembly tools help to check if assembly result didn't produce false result or to understand and sometimes solve assembly trouble. Some tools use remapping of read against assembled contigs to found misassembly by detect incongruity's in read coverage, mate pairs mapping, read mapping clipping (AMOSvalidate \cite{amosvalidate}).
 Tools estimate the probability of a set reads was generate by sequencing contigs produce by assembly (ALE \cite{ALE}). 
-Some tools or assembly tools was develop with idea to analyses assembly graph to understand what's appening durring assembly we can cite \toolsname{Bandage} \cite{paper/} a tools to visualize assembly graph, and \hinge \cite{hinge} an assembly tools where assembly graph was analyze who tries to find a way to manage repetitions than to break the assembly as soon as there is a fork in assembly graph.
+Some tools or assembly tools was develop with idea to analyses assembly graph to understand what's appening durring assembly we can cite \toolsname{Bandage} \cite{bandage} a tools to visualize assembly graph, and \hinge \cite{hinge} an assembly tools where assembly graph was analyze who tries to find a way to manage repetitions than to break the assembly as soon as there is a fork in assembly graph.
 
 We create \knot a tools to simplify analysis of assembly tools result and help user to make choice for improve assembly quality and found lost link between contigs in assembly. This tool is based on the observation that the graph of raw reads is generally connected (we can reach any node from any node), while the graph of contigs does not necessarily the idea and to use the graph of raw reads to find the links between the contigs, this method was present in section \ref{section:postassembly:knot}.
+
+\section{Thesis outline}
+
+The chapter 1 
+
+
 
 \onlyinsubfile{
 \bibliographystyle{plainnat}
