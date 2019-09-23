@@ -4,6 +4,39 @@
 
 \chapter{Preassembly}\label{chapter:preassembly}
 
+\subsection{How to find similar regions between sequence} 
+
+When two sequences share a common subsequence, we say that they overlap or that one of them maps on the other see \ref{intro:fig:overlap:perfect}. Yet, it possible for sequences to share a common subsequence just because the alphabet has a fixed size, but the probability of this event decreases when the length of the common subsequence increases. Intuitively, this probability gets smaller as common subsequence gets longer. In perfect word, the only criteria to evaluate whether a common subsequence is "real" or not should be the length of this subsequence. However the number of errors in reads sequencing breake this paradigm and forces us to build yet an important factor do consider is that reads contain errors \ref{intro:fig:overlap:erroneous}.
+
+\begin{figure}[ht]
+    \centering
+    \subfloat[ht][$R_1$ shares 7 bases at its end with the beginning of $R_2$, without any error]{
+        \subfile{introduction/tikz/perfect_overlap.tex}
+        \label{intro:fig:overlap:perfect}
+    }
+    \subfloat[ht][$R_1$ shares 5 bases at its end with $R_3$, with one substitution and one deletion]{
+        \subfile{introduction/tikz/erroneous_overlap.tex}
+        \label{intro:fig:overlap:erroneous}
+    }
+    \caption{When reads don't contain error, overlaps look like (a), but sequencing technologies make errors and the overlap present in (b) can be a real overlap.}
+    \label{intro:fig:overlap}
+\end{figure}
+
+In this document we distinguish two tasks in similarity search between two sequences:
+\begin{itemize}
+    \item mapping: when we try to find the position of a read in a larger sequence, reference genome, contigs
+    \item overlapping: when we try to find wich reads share a common subsequence with other reads. 
+\end{itemize}
+When we try to find common subsequences in the same dataset, we use term overlapping. When we try to find common subsequences between different datasets, different sequencing generations or between an assembly and the reads used for this assembly, we use mapping.
+
+Search of similarity between two or more DNA sequences has many links to plain text search.
+
+\paragraph{Seed and extend} to an approch used by many tools to find similar sequences between a target (for exemple a genome reference) and a query (for exemple a read in reads set). Tools create an index of the target, this index need to answer to a simple question this subsequence was present in target and at which position. With this index and for each reads (called query) tools take one or many substring of query and ask index where this substring was present in reference. Tools use this exact match as anchor to run a \citeauthor{smith_waterman}\cite{smith_waterman} dynamic programming alignment between query and target, if the alignment score between is sufficient position and mapping was report.
+
+Main tools for mapping and overlapping use seed-and-extend strategy. We can cite \toolsname{Blast} \cite{blast_one, blast_two}, \toolsname{BWA} \cite{bwa_mem}, \toolsname{blasr} \cite{blasr}. Implementation details of index, size and number of anchor change for example \toolsname{BWA}, \toolsname{blasr} use an FM-index \cite{fm-index} to perform anchor search. An is a compressed full-text sub string index based on idea we can use Burrows-Wheeler transform of text as a suffix array to perform an exact text search. 
+
+To found overlap, similar sequence in a read dataset, FM-index was used too, for example \toolsname{SGA} \cite{SGA} to search exact overlap between low error read, by search a sub-sequence at end of read in a FM-index. This is a complete research field with many tools, and specificity of long-reads(length and high error rate) has relaunched this research field, \citeauthor{ovl_bench} produce an interesting review about some of third-generation overlap search in \cite{ovl_bench}. We details some long reads overlapper tools like (\mhap and \minimap) in section \ref{chapter:sota}.
+
 % Assembly are based on :
 % - reads, reads contains error, this error isn't rept
 % - overlaps
@@ -34,9 +67,6 @@ This blog post was present as poster during JOBIM (Journée Ouverte de Bioinform
 
 In this chapter we present first \yacrd and \fpa, in the form of a publication that has been sent to a journal. And finally, we mention our work on overlappers consensus.
 
-\subfile{paper/yacrd_fpa.tex}
-%\includepdf[pages=-]{paper/yacrd_fpa.pdf}
-
 
 \section{Overlapping consensus}\label{section:preassembly:ovl_consensus}
 
@@ -46,11 +76,63 @@ An interesting result was a lost of precision and recall between synthetic and r
 
 \subfile{paper/blog_post.tex}
 
+\subsection{Conclusion}
+
+For my blog post on overlapping tools comparaison, this preliminary work was continued within the context of a PFE (\textit{Projet de Fin d'Étude} End of Study Projects) with Yann Grabe who created a tool that will build a consensus of several overlap files. For the moment this tool is only a prototype and would still require a lot of work before it can be finalized. Moreover, the interest of a it tools in the context of assembly seems to be reduced indeed more and more assembly tools mix the overlap research and graph construction part. We can see this evolution in the next chapter of this document where we describe some long read assembly pipeline.
+
+\pim{PFE more details, question qu'est-ce qu'un overlap qu'elle niveau de précision necessaire, etc…}
+
+\subsection{Data management}
+
+Sequencing generate more and more data, and long-read sequencing technology work how to increase the throughout of sequencer. Tools around long-read assembly generate more data (overlap, assembly graph, contigs, hétérozygotie), and many times all this data isn't useful for a specific downstream analysis.
+
+For example Figure \ref{intro:fig:length_overlap_histogram} show an histogram of overlap length found by \minimap on \textit{E. coli} Nanopore dataset (acession number SRR8494940), 33 \% of overlap are shorter than 2000 bases. By default \miniasm ignore all overlap shorter than 2000 bases, if we only want run basic \miniasm pipeline 33 \% of this overlap isn't used but it's write on the disk.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{introduction/images/overlap_length.pdf}
+    \caption{Histogram of overlap length found by \minimap, the black line represent the \miniasm length threshold. The fasta file weight 3.1 Go, complete PAF file generate by \minimap weight 5.5 Go, without overlap lower than 2000 bases weight was 3.7 Go.}
+    \label{intro:fig:length_overlap_histogram}
+\end{figure}
+
+Can we filter overlapping information with a positive (or not very bad) impact on assembly result, to increase speed of assembly and the impact of assembly step on disk space ?
+
+We present our solution of this problem \fpa in section \ref{section:preassembly:paper}, overlaper output can by pipe directly in \fpa (for Filter Pairwise Alignment), \fpa can filter overlap with some filter, length of read, length of overlap, type of overlap, read name. Some simple \fpa filter reduce the computation time of assembly without effect (or a small positif effect) on assembly, read section \ref{section:preassembly:paper} for more details on this tools.
+
+\subsection{Correction work but not good enough}
+
+Correction was perprocessing step to found and remove error in reads, this step was particularly important for long-reads data because her error rate was important and can lead to more error and misassembly in assembly. Roughly correction use overlap information to pick other reads share same sequence of a read need to be correct and use all information present sequence to build a consensus, we can cite tools like \toolsname{Mecat}\cite{MECAT}, \toolsname{CONSENT}\cite{CONSENT}. A similar task call polishing, was run after assembly, read are mapped against contig and contig sequence was correct with reads information we can site \toolsname{Racon}\cite{racon} and \toolsname{CONSENT}.
+
+More than read contains error more correction requried many reads, but the sequencing depth is not homogeneous and if for a given region this depth is not sufficient for the corrector, it will be less effective but it could still reduce the sequencing depth by eliminating reads or part of reads. To solve this problem it is necessary either to work without correction or to return to the raw reads to find the lost connection.
+
+At the best of our knowledge the only one reads correctors they try to keept the hetrozygotie during correction is falcon \cite{falcon}, the other didn't try to keep this information. Or heterozygotie are very use full to understand genetic diversity in population or some genetic disease.
+Moreover if you genome contain some almost repetion (two instance of same text with some mutation), the correction maybe can't distinguish the mutation between this two instance to sequencing error and correct the two instance of the almost repetition to the same sequence, so correction can create a repetition that cannot be resolved where there were we have two solvable almost repetitions.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{l|rrr|rrr}
+    & \toolsname{CONSENT} & \canu & \toolsname{Mecat} & \miniasm & \canu & \wtdbg \\ \hline
+    \textit{E. coli} & 16045 & 13070 & \underline{3298} & 128 & \textbf{1160} & 92 \\
+    \textit{S. cerevisiae} & 43686 & 17599 & \underline{4183} & 236 & 2880 & \textbf{2901} \\
+    \end{tabular}
+    \caption{Time and memory usage of three self corrected long reads, compare to two most popular long reads assembly. For \canu we measure separately the correction and the assembly module, on long reads simulated dataset of \textit{E. coli} and \textit{S. cerevisiae}. }
+    \label{intro:tab:correctionvsassemblytime}
+\end{table}
+
+Table \ref{intro:tab:correctionvsassemblytime} we can see the correction take more time than assembly.
+
+Correction of reads before assembly can generate some trouble in assembly and remove some important information. But long-reads still contains very low quality region \cite{blog_post_error_repartition} this region can lead to a fragmented assembly \cite{long_read_assembler_comparison}. An alternative to preassembly correction can be scrubbing, remove only very low quality region and keep all other information.
+
+To found and remove this very low quality region and read we create \yacrd, \yacrd use self overlapping information to compute a coverage curve and identify region with low coverage. We suppose this low coverage region is region with low quality, read section \ref{section:preassembly:paper} for more details on this tools.
+
+
+\subfile{paper/yacrd_fpa.tex}
+%\includepdf[pages=-]{paper/yacrd_fpa.pdf}
+
 \section{Conclusion}
 
 \yacrd and \fpa have an important impact on assembly of \miniasm and \wtdbg. They were well received by the community\yacrd and \fpa was actually used, in some tools and pipeline.
 
-For my blog post on overlapping tools comparaison, this preliminary work was continued within the context of a PFE (\textit{Projet de Fin d'Étude} End of Study Projects) with Yann Grabe who created a tool that will build a consensus of several overlap files. For the moment this tool is only a prototype and would still require a lot of work before it can be finalized. Moreover, the interest of a it tools in the context of assembly seems to be reduced indeed more and more assembly tools mix the overlap research and graph construction part. We can see this evolution in the next chapter of this document where we describe some long read assembly pipeline.
 
 
 \onlyinsubfile{

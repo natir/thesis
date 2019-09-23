@@ -6,6 +6,141 @@
 
 In previous chapter we see how we can clean data before run assembly. In this chapter we present some long-read assembly tools we select this tools because method and algorithm used in it was representative how other tools work in addition, these tools are recognized by the community for their quality. We can see assembly tools can be split in step and between assembly we can found some similarity between step but we can observe in new assembly tools the steps can no longer be separated so easily.
 
+
+
+\subsection{\textit{Greedy} assembly algorithm}
+
+The \textbf{Greedy} assembly algorithm is the first type of assembly tools, used on Sanger data. For example, GigAssembler was used to assemble the first human genome data \cite{GigAssembler}. Algorithm \ref{intro:algo:greedy} present the global idea of how the \textbf{Greedy} algorithm work.
+
+The BEST\_OVERLAP function is the main part of algorithm the best overlap is the larger one or the overlap with less error, each algorithm have her own choose method.
+
+\begin{algorithm}[ht]
+    \caption{A greedy assembly}
+    \begin{algorithmic}[1]
+    \Function{greedy}{reads}\Comment{reads is a set of read}
+        \State choose r1 in reads
+        \State sequence $\leftarrow$ r1
+        \While{r2 $\leftarrow$ \Call{best\_overlap}{r1}}\Comment{\Call{best\_overlap}{\null} is a function for r1 they get read r2 the best overlap for read r1 in reads}
+            \State \Call{concatenate}{sequence, r2}
+            \State \Call{drop}{r1, reads}
+            \State r1 $\leftarrow$ r2
+        \EndWhile
+    \EndFunction
+    \end{algorithmic}
+    \label{intro:algo:greedy}
+\end{algorithm}
+
+Moreover \textbf{Greedy} algorithm, by focusing on the local problem, weach overlap is the best one for this read, can't manage repetition. Genome contains many repetition, like a book some word are reused or complete part of sentence can be present multiple time.
+
+Figure \ref{intro:fig:greedy:repetition} present a case where reads $R_0$ $R_1$ and $R_2$ contains a repetition. $R_0$ have two possible overlap if overlap with $R_1$ is choose the assembly sequence match with the green path, if overlap with $R_2$ is choose the assembly sequence match with the red path. We can't know which path is the good one and we didn't see the repetition. So assembly tools based on \textbf{Greedy} algorithm can produce many misassembly. 
+
+\begin{figure}[ht]
+    \centering 
+    \subfile{introduction/tikz/repetition.tex}
+    \caption{Each black box are a read, the grey box mark the position of a repetition. The begin of $R_1$ and $R_2$ are in repetition they share same begin but didn't match at her end. This repetition create a ambiguity in assembly.}
+    \label{intro:fig:greedy:repetition}
+\end{figure}
+
+\subsection{Overlap Layout Consensus} \label{intro:subsec:OLC}
+
+An alternative to the \textbf{Greedy} approach is the Overlap Graph Consensus (\OLC). We can find a first \OLC definition in \cite{OLC_myers} in 1995. The a probably most popular assembly pipeline based on OLC is Celera \cite{celera_first, celera_second}. This approch is based on a graph where a read is a node and we build an edge between nodes if reads share an overlap. Figure \ref{intro:fig:olc:graph}, present the \OLC corresponding to ovelap present in \ref{intro:fig:greedy:repetition}.
+
+We can see this graph like an ordering of pieces of book provided by a crazy copyist monk. An edge indicates that piece of text was before this piece of text in the original book.
+
+The repetition creates a fork in \OLC, a node with two successor. It's easy to detect this case in the graph and stop this contig construction. The assembly result of this graph is 3 sequences with white node, green node and red node. The assembly is more fragmented than with the \textit{Greedy} algorithm but the assembly does not contain any misassembly.
+
+\begin{figure}[ht]
+    \centering 
+    \subfile{introduction/tikz/overlap_graph.tex}
+    \caption{Each node is a read and an edge is built between two read if they share an overlap.}
+    \label{intro:fig:olc:graph}
+\end{figure}
+
+By analyzing the graph we will be able to detect the paths without branching node in the graph, and reconstruct the corresponding sequence by merging the sequences present in the graph.
+
+\OLC based tools allow to avoid misassemblies but the search for overlap between reads is still expensive in time. The graph construction consumes a lot of memory, and more cleaning steps and graph analysis are expensive in computation time compared to a \textbf{Greedy} approach. 
+
+
+
+\subsection{Algorithms and heuristics to simplify assembly graphs}
+
+Graph structure was usefull to have complete view on all information provide by reads, but having too much information can create problems, slow down the assembly tools and increase their costs in memory or at worst lead to misassembly or to unnecessary fragmentation of the assembly.
+
+\subsubsection{Transitive edge}  \label{intro:subsubsec:transitive_edge}
+
+In Figure \ref{intro:fig:olc:graph} you can notice edge from $R_1$ to read $R_3$, this overlap was exact we can found an overlap between $R_1$ and $R_3$. But this edge didn't provides a new information we know $R_1$ is before $R_3$, this edge was call a transitive edge. More formally we can define a transitive edge, in a directed graph if we have this set of edge $(a, b)$ $(b, c)$ and $(a, c)$ the edge $(a, c)$ is transitive.
+
+\citeauthor{string_graph} propose in \cite{string_graph} another assembly graph the \textbf{string graph} is an overlap graph without transitive edge. The string graph by reduce the number of edge in graph simplify traversing of the graph and memory impact of this one.
+
+With string graph we just need follow simple path (path were all nodes have just one successor), to build assembly without misassembly.
+
+\subsubsection{Contained reads} \label{intro:subsubsec:contained_reads}
+
+In third generation technology, the crazy copyist monk provide fragment with different size and choose the begin of fragment randomly, so it's possible to have a read is contained in another one. All information (kmer or overlap with other reads) in contained reads was present in the container read for assembly task we can remove contained read, and save memory and time.
+
+\subsubsection{Bubble and tips} \label{intro:subsubsec:bubble_tips}
+
+\OLC and \DBG was based on graph, the meaning of nodes and edges are different in this type of graph. But we can found same structure in them, bubbles and tips.
+
+Figure \ref{intro:fig:cleaning}
+
+\begin{figure}[ht]
+    \subfloat[][A example of tips in an assembly graph, the tips node wase represent in read, green, blue and black line underline different possible assembly scenario]{
+        \subfile{introduction/tikz/cleaning_tips.tex}
+        \label{intro:fig:cleaning:tips}
+    }
+    \subfloat[][A example of bubble in an assembly graph, each path was colored in different color. The length of each path can be different and we can have more than two path in bubble]{
+        \subfile{introduction/tikz/cleaning_bubble.tex}
+        \label{intro:fig:cleaning:bubble}
+    }
+    \caption{}
+    \label{intro:fig:cleaning}
+\end{figure}
+
+A tips in an assembly graph is a node with only one edge, a tips can be create by many thing, trouble during DNA extraction, DNA duplication, sequencer create an artifact, a read with to many error ….
+
+As we can see in Figure \ref{intro:fig:cleaning:tips} a tips can create a branching node in middle of simple path, if we keep this tips generally assembly create two contigs one before tips and one after tips (green and blue assembly scenario). If we remove this tips we can run the black scenario.
+
+Its easy to detect and remove tips in graph, in many assembly tools tips are considered as errors and are removed.
+
+We can define a bubble as a set of subpath in graph with same parent and same children, Figure \ref{intro:fig:cleaning:bubble} present an example with two path with same length. The bubble can be create by repetition or heterozygotie one or more version of this sequence contains a substitution or more complex mutation.
+
+If bubble are large it can be harder to detect, with small bubble one version of the bubble are kept the choose of the version can be based on random choice or on coverage or other magic tricks.
+
+\section{The advantages of long reads}
+
+We say in Section \ref{section:introduction:sequencing} the main property of reads technology was length and error rate, the impact of error rate on read mapping and overlap search, was easy to understand, if reads contains many error it's harder to find the good mapping position and overlap.
+
+Reads length have an very important impact on assembly quality \citeauthor{Bresler_Tse} in \cite{Bresler_Tse} introduce a notion of genome assembly \textbf{feasibility}, it's possible to reconstruct the genome from a reads set with this length and this coverage. To summarize very roughly, to get a good assembly reads need bridge must of repetion, so reads must be larger than the largest repetition. This idea was extend to reads with error in \cite{feasibility_with_error} and demonstrate we need increase coverage when error rate increase.
+
+Before third generation sequencing the maximum length of read is lower than 2 kb (for Sanger read) or a majority of repetition in genome are larger than this length. \citeauthor{one_chromosome_one_contig} in \cite{one_chromosome_one_contig} indicate a theoretical length of read to obtain a perfect genome assembly for bacteria, read need to be upper than 7 kb, this limit not work in all practical case. If read are longer than repetition read can have a sufficient length before repetition cover all repetition and sufficient length after repetition we can solve the repetition see Figure \ref{intro:fig:whylongreads}.
+
+\begin{figure}[ht]
+    \centering
+    \subfile{introduction/tikz/whyrepetition.tex}
+    \caption{We have a part of assembly graph (\OLC or \DBG), node \texttt{R} represent a repetition node \texttt{A}, \texttt{B}, \texttt{C}, \texttt{D} represent basic sequence. Red, purple, green and blue line represent reads. Red read was larger than repetition and span over it and indicate $A_1 \rightarrow A_2 \rightarrow R \rightarrow C_1 \rightarrow C_2$ was a good path, with out this read we can solve this repetition.}
+    \label{intro:fig:whylongreads}
+\end{figure}
+
+Third generation read aren't larger than all repetition but larger than many repetition and they help to produce better genome assembly. Table \ref{intro:tab:sr_lr_assembly} show improvement in term of N50 between short-read assembly and long-read assembly for some case. 
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{c|lll}
+        Species & Short read N50 (bp) & Long read N50 (bp) & factor \\ \hline
+        \textit{Gorilla gorilla gorilla} & 913,458 \cite{gorilla_sr_assembly} & 23,141,960 \cite{gorilla_genome} & 25 \\
+        \textit{Schistosoma japonicum} & 176,869 \cite{s_japonicum_sr_assembly} & 1,093,989 \cite{s_japonicum_3rd_gene_improvement} & 6 \\
+    \end{tabular}
+    \caption{N50 scaffold of some genome assembly with short and long reads}
+    \label{intro:tab:sr_lr_assembly}
+\end{table}
+
+Moerver \citeauthor{dnAQET} in \cite{dnAQET}, perform an assessment of different version of some wheel know assembly, \citeauthor{dnAQET} notice an important improvement in this assembly after introduction of third generation reads and 10X data (for more information on 10X data read Section \ref{section:other_contribution:10x}).
+
+Recently a high quality human genome assembly (CHM13 cell line), telomere to telomere gaps less assembly, was produce with a combination of Nanopore and Pacbio reads \cite{telomere2telomere}. Author of this paper focus her effort on X chromosome, they reconstruct ~2.8 megabase centromeric satellite DNA array and closed all 29 remaining gaps in the current reference X \textit{H. sapiens} reference. Nanopore data by analysis of raw signal provide an access of DNA methylation this study confirm some previous epigenomic result observe X chromosome.
+
+Long read technology not only help to improvement genome assembly. They also have a important impact in RNA study, sequencing mRNA from begin to end help to detect new isoform and splicing structure, by sequencing without PCR long reads help to remove bias in RNA quantification. But long read sequencing error rate and and large input material requirements (compared with short-read RNA-seq) require new analysis methodology development \cite{review_lr_rna}. 
+
 \section{A Pipeline with correction \canu} \label{section:sota:canu}
 
 Canu \cite{canu} was propose in 2016 is one of the first long reads assembly pipeline it's work with Pacbio and Nanopore reads after HGAP \cite{hgap}
@@ -151,6 +286,27 @@ Figure \ref{sota:fig:miniasm:ovl_classification} show some example of this overl
 Very recently, another assembly tool \toolsname{Ra}\cite{Ra} was a create to replace \miniasm in \minimap \miniasm pipeline. \toolsname{Ra} use an analysis of coverage curve of each reads to trimm not supported region, detect chimera and repeat region. Overlap on region marked as repeat are marked in string graph and not trusted. \toolsname{Ra} perform a real consensus step and run many polishing step with \toolsname{Racon}. According to the authors and another study\cite{long_read_assembler_comparison}, Ra performs good assembly on bacteria and plant genome assembly the overlap step still can be optimize in term of memory usage and computation time.
 
 \section{\DBG like long reads assembly approach} \label{section:sota:wtdbg}
+
+\DBG tools try to speed up assembly by simplify the overlap search step. This method was proposed in \toolsname{EULER} \cite{eulerian_approach}.
+
+This approach is based on a DeBruijn Graph (or \DBG). For an alphabet with $n$ symbols a \DBG represents each word of length $k$ as node and builds a directed edge if node share $k - 1$ symbol at them extremities. For example, in Figure \ref{intro:fig:dbg:graph}, node \texttt{ATCG} and \texttt{TCGG} share \texttt{TCG}. A word of length $k$ is called a \kmer.
+
+In assembly problems, $n = 4$ (${A, C, T, G}$), and we can choose a value of k between 1 and the read length. In practice, this size is often smaller than the size of a read the choice of the right values of k, depending on the use that we will have of the \DBG could be the subject of a complete thesis.
+
+To build the \DBG we choose a value of $k$ and we add all \kmer present in reads in the \DBG. The \DBG used in assembly contains only \kmer present in dataset not all possible \kmer, and edge can be only edge present in dataset or all possible edges.
+
+\begin{figure}[ht]
+    \center
+    \subfile{introduction/tikz/debruijn_graph.tex}
+    \caption{We have a dataset of 4 reads with length equal to 7, we choose a value equal to 4, kmer was present under each read. A \DBG build from this kmer set was present under kmer, each node was a kmer and if a word share $k - 1$ symbol at is end with $k - 1$ symbol at begin of another node we build a directed edge. This \DBG contains cycle this cycle probably match with a repetition in original sequence}
+    \label{intro:fig:dbg:graph}
+\end{figure}
+
+Like \OLC we can detect repetition by inspect the number of successor of a node Figure \ref{intro:fig:dbg:graph} present a \DBG with a repetition. After build the \DBG we can follow the simple path to rebuild the original sequence.
+
+With \DBG strategy we didn't compute overlap between reads, but the length of word in graph was shorter. And all repetition with a size upper than $k$ create cycle in the graph and fragment the assembly.
+
+Moreover the overlap between word in \DBG must exact (without error) and with a fixed length ($k - 1$), these two constraints are particularly problematic when the reads contain a lot of error or when the coverage of the region is low.
 
 \DBG approach was used succesfly for short-read assembly we can cite tools \toolsname{Spades} \cite{spades}, \toolsname{Minia} \cite{minia} and \toolsname{Megahit}\cite{megahit} but this technics isn't very efficient for long reads assembly:
 \begin{itemize}
