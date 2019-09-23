@@ -4,6 +4,30 @@
 
 \chapter{Post Assembly} \label{chapter:postassembly}
 
+\section{Assembly evaluation} 
+
+To compare and evaluate assembly, different metrics whe developed. The most common metric used is N50.
+To compute N50, take a list of your contigs length and sort them. When the cumulative sum of contigs is larger than the sum of all contigs, the length the last added contig is the N50 value. For example, $L$ is the sorted list of contigs length: 
+\begin{equation}
+\begin{aligned}
+L &= \{20, 30, 40, 50, 70, 80\} \\
+L_{sum} &= \sum\limits_{i=0}^{|L|} L_i = 290 \\
+\frac{290}{2} &> 20 + 30 + 40 + 50 \\
+\frac{290}{2} &< 20 + 30 + 40 + 50 + 70\\
+\end{aligned}
+\end{equation}
+
+70 was the last length added in cumulative length before this cumulative length is larger than half of the total sum of assembly. N25, N75 or NX correspond to the same metrics as N50 for 25\%, 75\%, or X\% of total length of contigs. L50 is the position of the N50 contig in $L$.
+
+NG50 is the same thing as N50, but the total sum of contigs length is replaced by the genome length (estimate or get from a previous assembly). NGA50 is the same as NG50, but the contigs length is replaced by the length of contig that map against the reference genome. We can cite U50 as another metric similar to N50 where overlapping region between contigs was ignored \cite{U50}.
+
+N50 family metrics are not perfect, but they help to represent the contigs length distribution, and to compare the results of different assembly tools on the same dataset. N50 is useful to analyze assembly quality without any external information.
+
+By adding other information, we can evaluate assembly not only on size of contigs. \toolsname{BUSCO}\cite{busco} evaluates the assembly completeness with the presence or the absence of core genes. By mapping contigs against reference genome or close reference genome, \toolsname{Quast}\cite{quast} computes many metrics like the number of misassembly, NGA50, the identity level of contigs, …. 
+
+Some other tools and techniques exist and is usefull. Some of them was present in more details publication \cite{seq_assembly_demystified}
+
+\subfile{paper/misassemblies-in-noisy-assemblies.tex}
 
 \subsection{Trouble with heuristic algorithm}
 
@@ -67,7 +91,7 @@ The paper was publish originally publish in Bioinformatics (\url{https://doi.org
 
 \subfile{paper/knot.tex}
 
-\subfile{paper/misassemblies-in-noisy-assemblies.tex}
+
 
 \section{Conclusion}
 
