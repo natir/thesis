@@ -4,6 +4,23 @@
 
 \chapter{Preassembly}\label{chapter:preassembly}
 
+After sequencing and before assembly, we can perform some operation to improve quality of reads and quality of assembly. For example we can :
+\begin{itemize}
+    \item remove too short reads (less than 500 base 1000 bases or 2000 bases)
+    \item find and remove the sequencing adaptor, sequencing adaptor was a short sequence added before DNA fragment this short sequence is required for some biochemical consideration, but they can create trouble in assembly
+    \item found highly erroneous regions of reads and replace it by more correct one, this operation is called scrubbing
+    \item correct reads, with information of other sequencing technology or with same technology we can try to found and remove sequencing error
+\end{itemize}
+
+But one operation is generaly perform before scrubbing, correction or assembly, this operation was the search of overlap. Found overlap between reads was an hard task, and found overlap between reads with an high error rate was harder. 
+
+To perform overlapping many tools was design but still plenty of room for improvement exist on real read dataset for example. The two first section of this chapter present with more details and a comparaison of different overlapping tools.
+
+Correction and scrubbing seeks to perform the same task to reduce the error rate of reads, scrubbingy work on large region (around ten or hundred base), and correction work on one base level. This difference of precision create an important difference in term of computation time and memory usage, section three and fourth describe the interest of scrubbing in relation to the correction and the scrubbing tools we have created.
+
+\pim{fpa}
+
+
 \section{How to find similar regions between sequence} 
 
 As we define in previous chapter when two sequences share a common subsequence, we say that they overlap or that one of them maps on the other see \ref{intro:fig:overlap:perfect}. But, it possible for sequences to share a common subsequence just because the alphabet has a fixed size, but the probability of this event decreases when the length of the common subsequence increases. Intuitively, this probability gets smaller as common subsequence gets longer. In perfect word, the only criteria to evaluate whether a common subsequence is "real" or not should be the length of this subsequence. However the number of errors in reads sequencing break this paradigm and forces us to build yet an important factor do consider is that reads contain errors \ref{intro:fig:overlap:erroneous}.

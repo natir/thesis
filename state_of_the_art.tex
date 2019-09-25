@@ -184,7 +184,7 @@ Some correction tools such as \toolsname{falcon\_sense} use a Partial Order Alig
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{state_of_the_art/images/POA_explain.pdf}
-    \caption{A sequence that needed to be corrected was represented by a graph, each base was a node and if a base was followed by another one a directed edge was built. (b) was the representation of sequence \texttt{ATATTAGGC} (called backbone in this figure), (b) We add the result of alignment of one read in the graph, number upper than edge was her weigth if and edge exist in some 3 alignment her weight was egal to 3, (c) We add all other alignments in the graph, (d) the bold path was chosen as the correct path because it was supported by more alignments. This figure was originally present in Supplementary material of \hgap \cite{hgap}}
+    \caption{A sequence that needed to be corrected was represented by a graph, each base was a node and if a base was followed by another one a directed edge was built. (b) was the representation of sequence \texttt{ATATTAGGC} (called backbone in this figure), (b) We add the result of alignment of one read in the graph. The number upper than edge was her weigth if and edge exist in some 3 alignment her weight was egal to 3, (c) We add all other alignments in the graph, (d) the bold path was chosen as the correct path because it was supported by more alignments. This figure was originally present in Supplementary material of \hgap \cite{hgap}}
     \label{sota:fig:canu:correction}
 \end{figure}
 
@@ -196,22 +196,22 @@ The trimming step will remove the parts of the reads that are not supported by t
 \begin{figure}[ht]
     \centering
     \subfile{state_of_the_art/tikz/trimming.tex}
-    \caption{Black arrow line was the path chosen by \canu, the other line was a read mapped against this path, the blue box indicates a repeat region. In case \texttt{A} the purple read spans all the repetition and indicates that the path chosen by \canu was the good one. In case \texttt{B} no read spans the repetition and the purple read have non-congruent overlaps between the red and blue reads, so \canu needs to break the path in order not to create a misassembly}
+    \caption{The black line is a read, the \canu trimming step keeps only the blue part of read $R_0$, part covered by other read.}
     \label{sota:fig:canu:trimming}
 \end{figure}
 
 \subsection{Assembly}
 
-\canu assembly step is based on the \OLC paradigm (see Section \ref{intro:subsec:OLC} for a definition of \OLC), with some specificities. \canu builds a Best Overlap Graph (BOG) for each non-contained read only two overlaps are kept in the graph, the best overlap for each read extremity, in \canu the best overlap was the longest overlap. Use of a BOG instead of a classic \OLC graph is an aggressive strategy, in BOG we cannot observe a transitive edge and the number of edges was equal bound by the number of node. We avoid a cleaning step and reduce the memory impact of the graph. Once this graph construction step is performed, a clean step is run, removing tips and little bubbles (see Section \ref{intro:subsubsec:bubble_tips}).
+The assembly step in \canu pipeline is based on the \OLC paradigm (see Section \ref{intro:subsec:OLC} for a definition of \OLC), with some specificities. \canu builds a Best Overlap Graph (BOG) for each non-contained read only two overlaps are kept in the graph, the best overlap for each read extremity, in \canu the best overlap was the longest overlap. Use of a BOG instead of a classic \OLC graph is an aggressive strategy, in BOG we cannot observe a transitive edge and the number of edges is bound by the number of node. We avoid a cleaning step and reduce the memory impact of the graph. Once this graph construction step is performed, a clean step is run, removing tips and little bubbles (see Section \ref{intro:subsubsec:bubble_tips}).
 
-This BOG was used as a scaffold to generate assembly. By remapping read against this scaffold, \canu tries to detect repetition, larger than read not show in BOG as loop, and to call read to build a consensus after. Each simple path in BOG was used to build a contig. 
+This BOG was used as a scaffold to generate assembly. By remapping read against this scaffold, \canu tries to detect repetition, larger than read not show in BOG as loop. This mapping is used after to build the consensus sequence of contigs. Each simple path in BOG was used to build a contig. 
 
 By remapping reads on the BOG \canu can build a consensus and detect repetitions not observed in the graph. BOG was an aggressive strategy to avoid transitive edge and reduce graph size but they can mask an edge denote a repetition this check was required to.
 
 \begin{figure}[ht]
     \centering
     \subfile{state_of_the_art/tikz/BOG_remapping.tex}
-    \caption{The black line is a read, the \canu trimming step keeps only the blue part of read $R_0$, part covered by other read.}
+    \caption{Black arrow line was the path chosen by \canu, the other line was a read mapped against this path, the blue box indicates a repeat region. In case \texttt{A} the purple read spans all the repetition and indicates that the path chosen by \canu was the good one. In case \texttt{B} no read spans the repetition and the purple read have non-congruent overlaps between the red and blue reads, so \canu needs to break the path in order not to create a misassembly}
     \label{sota:fig:canu:remapping}
 \end{figure}
 
@@ -308,7 +308,7 @@ Moreover the overlap between words in \DBG must exact (without error) and with a
 The \DBG approach was used successfuly for short-read assembly. We can mention the tools \toolsname{Spades} \cite{spades}, \toolsname{Minia} \cite{minia} and \toolsname{Megahit}\cite{megahit} but these methods are not very efficient for long reads assembly:
 \begin{itemize}
     \item reads contain a high error rate and therefore finding error-free kmers was hard, these errors can lead to expand the size of the graph and or mis-connection between part of graph.
-    \item the size of the kmer was generally less than 100 bases and it was difficult to manage larger without using of a lot of memory; moreover, \DBG does not manage repetition larger kmer.
+    \item the size of the kmer was generally less than 100 bases and it was difficult to manage larger without using of a lot of memory.
 \end{itemize}
 
 If we use \DBG naively for long read assembly, we can miss the main advantage of long-reads: their length.
@@ -317,13 +317,13 @@ If we use \DBG naively for long read assembly, we can miss the main advantage of
 
 \subsection{\flye}
 
-\flye\cite{Flye} was based on \abruijn\cite{abruijn} assembly tools. \abruijn did not use a \DBG but a similar concept a \abreviation{ABG}, instead of using a set of kmers as nodes, \abreviation{ABG} uses a set of chosen kmers, instead of building an edge between each kmer they share a k-1 overlap, they build an edge with a weight equal to the distance of kmer in the original string between without creating a transitive edge.
+\flye\cite{Flye} was based on \abruijn\cite{abruijn} assembly tools. \abruijn did not use a \DBG but a similar concept a \abreviation{ABG}, instead of using a set of kmers as nodes, \abreviation{ABG} uses a set of chosen kmers, instead of building an edge between each kmer they share a k-1 overlap, they build an edge with a weight equal to the distance of kmer in the read without creating a transitive edge.
 
 To build the chosen \kmers set, \abruijn selects kmers present many times in the dataset. These kmers are called in many tools \textit{solid} \kmers \jsv{citer le papier qui introduit la notion de solid kmer} \pim{Sa existe ? demander a Rayan}. The more present a \kmer is in the dataset, the more confident you can be that the \kmer does not contain a sequencing error. If the genome coverage is 40x we can hope see \kmer, not include in a repetition, 40 times. Because when we sequence at 40x, we do not actually read each base 40 times; and when a sequence error appears, we lose an occurrence of the kmers where this base was present. Choosing the number of times a kmer has to be present in the dataset to be \textit{solid} was a difficult task.
 
 This modification helps to clean sequencing error, but reduces the set of kmer fragments the \DBG graphs. This is why \abreviation{ABG} creates edges not only when kmers share a k-1 overlap. 
 
-During the \abreviation{ABG} construction, \abruijn stores which read generates which graph path. This structure was useful to find quick overlaps between reads. Reads participating in the same path of \abreviation{ABG} probably have the same sequence, so they probably share an overlap. To build contigs, \abruijn takes a read $R_1$ found all overlap with help of \abreviation{ABG} if this local overlap graph didn't denote a fork, we have one read without successor and all reads have path in graph to this read, \abruijn extend the contig.
+During the \abreviation{ABG} construction, \abruijn stores which read generates which graph path. This structure was useful to find quick overlaps between reads. Reads participating in the same path of \abreviation{ABG} probably have the same sequence, so they probably share an overlap. To build contigs, \abruijn takes a read found all overlap with help of \abreviation{ABG}. If this local overlap graph didn't denote a fork (we have one read without successor and all reads have path in the local overlap graph to this read), \abruijn extend the contig.
 
 \abruijn can be roughly summed up as mix of all the assembly strategies, using \DBG to find overlaps between reads, building contigs by extension as with \textit{greedy} method but using \OLC to make sure they do not integrate a repetition and a potential missassembly in contigs.
 
