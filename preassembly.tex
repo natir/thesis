@@ -114,18 +114,7 @@ More than read contains error more correction required many reads, but the seque
 At the best of our knowledge the only one reads correctors they try to keept the hetrozygotie during correction is falcon \cite{falcon}, the other didn't try to keep this information. Or heterozygotie are very use full to understand genetic diversity in population or some genetic disease.
 Moreover if you genome contain some almost repetion (two instance of same text with some mutation), the correction maybe can't distinguish the mutation between this two instance to sequencing error and correct the two instance of the almost repetition to the same sequence, so correction can create a repetition that cannot be resolved where there were we have two solvable almost repetitions.
 
-\begin{table}[ht]
-    \centering
-    \begin{tabular}{l|rrr|rrr}
-    & \toolsname{CONSENT} & \canu & \toolsname{Mecat} & \miniasm & \canu & \wtdbg \\ \hline
-    \textit{E. coli} & 16045 & 13070 & \underline{3298} & 128 & \textbf{1160} & 92 \\
-    \textit{S. cerevisiae} & 43686 & 17599 & \underline{4183} & 236 & 2880 & \textbf{2901} \\
-    \end{tabular}
-    \caption{Time and memory usage of three self corrected long reads, compare to two most popular long reads assembly. For \canu we measure separately the correction and the assembly module, on long reads simulated dataset of \textit{E. coli} and \textit{S. cerevisiae}. }
-    \label{intro:tab:correctionvsassemblytime}
-\end{table}
-
-Table \ref{intro:tab:correctionvsassemblytime} we can see the correction take more time than assembly. Morever correction of reads before assembly can generate some trouble in assembly by remove some important read. But long-reads still contains very low quality region \cite{blog_post_error_repartition} this region can lead to a fragmented assembly \cite{long_read_assembler_comparison}. An alternative to preassembly correction can be scrubbing, remove only very low quality region and keep all other information.
+Correction of reads before assembly can generate some trouble in assembly by remove some important read. But long-reads still contains very low quality region \cite{blog_post_error_repartition} this region can lead to a fragmented assembly \cite{long_read_assembler_comparison}. An alternative to preassembly correction can be scrubbing, remove only very low quality region and keep all other information.
 
 To found and remove this very low quality region and read we create \yacrd (for Yet Another Chimeric Read Detector), \yacrd use self overlapping information to compute a coverage curve and identify region with low coverage. We suppose this low coverage region is region with low quality, read section \ref{section:preassembly:paper} for more details on this tools.
 
