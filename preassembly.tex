@@ -4,7 +4,7 @@
 
 \chapter{Preassembly}\label{chapter:preassembly}
 
-A key concept of assembly is the detection of overlaps between reads. Computing overlaps is done before an assembly algorithm is applied and can thus be considered as a preassembly task, even if some assembly pipelines compute overlaps several times. Computing overlaps is a hard task, even harder with high error rate reads. A number of tools have been designed in the last decade, with their own definition of what is an 'good' overlap. The section \ref{sec:preasm:ovl} gives a short overview of how overlapper work. The next section (\ref{sec:preasm:blog_post}) about comparison of overlaps found by state-of-the-art overlappers for long read data. 
+A key concept of assembly is the detection of overlaps between reads. Computing overlaps is done before an assembly algorithm is applied and can thus be considered as a preassembly task, even if some assembly pipelines compute overlaps several times. Computing overlaps is a hard task, even harder with high error rate reads. A number of tools have been designed in the last decade, with their own definition of what is an 'good' overlap. The section \ref{sec:preasm:ovl} gives a short overview of how overlapper work. The next section (\ref{sec:preasm:blog_post}) discusses about comparison of overlaps found by state-of-the-art overlappers for long read data. 
 
 \bigskip
 
@@ -16,10 +16,9 @@ After sequencing a usual task is to clean the set of reads, e.g.
 or perform some operations to improve the quality of reads, e.g.
 \begin{itemize}
 	\item found highly erroneous regions of reads and replace them by more correct one, this operation is called \emph{scrubbing}
-	\item correct reads using information from other sequencing technology (this is called hybrid assembly) or with same technology, this operation is called \emph{correction} 
+	\item correct reads using information from other sequencing technology (this is called hybrid correction) or with same technology, this operation is called \emph{correction} 
 \end{itemize}
-This will finally improve the quality of the assembly or help the task of assembly (e.g. by reducing the number of overlaps). 
-
+This will finally improve the quality of the assembly or help the task of assembly (e.g. by reducing the number of false overlaps). 
 Overlaps are required for many task with third generation reads, but all this task didn't required the same information. Overlapping tools didn't know what you do with these overlap, they report all information (it's a good think) but overlap information can became very large and for some large dataset exceeded the Terra byte. In section \ref{sec:preasm:intro_fpa} we introduce in more details this trouble and the solution we have design.
 
 Correction and scrubbing seeks to perform the same target, reduce the error rate of reads, scrubbing work on large region (around ten or hundred base), and correction work at the level of one base. This difference of scale create an important difference in term of computation time and memory usage. But this difference can also have an impact on variant information. Section \ref{sec:preasm:yacrd} describe the interest of scrubbing in relation to the correction.
