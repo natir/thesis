@@ -19,15 +19,15 @@ or perform some operations to improve the quality of reads, e.g.
 	\item correct reads using information from other sequencing technology (this is called hybrid correction) or with same technology, this operation is called \emph{correction} 
 \end{itemize}
 This will finally improve the quality of the assembly or help the task of assembly (e.g. by reducing the number of false overlaps). 
-Overlaps are required for many task with third generation reads, but all this task didn't required the same information. Overlapping tools didn't know what you do with these overlap, they report all information (it's a good think) but overlap information can became very large and for some large dataset exceeded the Terra byte. In section \ref{sec:preasm:intro_fpa} we introduce in more details this trouble and the solution we have design.
+Overlaps are required for many tasks with third generation reads, but none of these tasks require exactly the same information. Overlapping tools didn't know what you do with these overlap, they report all information (it's a good thing) but overlap information can became very large to store and for some large dataset exceeded the Terra byte. In section \ref{sec:preasm:intro_fpa} we introduce in more details this trouble and the solution we have design.
 
-Correction and scrubbing seeks to perform the same target, reduce the error rate of reads, scrubbing work on large region (around ten or hundred base), and correction work at the level of one base. This difference of scale create an important difference in term of computation time and memory usage. But this difference can also have an impact on variant information. Section \ref{sec:preasm:yacrd} describe the interest of scrubbing in relation to the correction.
+Correction and scrubbing seeks to perform the same target, reduce the error rate of reads, scrubbing work on large region (around ten or hundred bases), and correction work at the level of one base. This difference of scale create an important difference in terms of computation time and memory usage. But this difference can also have an impact on variant information. Section \ref{sec:preasm:yacrd} describe the interest of scrubbing in relation to the correction.
 
-Our work on the selection of overlap and on scrubbing tools was merge in a paper present in section \ref{section:preassembly:paper}.
+Our work on the selection of overlap and on scrubbing tools was merged in a paper presented in section \ref{section:preassembly:paper}.
 
 \section{How to find similar regions between sequence} \label{sec:preasm:ovl}
 
-As we defined in the introduction, when two sequences share a common subsequence, we say that they overlap or that one of them maps on the other see \ref{intro:fig:overlap:perfect}. It is possible for sequences to share a common subsequence just by chance (because of the 4-letter alphabet) but the probability of this event decreases when the length of the common subsequence increases. Intuitively, this probability gets smaller as common subsequence gets longer. In perfect world, the only criteria to evaluate whether a common subsequence is "real" or not should be the length of this subsequence. However the number of errors in reads sequencing breaks this paradigm and forces us to build yet an important factor do consider is that reads contain errors \ref{intro:fig:overlap:erroneous}.
+As we defined in the introduction, when two sequences share a common subsequence, we say that they overlap or that one of them maps on the other see \ref{intro:fig:overlap:perfect}. It is possible for sequences to share a common subsequence just by chance (because of the 4-letter alphabet) but the probability of this event decreases when the length of the common subsequence increases. Intuitively, this probability gets smaller as common subsequence gets longer. If the reads does not contain sequencing errors, the only criteria to evaluate whether a common subsequence is "true" or not should \jsv{should or could} be the length of this subsequence. However the number of errors in reads sequencing breaks this paradigm and forces us to build yet an important factor do consider is that reads contain errors \ref{intro:fig:overlap:erroneous}.\jsv{je ne comprends pas la fin de la phrase}
 
 \begin{figure}[ht]
     \centering
@@ -39,22 +39,29 @@ As we defined in the introduction, when two sequences share a common subsequence
         \subfile{introduction/tikz/erroneous_overlap.tex}
         \label{intro:fig:overlap:erroneous}
     }
-    \caption{When reads don't contain error, overlaps look like (a), but sequencing technologies make errors and the overlap present in (b) can be a real overlap.}
+    \caption{When reads don't contain error, overlaps look like (a), but sequencing technologies make errors and the overlap present in (b) can be a true overlap.}
     \label{intro:fig:overlap}
 \end{figure}
 
 In this document we distinguish two tasks in similarity search between two sequences:
 \begin{itemize}
-    \item mapping: when we try to find the position of a read in a larger sequence, reference genome, contigs
-    \item overlapping: when we try to find wich reads share a common subsequence with other reads. 
+    \item mapping: one tries to find the position of a read in a larger sequence (e.g. comparing different datasets, experiments from different sequencing generations, or between the reads and an assembly, against a reference genome)
+    \item overlapping: one tries to find which reads share a common subsequence with other reads (e.g. finding common subsequences in the same dataset) 
 \end{itemize}
-When we try to find common subsequences in the same dataset, we use term overlapping. When we try to find common subsequences between different datasets, different sequencing generations or between an assembly and the reads used for this assembly, we use mapping.
+Even if mapping and overlapping can be seen as different tasks, one could observe that the same tools, and underlying algorithmic, can be used to solve both tasks.
 
+
+
+\paragraph{The seed-and-extend strategy.} 
 Search of similarity between two or more DNA sequences has many links to plain text search.
+Seed-and-extend is an approach used by many tools to find similar sequences between a target (e.g. a reference genome) and a query (e.g. a read). The idea is to find a high similar subsequence (often exact), namely the seed (or anchor), and then to extend this seed to have a larger common subsequence. Tools that implement this approach usually create an index of the target. This index need to answer to a simple question: is a given subsequence exist in target and at which position. Each query is processed and its substrings are searched in the index. This gives a set of seeds that can be extended through alignment techniques such as dynamic programming. If the alignment score reaches a given threshold, a hit is reported.
 
-\paragraph{Seed and extend} is an approach used by many tools to find similar sequences between a target (for exemple a genome reference) and a query (for exemple a read in reads set). Tools create an index of the target, this index need to answer to a simple question this subsequence was present in target and at which position. With this index and for each reads (called query) tools take one or many substring of query and ask index where this substring was present in reference. Tools use this exact match as anchor to run a \citeauthor{smith_waterman}\cite{smith_waterman} dynamic programming alignment between query and target, if the alignment score between is sufficient position and mapping was report.
+Many tools for mapping and overlapping use seed-and-extend strategy. The most popular is \toolsname{Blast} \cite{blast_one, blast_two}. Specific tools dedicated to sequencing are \toolsname{BWA} \cite{bwa_mem} or \toolsname{blasr} \cite{blasr}. Implementation details of indexes, size and number of anchors change between tools. For example \toolsname{BWA} or \toolsname{blasr} use a FM-index \cite{fm-index} to perform anchor search. An is a compressed full-text sub string index based on idea we can use Burrows-Wheeler transform of text as a suffix array to perform an exact text search. \jsv{je ne vois pas ce qu'apporte la dernière phrase}
 
-Main tools for mapping and overlapping use seed-and-extend strategy. We can cite \toolsname{Blast} \cite{blast_one, blast_two}, \toolsname{BWA} \cite{bwa_mem}, \toolsname{blasr} \cite{blasr}. Implementation details of index, size and number of anchor change for example \toolsname{BWA}, \toolsname{blasr} use an FM-index \cite{fm-index} to perform anchor search. An is a compressed full-text sub string index based on idea we can use Burrows-Wheeler transform of text as a suffix array to perform an exact text search. 
+
+\paragraph{The seeds only strategy.}
+
+\jsv{c'est ici qu'on dit que les strategies ont evolue avec les NGS}
 
 To found overlap, similar sequence in a read dataset, FM-index was used too, for example \toolsname{SGA} \cite{SGA} to search exact overlap between low error read, by search a sub-sequence at end of read in a FM-index. This is a complete research field with many tools, and specificity of long-reads(length and high error rate) has relaunched this research field, \citeauthor{ovl_bench} produce an interesting review about some of third-generation overlap search in \cite{ovl_bench}. We details some long reads overlapper tools like (\mhap and \minimap) in section \ref{chapter:sota}.
 
