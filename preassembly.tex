@@ -4,19 +4,27 @@
 
 \chapter{Preassembly}\label{chapter:preassembly}
 
-After sequencing and before assembly, we can perform some operation to improve quality of reads and quality of assembly. For example we can :
-\begin{itemize}
-    \item remove too short reads (less than 500 base 1000 bases or 2000 bases)
-    \item find and remove the sequencing adaptor, sequencing adaptor was a short sequence added before DNA fragment this short sequence is required for some biochemical consideration, but they can create trouble in assembly
-    \item found highly erroneous regions of reads and replace it by more correct one, this operation is called scrubbing
-    \item correct reads, with information of other sequencing technology or with same technology we can try to found and remove sequencing error
-\end{itemize}
-
-But one operation is generaly perform before scrubbing, correction or assembly, this operation was the search of overlap. Found overlap between reads was an hard task, and found overlap between reads with an high error rate was harder. 
+A key concept of assembly is the detection of overlaps between reads. Computing overlaps is done before an assembly algorithm is applied and can thus be considered as a preassembly task, even if some assembly pipelines compute overlaps several times. Computing overlaps is a hard task, even harder with high error rate reads. A number of tools have been designed in the last decade, with their own definition of what is an 'good' overlap. The first section of this chapter gives a short overview of how overlapper work. The next section discusses about comparison of overlaps found by state-of-the-art overlappers for long read data. 
 
 To perform overlapping many tools was design but still plenty of room for improvement exist on real read dataset for example. The section \ref{sec:preasm:ovl} and \ref{sec:preasm:blog_post} of this chapter present with more details the overlapping trouble and a comparaison of different thrid generation overlapping tools.
 
 Overlaps are required for many task with third generation reads, but all this task didn't required the same information. Overlapping tools didn't know what you do with these overlap, they report all information (it's a good idea) but overlap information can became very large and for some large dataset exceeded the Terra byte. In section \ref{sec:preasm:intro_fpa} we introduce in more details this trouble and the solution we have design.
+
+\bigskip
+
+After sequencing a usual task is to clean the set of reads, e.g.
+\begin{itemize}
+	\item remove too short reads (less than 500~bp, 1000~bp or even 2000~bp)
+	\item find and remove the sequencing adaptors (that is a short sequence added before DNA fragment, this short sequence is required for some biochemical consideration, but they can create trouble in assembly)
+\end{itemize}
+or perform some operations to improve the quality of reads, e.g.
+\begin{itemize}
+	\item found highly erroneous regions of reads and replace them by more correct one, this operation is called \emph{scrubbing}
+	\item correct reads using information from other sequencing technology (this is called hybrid assembly) or with same technology, this operation is called \emph{correction} 
+\end{itemize}
+This will finally improve the quality of the assembly or help the task of assembly (e.g. by reducing the number of overlaps). 
+
+Correction and scrubbing seeks to perform the same task: reduce the error rate of reads. Scrubbing works on large regions (around ten or hundred bases), but correction works at the base level. This difference makes the problem very different from a computational point of view. Section three and fourth describe the interest of scrubbing in relation to the correction and the scrubbing tools we have created.
 
 Correction and scrubbing seeks to perform the same target, reduce the error rate of reads, scrubbing work on large region (around ten or hundred base), and correction work at the level of one base. This difference of scale create an important difference in term of computation time and memory usage. But this difference can also have an impact on variant information. Section \ref{sec:preasm:yacrd} describe the interest of scrubbing in relation to the correction.
 
@@ -24,7 +32,7 @@ Our work on the selection of overlap and on scrubbing tools was merge in a paper
 
 \section{How to find similar regions between sequence} \label{sec:preasm:ovl}
 
-As we define in previous chapter when two sequences share a common subsequence, we say that they overlap or that one of them maps on the other see \ref{intro:fig:overlap:perfect}. But, it possible for sequences to share a common subsequence just because the alphabet has a fixed size, but the probability of this event decreases when the length of the common subsequence increases. Intuitively, this probability gets smaller as common subsequence gets longer. In perfect word, the only criteria to evaluate whether a common subsequence is "real" or not should be the length of this subsequence. However the number of errors in reads sequencing break this paradigm and forces us to build yet an important factor do consider is that reads contain errors \ref{intro:fig:overlap:erroneous}.
+As we defined in the introduction, when two sequences share a common subsequence, we say that they overlap or that one of them maps on the other see \ref{intro:fig:overlap:perfect}. It is possible for sequences to share a common subsequence just by chance (because of the 4-letter alphabet) but the probability of this event decreases when the length of the common subsequence increases. Intuitively, this probability gets smaller as common subsequence gets longer. In perfect world, the only criteria to evaluate whether a common subsequence is "real" or not should be the length of this subsequence. However the number of errors in reads sequencing breaks this paradigm and forces us to build yet an important factor do consider is that reads contain errors \ref{intro:fig:overlap:erroneous}.
 
 \begin{figure}[ht]
     \centering
