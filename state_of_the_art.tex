@@ -4,7 +4,7 @@
 
 \chapter{Long reads assembly tools state of the art}\label{chapter:sota}
 
-In the previous chapter we have seen how we can clean data before run assembly. In this chapter we present methods to perform an assembly and how this methods was applied on long-read assembly tools we select this tools because method and algorithm used in it was representative how other tools work in addition, these tools are recognized by the community for their quality. We can see assembly tools can be split in step and between assembly we can found some similarity between step but we can observe in new assembly tools the steps can no longer be separated so easily.
+In the previous chapter we have seen how we can clean data before running assembly. In this chapter we present methods to perform an assembly and how this methods was applied on long-read assembly tools we select this tools because method and algorithm used in it was representative how other tools work in addition, these tools are recognized by the community for their quality. We can see assembly tools can be split in step and between assembly we can found some similarity between step but we can observe in new assembly tools the steps can no longer be separated so easily.
 
 \section{\textit{Greedy} assembly algorithm}
 
@@ -35,7 +35,7 @@ Figure \ref{intro:fig:greedy:repetition} presents a case where reads $R_0$, $R_1
 \begin{figure}[ht]
     \centering 
     \subfile{introduction/tikz/repetition.tex}
-    \caption{Each black box is a read, the grey box marks the position of a repetition. The beginning of $R_1$ and $R_2$ are in repetition: they share the same beginning but do not match at her end. This repetition creates an ambiguity in assembly.}
+    \caption{Each black box is a read, the grey box marks the position of a repetition. The beginning of $R_1$ and $R_2$ are in repetition: they share the same beginning but do not match at their ends. This repetition creates an ambiguity in assembly.}
     \label{intro:fig:greedy:repetition}
 \end{figure}
 
@@ -43,7 +43,7 @@ Figure \ref{intro:fig:greedy:repetition} presents a case where reads $R_0$, $R_1
 
 An alternative to the \textbf{Greedy} approach is the Overlap Layout Consensus (\OLC). We can find a first definition of \OLC in \cite{OLC_myers} in 1995. The most popular assembly pipeline based on OLC is probably Celera \cite{celera_first, celera_second}. This approach is based on a graph where a read is a node and we build an edge between nodes if reads share an overlap. Figure \ref{intro:fig:olc:graph}, presents the \OLC corresponding to the overlap seen in \ref{intro:fig:greedy:repetition}.
 
-We can see this graph as an ordering of pieces of book provided by a crazy scribe. An edge indicates that piece of text was before this piece of text in the original book.
+We can see this graph as an ordering of the chapters of a book provided by a crazy scribe. An edge indicates this piece of text was before that piece of text in the original book.
 
 The repetition creates a fork in \OLC, a node with two successors. It's easy to detect this case in the graph and stop this contig construction. The assembly result of this graph is 3 sequences with white nodes, green nodes and red nodes. The assembly is more fragmented than with the \textit{Greedy} algorithm but does not contain any misassembly.
 
@@ -54,7 +54,7 @@ The repetition creates a fork in \OLC, a node with two successors. It's easy to 
     \label{intro:fig:olc:graph}
 \end{figure}
 
-By analyzing the graph we will be able to detect the paths without branching node in the graph, and reconstruct the corresponding sequence by merging the sequences present in the graph.
+By analyzing the graph, we will be able to detect the paths without branching node and to reconstruct the corresponding sequence by merging the sequences present in the graph.
 
 \OLC-based tools help to avoid misassemblies but the search for overlaps between reads is still time-expensive. The graph construction consumes a lot of memory, and more cleaning steps and graph analysis are expensive in computation time compared to a \textbf{Greedy} approach. 
 
@@ -64,9 +64,9 @@ The graph structure was useful to get a comprehensive view of all the informatio
 
 \subsubsection{Transitive edge}  \label{intro:subsubsec:transitive_edge}
 
-In Figure \ref{intro:fig:olc:graph} you can notice the edge from $R_1$ to read $R_3$, this overlap was exact we can found an overlap between $R_1$ and $R_3$. But this edge did not provide new information we know $R_1$ is before $R_3$, this edge was called a transitive edge. We can give a more formal definition of a transitive edge: in a directed graph, if we have a set of edges $(a, b)$ $(b, c)$ and $(a, c)$, the edge $(a, c)$ is transitive.
+In Figure \ref{intro:fig:olc:graph} you can notice the edge from $R_1$ to read $R_3$, this overlap is exact. We can find an overlap between $R_1$ and $R_3$. But this edge does not provide new information, we know $R_1$ is before $R_3$, this edge is called a transitive edge. We can give a more formal definition of a transitive edge: in a directed graph, if we have a set of edges $(a, b)$ $(b, c)$ and $(a, c)$, the edge $(a, c)$ is transitive.
 
-\citeauthor{string_graph} proposed in \cite{string_graph} another assembly graph, the \textbf{string graph}, which is an overlap graph with no transitive edge. By reducing the number of edges in the graph, the string graph simplifies traversing of the graph and decreases the memory impact.
+\citeauthor{string_graph} proposed in \cite{string_graph} another assembly graph, the \textbf{string graph}, which is an overlap graph with no transitive edge. By reducing the number of edges in the graph, the string graph simplifies the traversing of the graph and decreases the memory impact.
 
 With string graphs, we just need to follow a simple path (a path in which each node has only one successor) to build assembly without misassembly.
 
@@ -97,17 +97,17 @@ As we can see in Figure \ref{intro:fig:cleaning:tips} a tip can create a branchi
 
 It is easy to detect and remove tips in a graph. In many assembly tools, tips are considered as errors and are removed.
 
-We can define a bubble as a set of subpaths in a graph with the same parent and the same children. Figure \ref{intro:fig:cleaning:bubble} gives an example with two paths of equal length. The bubble can be created by repetition or heterozygosity one or more version of this sequence contains a substitution or more complex mutation.
+We can define a bubble as a set of subpaths in a graph with the same parent and the same children. Figure \ref{intro:fig:cleaning:bubble} gives an example with two paths of equal length. The bubble can be created by repetition or heterozygosity \otherp{la suite de la phrase, c'est l'explication de l'hétérozygotie ?} one or more version of this sequence contains a substitution or a more complex mutation.
 
-Larger bubbles can be harder to detect, with small bubble one version of the bubble are kept the choose of the version can be based on random choice or on coverage or other specific tricks.
+Larger bubbles can be harder to detect. With smaller bubble, only one version of the path is kept, the choice can be random or based on coverage or another other specific method.
 
 \section{The advantages of long reads}
 
-We said in Section \ref{section:introduction:sequencing}, that the main property of reads technology was length and error rate, the impact of error rate on read mapping and overlap search, was easy to understand. If reads contain a lot of errors, it is harder to find the right mapping position and overlap.
+We said in Section \ref{section:introduction:sequencing}, that the main properties of reads technology are length and error rate. The impact of error rate on read mapping and overlap search, was easy to understand. If reads contain a lot of errors, it is harder to find the right mapping position and overlap.
 
-Reads length has a very important impact on assembly quality. \citeauthor{Bresler_Tse} in \cite{Bresler_Tse} introduce the notion of genome assembly \textbf{feasibility}, whether it is possible to reconstruct the genome from a reads set with a given length and a given coverage. To summarize very roughly, to get a good assembly reads need bridge must of repetition, so reads must be larger than the largest repetition. The idea was extend to reads with error in \cite{feasibility_with_error} and demonstrate we need increased coverage when the error rate increases.
+Reads length has a very important impact on assembly quality. \citeauthor{Bresler_Tse} in \cite{Bresler_Tse} introduce the notion of genome assembly \textbf{feasibility}, whether it is possible to reconstruct the genome from a reads set with a given length and a given coverage. To summarize very roughly, to get a good assembly reads need to bridge the repetition, so reads must be larger than the largest repetition. The idea was extended to reads with errors in \cite{feasibility_with_error} and demonstrated that we need increased coverage when the error rate increases.
 
-Before third generation sequencing, the maximum length of a read was less than 2 kb (for a Sanger read) but a majority of repetitions in the genome are larger than this length. \citeauthor{one_chromosome_one_contig} in \cite{one_chromosome_one_contig} indicate a theoretical length of read that is necessary to obtain a perfect genome assembly; for bacteria, a read needs to be over 7 kb – but this limit does not work in all concrete situations. If reads are longer than repetitions, reads can have a sufficient length before repetition cover all repetition and sufficient length after repetition we can solve the repetition see Figure \ref{intro:fig:whylongreads}.
+Before third generation sequencing, the maximum length of a read was less than 2 kb (for a Sanger read) but a majority of repetitions in the genome are longer than this. \citeauthor{one_chromosome_one_contig} in \cite{one_chromosome_one_contig} indicate a theoretical length of read that is necessary to obtain a perfect genome assembly; for bacteria, a read needs to be over 7 kb – but this limit does not work in all concrete situations. \otherp{Petit doute sur cette phrase, y a trop de « repetition » et c'est pas clair}If reads are longer than repetitions, reads can have a sufficient length before repetition cover all repetition and sufficient length after repetition we can solve the repetition see Figure \ref{intro:fig:whylongreads}.
 
 \begin{figure}[ht]
     \centering
@@ -129,9 +129,9 @@ Third generation reads are not larger than all repetitions, but they are larger 
     \label{intro:tab:sr_lr_assembly}
 \end{table}
 
-Moreover, \citeauthor{dnAQET} in \cite{dnAQET} perform an assessment of different versions of some wheel know assembly. \citeauthor{dnAQET} notice an important improvement in this assembly after the introduction of third generation reads and 10X data (for more information on 10X data read Section \ref{section:other_contribution:10x}).
+Moreover, \citeauthor{dnAQET} in \cite{dnAQET} perform an assessment of different versions of well known assemblies. \citeauthor{dnAQET} notice an important improvement in this assembly after the introduction of third generation reads and 10X data (for more information on 10X data read Section \ref{section:other_contribution:10x}).
 
-Recently a high quality human genome assembly (CHM13 cell line), telomere to telomere gaps less assembly, was produced with a combination of Nanopore and Pacbio reads \cite{telomere2telomere}. The authors of this paper focused their efforts on X chromosome, reconstructed a ~2.8 megabase centromeric satellite DNA array and closed all 29 remaining gaps in the current X \textit{H. sapiens} reference. Nanopore data by analysis of raw signal provides an access of DNA methylation. This study confirm previous epigenomic results observed on the X chromosome.
+Recently a high quality human genome assembly (CHM13 cell line), telomere to telomere gapless assembly, was produced with a combination of Nanopore and Pacbio reads \cite{telomere2telomere}. The authors of this paper focused their efforts on X chromosome, reconstructed a ~2.8 megabase centromeric satellite DNA array and closed all 29 remaining gaps in the current X \textit{H. sapiens} reference. Nanopore data by analysis of raw signal provides an access to DNA methylation. This study confirm previous epigenomic results observed on the X chromosome.
 
 Long read technology not only helps to improve genome assembly, it also has a significant impact on RNA study. Sequencing mRNA from beginning to end helps to detect new isoforms and splicing structures, by sequencing without PCR long reads help to remove bias in RNA quantification. But long read sequencing error rate and large input material requirements (compared with short-read RNA-seq) require new analysis methodology development \cite{review_lr_rna}. 
 
@@ -162,18 +162,18 @@ J(A,B) = \frac{|A \cap B|}{|A \cup B|} \approx \frac{|S(A \cup B) \cap S(A) \cap
 
 $S(A)$ is a \kmers set composed by $s$ first \kmers of set $A$. \citeauthor{mash_distance} evaluate the error between mash distance and Jaccard distance is in $\mathcal{O}(\frac{1}{\sqrt{s}})$, by default in \mhap $s=512$ so the error is smaller than 0.05.
 
-In \mhap order \kmer with a \texttt{tf-idf} score, see equation \ref{sota:equ:tf_idf_def}. The \texttt{tf-idf} score come for text search domain. \texttt{tf-idf} evaluates if this term is specific to this document. \texttt{tf} for term frequency indicates if the term is present many times in the document, $n_{i,j}$ how many time the term $i$ is present in document $j$ divide by the number of term in document $j$. \texttt{idf} for inverse document frequency evaluates if the term is present in many documents or just a few, $|\mathcal{D}|$ is the number of documents in the dataset divided by $|\{d_{j}:t_{i}\in d_{j}\}|$, the number of documents where the term $i$ is present.
+In \mhap order \kmer with a \texttt{tf-idf} score, see equation \ref{sota:equ:tf_idf_def}. The \texttt{tf-idf} score comes from the field of text search. \texttt{tf-idf} evaluates if this term is specific to this document. \texttt{tf} for term frequency indicates if the term is present many times in the document, $n_{i,j}$ is how many time the term $i$ is present in document and is $j$ divided by the number of terms in document $j$. \texttt{idf} for inverse document frequency evaluates if the term is present in many documents or just a few, $|\mathcal{D}|$ is the number of documents in the dataset divided by $|\{d_{j}:t_{i}\in d_{j}\}|$, the number of documents where the term $i$ is present.
 
 \begin{equation}
 \mathrm{tf-idf_{i,j}} = \mathrm{tf_{i,j}} \cdot \mathrm{idf_{i}} = \frac{n_{i,j}}{\sum_{k}n_{k,j}} \cdot \log{\frac  {|\mathcal{D}|}{|\{d_{j}:t_{i}\in d_{j}\}|}}
 \label{sota:equ:tf_idf_def}
 \end{equation}
 
-In \mhap term was \kmer and document was read, this technique allows to reduce the number of \kmer in a set and keep \kmer specific to a read. If two reads share specific \kmer they probably share a common part.
+In \mhap, terms are \kmer and documents are reads, this technique allows to reduce the number of \kmer in a set and keep \kmer specific to a read. If two reads share specific \kmer they probably share a common part.
 
 If two reads have a small mash distance, \mhap compares the position of each \kmer in reads to determinate the overlap position.
 
-The size of \kmer is very important to if k is too large many \kmer contain errors the size of intersection is reduced and \mhap can miss overlap. Moreover, size of sketch has a huge impact. If it is too small, the read is sub-sample. If it is too large, compute mash distance takes more time, but with long-reads dataset the length of reads can be very different and choosing a good sketch size for this type of data is not easy. To find the optimal value for these two variable, the authors of \mhap perform many empirical tests.
+The size of \kmer is very important as well. If k is too large, many \kmer contain errors, the size of intersection is reduced and \mhap can miss the overlap. Moreover, size of sketch has a huge impact. If it is too small, the read is sub-sample. If it is too large, compute mash distance takes more time, but with long-reads dataset the length of reads can be very different and choosing a good sketch size for this type of data is not easy. To find the optimal value for these two variable, the authors of \mhap perform many empirical tests.
 
 \subsection{Correction}
 
@@ -184,7 +184,7 @@ Some correction tools such as \toolsname{falcon\_sense} use a Partial Order Alig
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{state_of_the_art/images/POA_explain.pdf}
-    \caption{A sequence that needed to be corrected was represented by a graph, each base was a node and if a base was followed by another one a directed edge was built. (b) was the representation of sequence \texttt{ATATTAGGC} (called backbone in this figure), (b) We add the result of alignment of one read in the graph. The number upper than edge was her weigth if and edge exist in some 3 alignment her weight was egal to 3, (c) We add all other alignments in the graph, (d) the bold path was chosen as the correct path because it was supported by more alignments. This figure was originally present in Supplementary material of \hgap \cite{hgap}}
+    \caption{A sequence that needed to be corrected was represented by a graph, each base was a node and if a base was followed by another one a directed edge was built. (b) was the representation of sequence \texttt{ATATTAGGC} (called backbone in this figure), (b) We add the result of the alignment of one read in the graph. The number above the edge is its weight. If an edge exists in 3 alignments, its weight is equal to 3, (c) We add all other alignments in the graph, (d) the bold path was chosen as the correct path because it was supported by more alignments. This figure was originally present in Supplementary material of \hgap \cite{hgap}}
     \label{sota:fig:canu:correction}
 \end{figure}
 
@@ -196,17 +196,17 @@ The trimming step will remove the parts of the reads that are not supported by t
 \begin{figure}[ht]
     \centering
     \subfile{state_of_the_art/tikz/trimming.tex}
-    \caption{The black line is a read, the \canu trimming step keeps only the blue part of read $R_0$, part covered by other read.}
+    \caption{The black line is a read, the \canu trimming step keeps only the blue parts of read $R_0$, the parts that are covered by other reads.}
     \label{sota:fig:canu:trimming}
 \end{figure}
 
 \subsection{Assembly}
 
-The assembly step in \canu pipeline is based on the \OLC paradigm (see Section \ref{intro:subsec:OLC} for a definition of \OLC), with some specificities. \canu builds a Best Overlap Graph (BOG) for each non-contained read only two overlaps are kept in the graph, the best overlap for each read extremity, in \canu the best overlap was the longest overlap. Use of a BOG instead of a classic \OLC graph is an aggressive strategy, in BOG we cannot observe a transitive edge and the number of edges is bound by the number of node. We avoid a cleaning step and reduce the memory impact of the graph. Once this graph construction step is performed, a clean step is run, removing tips and little bubbles (see Section \ref{intro:subsubsec:bubble_tips}).
+The assembly step in \canu pipeline is based on the \OLC paradigm (see Section \ref{intro:subsec:OLC} for a definition of \OLC), with some specificities. \canu builds a Best Overlap Graph (BOG) for each non-contained read only two overlaps are kept in the graph, the best overlap for each read extremity, in \canu the best overlap was the longest overlap. Use of a BOG instead of a classic \OLC graph is an aggressive strategy, in BOG we cannot observe a transitive edge and the number of edges is limited by the number of nodes. We avoid a cleaning step and reduce the memory impact of the graph. Once this graph construction step is performed, a clean step is run, removing tips and little bubbles (see Section \ref{intro:subsubsec:bubble_tips}).
 
-This BOG was used as a scaffold to generate assembly. By remapping read against this scaffold, \canu tries to detect repetition, larger than read not show in BOG as loop. This mapping is used after to build the consensus sequence of contigs. Each simple path in BOG was used to build a contig. 
+This BOG was used as a scaffold to generate assembly. By remapping the reads against this scaffold, \canu tries to detect larger-than-read repetitions, which do not show as loops in BOG. Afterwards, this mapping is used to build the consensus sequence of contigs. Each simple path in BOG was used to build a contig.
 
-By remapping reads on the BOG \canu can build a consensus and detect repetitions not observed in the graph. BOG was an aggressive strategy to avoid transitive edge and reduce graph size but they can mask an edge denote a repetition this check was required to.
+By remapping reads on the BOG, \canu can build a consensus and detect repetitions not observed in the graph. BOG was an aggressive strategy to avoid transitive edge and reduce graph size, but it could hide an edge that would have indicated a repetition. This check was required too.
 
 \begin{figure}[ht]
     \centering
@@ -217,7 +217,7 @@ By remapping reads on the BOG \canu can build a consensus and detect repetitions
 
 \section{Pipeline without correction \miniasm} \label{section:sota:miniasm}
 
-\minimap and \miniasm was an assembly pipeline proposed in \cite{miniasm_minimap} and \cite{minimap2}, the main purpose of this pipeline is to demonstrate that we can perform a long read assembly without correct long read before.
+\minimap and \miniasm are an assembly pipeline proposed in \cite{miniasm_minimap} and \cite{minimap2}, the main purpose of this pipeline is to demonstrate that we can perform a long read assembly without correcting the long reads before.
 
 The miniasm pipeline is more simple than the canu pipeline because it does not incorporate correction and consensus building. It is made of steps:
 \begin{itemize}
@@ -238,11 +238,11 @@ A minimal kmer is, for a set of consecutive kmer, the one that minimizes its sco
 \begin{figure}[ht]
     \centering
     \subfile{state_of_the_art/tikz/minimizer.tex}
-    \caption{The red kmer has the lowest score of the red window, so it is the minimizer of this window. But when window slice on the blue kmer this one has a lower score, the blue kmer become the minimizer of this window.}
+    \caption{The red kmer has the lowest score of the red window, so it is the minimizer of this window. But when the window slice arrives on the blue kmer, this one has a lower score, the blue kmer become the minimizer of this window.}
     \label{sota:fig:miniasm:minimizer}
 \end{figure}
 
-The minimal \kmer can represent many other reads, this technique can be compared to a loosly compression.
+The minimal \kmer can represent many other reads, this technique can be compared to a lossy compression.
 
 \minimap builds an index in which each minimizer is associated to the reads where a minimizer is present and the position of the minimizer in the reads.
 
@@ -273,14 +273,14 @@ For each read \miniasm performs coverage analysis of reads based on mappings ide
 Each overlap was classified in three categories, in order to keep only true end-to-end overlaps to build the \OLC and filter out containment reads:
 \begin{itemize}
     \item internal match, this type of overlap probably corresponds to a repetition smaller than reads length
-    \item containment, a read of this overlap was contains in the other read it's same sequence
+    \item containment, a read of this overlap is contained in the other read, it is the same sequence
     \item dovetail, it is an end-to-end overlap
 \end{itemize}
 Figure \ref{sota:fig:miniasm:ovl_classification} shows examples of these overlaps. Containment read was removed, only dovetail overlap was used to build the overlap graph. Tips, small bubbles and transitive edges were removed after this step. \miniasm takes each simple path and concatenates substring of read between the beginning and the first position of overlap.
 
 \miniasm was design to work on uncorrected reads and did not perform a consensus step, so contigs generated by \miniasm contains many errors and cannot be used directly. We can run the \minimap \miniasm pipeline with corrected read and a polishing tool on contigs generated by \miniasm.
 
-Very recently, another assembly tool \toolsname{Ra}\cite{Ra} was a created to replace \miniasm in \minimap \miniasm pipeline. \toolsname{Ra} uses an analysis of coverage curve of each read to trim not supported region like \miniasm but they include the detection of chimera and repeat region. Overlaps on region marked as repeat are marked in a string graph and not trusted. \toolsname{Ra} performs a real consensus step and runs many polishing step with \toolsname{Racon}. According to the authors and to another study\cite{long_read_assembler_comparison}, Ra performs good assembly on bacteria and plant genome assembly the overlap step still can be optimize in term of memory usage and computation time.
+Very recently, another assembly tool \toolsname{Ra}\cite{Ra} was a created to replace \miniasm in \minimap \miniasm pipeline. \toolsname{Ra} uses an analysis of coverage curve of each read to trim non-supported regions (like \miniasm does) it includes the detection of chimera and repeated regions. Overlaps on regions marked as repeated are marked in a string graph and not trusted. \toolsname{Ra} performs a real consensus step and runs many polishing step with \toolsname{Racon}. According to the authors and to another study\cite{long_read_assembler_comparison}, Ra performs good assembly on bacteria and plant genome, but the overlap step still could still be optimized in terms of memory usage and computation time.
 
 \section{\DBG like long reads assembly approach} \label{section:sota:wtdbg}
 
@@ -295,7 +295,7 @@ To build the \DBG we chose a value for $k$ and added all \kmer present in reads 
 \begin{figure}[ht]
     \center
     \subfile{introduction/tikz/debruijn_graph.tex}
-    \caption{We have a dataset of 4 reads with length equal to 7, we choose a value equal to 4, kmer was present under each read. A \DBG built from this kmer set is present under kmer, each node is a kmer and if a word shares $k - 1$ symbol at its end with $k - 1$ symbols at the beginning of another node, we build a directed edge. This \DBG contains a cycle. This cycle probably matches a repetition in the original sequence.}
+    \caption{We have a dataset of 4 reads with length equal to 7, we choose a value equal to 4, kmer are present under each read. A \DBG built from this kmer set is present under \otherp{il manque sans doute un petit mot}kmer, each node is a kmer and if a word shares $k - 1$ symbol at its end with $k - 1$ symbols at the beginning of another node, we build a directed edge. This \DBG contains a cycle. This cycle probably matches a repetition in the original sequence.}
     \label{intro:fig:dbg:graph}
 \end{figure}
 
@@ -303,44 +303,44 @@ Like \OLC we can detect repetition by inspecting the number of successors of a n
 
 With the \DBG strategy we did not compute overlaps between reads, but the word length in the graph was shorter. And all repetitions with a size greater than $k$ create a cycle in the graph and fragment the assembly.
 
-Moreover the overlap between words in \DBG must exact (without error) and with a fixed length ($k - 1$). These two constraints are particularly problematic when the reads contain a lot of errors or when the coverage of the region is low.
+Moreover the overlap between words in \DBG must be exact (there must be no error) and with a fixed length ($k - 1$). These two constraints are particularly problematic when the reads contain a lot of errors or when the coverage of the region is low.
 
-The \DBG approach was used successfuly for short-read assembly. We can mention the tools \toolsname{Spades} \cite{spades}, \toolsname{Minia} \cite{minia} and \toolsname{Megahit}\cite{megahit} but these methods are not very efficient for long reads assembly:
+The \DBG approach was used successfully for short-read assembly. We can mention the tools \toolsname{Spades} \cite{spades}, \toolsname{Minia} \cite{minia} and \toolsname{Megahit}\cite{megahit} but these methods are not very efficient for long reads assembly:
 \begin{itemize}
-    \item reads contain a high error rate and therefore finding error-free kmers was hard, these errors can lead to expand the size of the graph and or mis-connection between part of graph.
-    \item the size of the kmer was generally less than 100 bases and it was difficult to manage larger without using of a lot of memory.
+    \item reads contain a high error rate and therefore finding error-free kmers was hard, these errors can lead to expand the size of the graph or misconnections between parts of graph.
+    \item the size of the kmer was generally less than 100 bases and it was difficult to manage larger ones without using of a lot of memory.
 \end{itemize}
 
 If we use \DBG naively for long read assembly, we can miss the main advantage of long-reads: their length.
 
-\flye and \wtdbg use the \DBG approach with some modifications to adapt the idea to long-read assembly. \flye creates a A-Bruijn Graph (\abreviation{ABG}), in which an edge does not signal an overlap with a k-1 length between nodes but the overlap can be shorter. In \wtdbg method kmer are replaced with k-bin where a bin is a substring (256 bases of length by default) of reads, and is generated between k-bin if they are successive in a read.
+\flye and \wtdbg use the \DBG approach with some modifications to adapt the idea to long-read assembly. \flye creates a A-Bruijn Graph (\abreviation{ABG}), in which an edge does not signal an overlap with a k-1 length between nodes but the overlap can be shorter. In the \wtdbg, method kmer are replaced with k-bin, where a bin is a substring (256 bases of length by default) of reads, \otherp{là on perd un peu le fil de qui est le sujet}and is generated between k-bin if they are successive in a read.
 
 \subsection{\flye}
 
-\flye\cite{Flye} was based on \abruijn\cite{abruijn} assembly tools. \abruijn did not use a \DBG but a similar concept a \abreviation{ABG}, instead of using a set of kmers as nodes, \abreviation{ABG} uses a set of chosen kmers, instead of building an edge between each kmer they share a k-1 overlap, they build an edge with a weight equal to the distance of kmer in the read without creating a transitive edge.
+\flye\cite{Flye} was based on \abruijn\cite{abruijn} assembly tools. \abruijn did not use a \DBG but a similar concept: a \abreviation{ABG}. Instead of using a set of kmers as nodes, \abreviation{ABG} uses a set of chosen kmers, instead of building an edge between each kmer \otherp{they ? ou peut-être que la phrase est un peu longue}they share a k-1 overlap, they build an edge with a weight equal to the distance of kmer in the read without creating a transitive edge.
 
-To build the chosen \kmers set, \abruijn selects kmers present many times in the dataset. These kmers are called in many tools \textit{solid} \kmers \jsv{citer le papier qui introduit la notion de solid kmer} \pim{Sa existe ? demander a Rayan}. The more present a \kmer is in the dataset, the more confident you can be that the \kmer does not contain a sequencing error. If the genome coverage is 40x we can hope see \kmer, not include in a repetition, 40 times. Because when we sequence at 40x, we do not actually read each base 40 times; and when a sequence error appears, we lose an occurrence of the kmers where this base was present. Choosing the number of times a kmer has to be present in the dataset to be \textit{solid} was a difficult task.
+To build the chosen \kmers set, \abruijn selects kmers present many times in the dataset. These kmers are called in many tools \textit{solid} \kmers \jsv{citer le papier qui introduit la notion de solid kmer} \pim{Sa existe ? demander a Rayan}. The more present a \kmer is in the dataset, the more confident you can be that the \kmer does not contain a sequencing error. If the genome coverage is 40x we can hope to see a \kmer, not included in a repetition, 40 times. Because when we sequence at 40x, we do not actually read each base 40 times; and when a sequence error appears, we lose an occurrence of the kmers where this base was present. Choosing the number of times a kmer has to be present in the dataset to be \textit{solid} was a difficult task.
 
 This modification helps to clean sequencing error, but reduces the set of kmer fragments the \DBG graphs. This is why \abreviation{ABG} creates edges not only when kmers share a k-1 overlap. 
 
-During the \abreviation{ABG} construction, \abruijn stores which read generates which graph path. This structure was useful to find quick overlaps between reads. Reads participating in the same path of \abreviation{ABG} probably have the same sequence, so they probably share an overlap. To build contigs, \abruijn takes a read found all overlap with help of \abreviation{ABG}. If this local overlap graph didn't denote a fork (we have one read without successor and all reads have path in the local overlap graph to this read), \abruijn extend the contig.
+During the \abreviation{ABG} construction, \abruijn stores which read generates which graph path. This structure was useful to find quick overlaps between reads. Reads participating in the same path of \abreviation{ABG} probably have the same sequence, so they probably share an overlap. To build contigs, \abruijn takes a read \otherp{petites reformulations à faire}found all overlap with help of \abreviation{ABG}. If this local overlap graph didn't denote a fork (we have one read without successor and all reads have path in the local overlap graph to this read), \abruijn extend the contig.
 
 \abruijn can be roughly summed up as mix of all the assembly strategies, using \DBG to find overlaps between reads, building contigs by extension as with \textit{greedy} method but using \OLC to make sure they do not integrate a repetition and a potential missassembly in contigs.
 
-\flye was built on top of \abruijn. After the \abruijn assembly, \flye looks for self-alignments in the assembly. If the extremity of a contig are similar they are tag as repetition. \flye builds a repetition graph, where repetition extremity as node and a edge was build when to repetition extremity was link in a contig. \flye uses coverage information to take a clue on contig succession over untangle repetition. By analysing the topology of repetition graphs, \flye can find a unique traversal path to explain all repetitions and find the genomic order of a contig.
+\flye was built on top of \abruijn. After the \abruijn assembly, \flye looks for self-alignments in the assembly. If the extremities of a contig are similar they are tagged as repetitions. \flye builds a repetition graph, with repetition extremities as nodes and an edge is built when two repetition extremities are linked in a contig. \flye uses coverage information to take a clue on contig succession over untangle repetition. By analysing the topology of repetition graphs, \flye can find a unique traversal path to explain all repetitions and find the genomic order of a contig.
 
 \subsection{\wtdbg}
 
-\wtdbg \cite{wtdbg2}  uses a \DBG approch to solve long-read assembly. It is not really a \DBG, but a "Fuzzy-Brujin graph" (\abreviation{FDBG}) firstly define in this paper. To build this graph, \wtdbg splits a read in a bin with a fixed size (256 base pairs) and stores the kmer present in each bin in a hash table.
+\wtdbg \cite{wtdbg2}  uses a \DBG approch to solve long-read assembly. It is not really a \DBG, but a "Fuzzy-Brujin graph" (\abreviation{FDBG}) \otherp{défini pour la première fois de l'histoire par cet article, ou tu dis juste que tu viens de le mentionner ?}firstly defined in this article. To build this graph, \wtdbg splits a read in a bin with a fixed size (256 base pairs) and stores the kmer present in each bin in a hash table.
 To find the overlap between reads, wtdg2 uses a hash table to compare the kmer compositions between each read and performs an exact alignment between each bin of reads.
 
 After this alignment step, \wtdbg only keeps in memory which bin is aligned to which bin, and it builds k-bins. Each k-bin is a sequence of k successive bin in a read. \wtdbg can infer if two k-bins overlap if one bin in this two k-bins shares an ovelap.
 
-A group of k-bins are a node of \abreviation{FDBG}. \wtdbg builds an edge between two nodes if a k-bins in each node are successive in a read, after some cleaning step (pops bubbles, tips cleaning) \wtdbg builds a consensus sequence with each simple path in \abreviation{FDBG}.
+A group of k-bins are a node of \abreviation{FDBG}. \wtdbg builds an edge between two nodes if the k-bins from each node are successive in a read, after some cleaning step (pops bubbles, tips cleaning) \wtdbg builds a consensus sequence with each simple path in \abreviation{FDBG}.
 
 \section{New long read assembly method}
 
-Very recently, two assembly tools have been presented that focus on the ability to produce good long read assembly with a very low cost in computation time and memory use.
+Very recently, two assembly tools have been presented that focus on the ability to produce good long read assembly with a very low cost in computation time and memory usage.
 
 \subsection{Peregrine}
 
@@ -348,13 +348,13 @@ Very recently, two assembly tools have been presented that focus on the ability 
 
 \peregrine \cite{Peregrine} uses the \shimmer overlapper. \shimmer extends idea of minimizer (introduced in Section \ref{subsec:sota:miniasm:minimap}), by creating a minimizer of minimizers. A minimizer can represent a set of minimizers. These minimizers representing a set of kmer, we can have many layers of minimizers, each layer reducing the size of the minimizer set and the space of search to find similarities between reads.
 
-The layer-0 of minimizers was a basic minmizer process, like \minimap. After this step, \shimmer selects minimizer they participate to the layer-1, it uses a reduction factor, for a reduction factor $x$, $x$ minimizers are represented by the minimal minimizer of this set. This process can be repeated with many layers. When it chooses the minimizer of $layer_n$ minimizer of $layer_{n-1}$, \shimmer pays attention to the distance between each $layer_n$ minimizer to be sure they represent a distinct part of the read. \shimmer by default uses three layers of minimizing this value, reduces the number of minimizers needed to be compare to found similarity, without increasing the number of missed overlaps (value found empirically).
+The layer-0 of minimizers was a basic minmizer process, like \minimap. After this step, \shimmer selects the minimizers that will participate in the layer-1, it uses a reduction factor, for a reduction factor $x$, $x$ minimizers are represented by the minimal minimizer of this set. This process can be repeated with many layers. When it chooses the minimizers of $layer_n$ among the minimizers of $layer_{n-1}$, \shimmer checks the distance between each $layer_n$ minimizer to make sure they represent a distinct part of the read. \shimmer by default uses three layers of minimizing \otherp{}this value, reduces the number of minimizers \otherp{that have to be compared?}needed to be compare to find similarities, without increasing the number of missed overlaps (value found empirically).
 
 After this indexing step, \shimmer brings together reads that share many last layer minimizers and performs a classic alignment to confirm overlap between reads. After this step, \peregrine runs a classic \OLC strategy to perform assembly.
 
 \shimmer overlapping tools can be used to perform a mapping of read against contig or genome. After this remapping a polishing step was performed, without taking into account heterozygosity.
 
-\peregrine was actually tested only on Circular Consensus (CCS) Pacbio data. Reads were sequenced multiple times and a consensus was performed on all this sequencing. This technique reduces the read length but reduces the error level of sequencing too. Finding overlaps between reads with less error was easier and faster. Methods created by \peregrine tools by reducing the minimizer space of search speed up the search for overlaps, but it was tested on low error rate long reads, even if the error rates of long reads try to decrease, will they decrease sufficiently for this method to maintain a good sensitivity. \peregrine needs to be validated on other types of data before its method can be generalized.
+\peregrine was actually tested only on Circular Consensus (CCS) Pacbio data. Reads were sequenced multiple times and a consensus was performed on all this sequencing. This technique reduces the read length but reduces the error level of sequencing too. Finding overlaps between reads with less error was easier and faster. Methods created by \peregrine tools by reducing the minimizer space of search speed up the search for overlaps, but they were tested on low error rate long reads. Even if the error rate of long reads decreases, will it decrease enough for this method to maintain a good sensitivity? \peregrine needs to be validated on other types of data before its method can be generalized.
 
 \subsection{Shasta}
 
@@ -366,11 +366,11 @@ After this indexing step, \shimmer brings together reads that share many last la
 
 This representation was interesting for long-reads data, because DNA contains sometimes the same character repetition (called an homopolymer) and long-reads often make errors in homopolymer. Read-length representation by squashing this region can avoid this type of error and facilitates the alignment of long-reads.
 
-To perform read overlapping, \shasta did not use a minimizer approach but something very close, the $Sb$ string of read was split in kmer and some kmer were selected randomly, and called markers. The set of markers was the same for all data set. Reads was now represented by a succession of markers: it is a lossly compression.
+To perform read overlapping, \shasta did not use a minimizer approach but something very close, the $Sb$ string of read was split in kmer and some kmer were selected randomly, and called markers. The set of markers was the same for all data set. Reads was now represented by a succession of markers: it is a lossy compression.
 
 Before looking for a colinear match of marker, in order to select reads with a higher match probability, \shasta computes a modification of the MiniHash Jaccard estimation (see Section \ref{subsec:sota:canu:overlapping}) to avoid the bias created by the difference of length between reads.
 
-To perform assembly \shasta creates a marker graph. It is something similar to \DBG, where kmer was a marker and an edge was built between two markers if a read contained this succession of markers. Each edge was weighted by the number of reads that contained this succession. After a cleaning step of marker graph (removing transitive edges, tips and bubbles), a path in marker graph was selected and reads participate to building of edge of this path was used to build a consensus sequence of contigs.
+To perform assembly \shasta creates a marker graph. It is something similar to \DBG, in which a kmer is a marker and an edge is built between two markers if a read contains this succession of markers. Each edge is weighted by the number of reads that contains this succession. After a cleaning step of marker graph (removing transitive edges, tips and bubbles), a path in the marker graph is selected and the reads that have helped build the edges for this path are used to build a consensus sequence of contigs.
 
 \shasta contains many interesting ideas and the authors plan improvements for heterozygosity detection, resolution and performance improvement.
 
@@ -380,14 +380,14 @@ Long read assembly is an active field of research, many tools are created each y
 
 To perform overlap detection, a majority of tools use k-mer to find reads with a high similarity and avoid all-versus-all overlapping search. To further reduce the space search, some tools use filtering based on minimizing: we keep the kmer with the lowest score, this score can be based on information contained in the dataset or be determined by an arbitrary function. The choice of k-mer size, filtering method and minimizing function, can have a great impact on result of each tool.
 
-The \OLC approach has proven its effectiveness in assembling third generation reads. Several modifications have been made to support these new reads but efforts are mainly focused on reducing the computation time of memory usage. These modifications lead to hybrid \OLC algorithm with \DBG and Greedy, (cf \flye and \wtdbg) idea. But the step that takes the most time and memory is not the graph construction and contig construction, it is the search for overlap and the correction.
+The \OLC approach has proven its effectiveness in assembling third generation reads. Several modifications have been made to support these new reads but efforts are mainly focused on reducing the computation time of memory usage. These modifications have led to the idea of a hybrid \OLC algorithm with \DBG and Greedy (cf \flye and \wtdbg). But the step that takes the most time and memory is not the graph construction and contig construction, it is the search for overlap and the correction.
 
-This is not the only the challenge that needs to be addressed. Many assembly steps have a considerable cost in computation time and memory use. One challange, for example, would be to be able to conduct an overlap search with high precision and recall without excessive cost in computation time and memory use \cite{bench_ovl}.
+This is not the only the challenge that needs to be addressed. Many assembly steps have a considerable cost in computation time and memory usage. One challenge, for example, would be to be able to conduct an overlap search with high precision and recall without excessive cost in computation time and memory usage \cite{bench_ovl}.
 
 The only assembly that tried to take heterozygosity into account was \toolsname{FALCON} – in future the, \shasta will do it as well –, by making the difference between a sequencing error and a natural variant or heterozygosity. To get heterozygosity and variant phased or genome graph after assembly would be interesting. But the tools to extract all this information from a read do not exist yet.
 
-Another step of assembly improvement was increase the contiguity, assembly tools by reducing the information to reduce computation time and memory use can have an impact on assembly quality. Correction of long-read can by trimming insufficient covered data can increase the size of coverage gap.
-By come back to all read information or use overlap found by another tools, help to solve assembly trouble, created by heuristic in assembly and correction tools. The next chapter focuses on this point.
+Another step of assembly improvement would be to improve the contiguity, assembly tools by reducing the information to reduce computation time and memory usage can have an impact on assembly quality. Correction of long-read can by trimming insufficiently-covered data can increase the size of coverage gap.
+Coming back to all read information or using overlaps found by another tool, helps to solve assembly troubles created by heuristic in assembly and correction tools. The next chapter focuses on this point.
 
 
 \onlyinsubfile{
