@@ -6,7 +6,9 @@
 
 A key concept of assembly is the detection of overlaps between reads. Computing overlaps is done before an assembly algorithm is applied and can thus be considered as a preassembly task, even if some assembly pipelines compute overlaps several times. Computing overlaps is a hard task, even harder with high error rate reads. A number of tools have been designed in the last decade, with their own definition of what is an 'good' overlap. The first section of this chapter gives a short overview of how overlapper work. The next section discusses about comparison of overlaps found by state-of-the-art overlappers for long read data. 
 
-\jsv{To perform overlapping many tools were designed but still plenty of room for improvement exist on real read dataset for example. Si tu dis cela on peut croire que tu vas presenter un nouvel overlapper} 
+To perform overlapping many tools was design but still plenty of room for improvement exist on real read dataset for example. The section \ref{sec:preasm:ovl} and \ref{sec:preasm:blog_post} of this chapter present with more details the overlapping trouble and a comparaison of different thrid generation overlapping tools.
+
+Overlaps are required for many task with third generation reads, but all this task didn't required the same information. Overlapping tools didn't know what you do with these overlap, they report all information (it's a good idea) but overlap information can became very large and for some large dataset exceeded the Terra byte. In section \ref{sec:preasm:intro_fpa} we introduce in more details this trouble and the solution we have design.
 
 \bigskip
 
@@ -24,10 +26,11 @@ This will finally improve the quality of the assembly or help the task of assemb
 
 Correction and scrubbing seeks to perform the same task: reduce the error rate of reads. Scrubbing works on large regions (around ten or hundred bases), but correction works at the base level. This difference makes the problem very different from a computational point of view. Section three and fourth describe the interest of scrubbing in relation to the correction and the scrubbing tools we have created.
 
-\pim{fpa}
+Correction and scrubbing seeks to perform the same target, reduce the error rate of reads, scrubbing work on large region (around ten or hundred base), and correction work at the level of one base. This difference of scale create an important difference in term of computation time and memory usage. But this difference can also have an impact on variant information. Section \ref{sec:preasm:yacrd} describe the interest of scrubbing in relation to the correction.
 
- 
-\section{How to find similar regions between sequence} 
+Our work on the selection of overlap and on scrubbing tools was merge in a paper present in section \ref{section:preassembly:paper}.
+
+\section{How to find similar regions between sequence} \label{sec:preasm:ovl}
 
 As we defined in the introduction, when two sequences share a common subsequence, we say that they overlap or that one of them maps on the other see \ref{intro:fig:overlap:perfect}. It is possible for sequences to share a common subsequence just by chance (because of the 4-letter alphabet) but the probability of this event decreases when the length of the common subsequence increases. Intuitively, this probability gets smaller as common subsequence gets longer. In perfect world, the only criteria to evaluate whether a common subsequence is "real" or not should be the length of this subsequence. However the number of errors in reads sequencing breaks this paradigm and forces us to build yet an important factor do consider is that reads contain errors \ref{intro:fig:overlap:erroneous}.
 
@@ -78,7 +81,8 @@ In a blog post "State-of-the-art long reads overlappers comparison" \footnote{\u
 
 \subfile{paper/blog_post.tex}
 
-\section{Improve genome assembly quality by reduce the quantity of information}
+
+\section{Improve genome assembly quality by reduce the quantity of information} \label{sec:preasm:intro_fpa}
 
 Error in thrid generation reads make it more difficult to found overlaps between reads. Current techniques attempt to optimize results on real data \cite{ovl_bench}.
 Actually, a key observation is that within the overlaps found by state-of-the-art tools, not all of them are useful to downstream analysis. For example \miniasm keeps only end-to-end overlaps, and \canu keeps only the two longest end-to-end overlaps for each read (see \ref{chapter:sota} for more details).
@@ -96,7 +100,8 @@ Can we filter overlapping information with a positive (or not very bad) impact o
 
 We present our solution of this problem \fpa (for Filter Pairwise Alignment) in section \ref{section:preassembly:paper}, overlaper output can by pipe directly in \fpa , \fpa can filter overlap with some filter, length of read, length of overlap, type of overlap, read name. Some simple \fpa filter reduce the computation time of assembly without effect (or a small positive effect) on assembly, read section \ref{section:preassembly:paper} for more details on this tools.
 
-\subsection{Read scrubbing an alternative of read correction}
+
+\section{Read scrubbing an alternative of read correction} \label{sec:preasm:intro_yacrd}
 
 Assembly tools are based on reads. If your reads are bad, your assembly will be bad. To continue on the analogy given in the introduction, you probably cannot reconstruct a book if crazy monks gave to you only fragments with half of the letters being erroneous. Correction of reads, with a mix of sequencing technologies (or with a single technology), can help you to get better reads. But actually, correction tools have an important cost in term of computation time and memory usage. Moreover it's hard to differentiate natural mutations (e.g. real SNPs) to sequencing errors, and sometimes interesting mutations are consider as errors and are corrected (thus removed).
 
@@ -122,7 +127,10 @@ Table \ref{intro:tab:correctionvsassemblytime} we can see the correction take mo
 
 To found and remove this very low quality region and read we create \yacrd (for Yet Another Chimeric Read Detector), \yacrd use self overlapping information to compute a coverage curve and identify region with low coverage. We suppose this low coverage region is region with low quality, read section \ref{section:preassembly:paper} for more details on this tools.
 
+
 Our paper "\yacrd and \fpa: upstream tools for long-read genome assembly" presents two tools, \yacrd , and \fpa. \yacrd focuses on the detection and elimination of very poor quality regions. \fpa focuses on filtering 'useless' overlaps.
+
+
 
 \subfile{paper/yacrd_fpa.tex}
 
