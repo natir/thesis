@@ -4,11 +4,7 @@
 
 \chapter{Preassembly}\label{chapter:preassembly}
 
-A key concept of assembly is the detection of overlaps between reads. Computing overlaps is done before an assembly algorithm is applied and can thus be considered as a preassembly task, even if some assembly pipelines compute overlaps several times. Computing overlaps is a hard task, even harder with high error rate reads. A number of tools have been designed in the last decade, with their own definition of what is an 'good' overlap. The first section of this chapter gives a short overview of how overlapper work. The next section discusses about comparison of overlaps found by state-of-the-art overlappers for long read data. 
-
-To perform overlapping many tools was design but still plenty of room for improvement exist on real read dataset for example. The section \ref{sec:preasm:ovl} and \ref{sec:preasm:blog_post} of this chapter present with more details the overlapping trouble and a comparaison of different thrid generation overlapping tools.
-
-Overlaps are required for many task with third generation reads, but all this task didn't required the same information. Overlapping tools didn't know what you do with these overlap, they report all information (it's a good idea) but overlap information can became very large and for some large dataset exceeded the Terra byte. In section \ref{sec:preasm:intro_fpa} we introduce in more details this trouble and the solution we have design.
+A key concept of assembly is the detection of overlaps between reads. Computing overlaps is done before an assembly algorithm is applied and can thus be considered as a preassembly task, even if some assembly pipelines compute overlaps several times. Computing overlaps is a hard task, even harder with high error rate reads. A number of tools have been designed in the last decade, with their own definition of what is an 'good' overlap. The section \ref{sec:preasm:ovl} gives a short overview of how overlapper work. The next section (\ref{sec:preasm:blog_post}) about comparison of overlaps found by state-of-the-art overlappers for long read data. 
 
 \bigskip
 
@@ -24,7 +20,7 @@ or perform some operations to improve the quality of reads, e.g.
 \end{itemize}
 This will finally improve the quality of the assembly or help the task of assembly (e.g. by reducing the number of overlaps). 
 
-Correction and scrubbing seeks to perform the same task: reduce the error rate of reads. Scrubbing works on large regions (around ten or hundred bases), but correction works at the base level. This difference makes the problem very different from a computational point of view. Section three and fourth describe the interest of scrubbing in relation to the correction and the scrubbing tools we have created.
+Overlaps are required for many task with third generation reads, but all this task didn't required the same information. Overlapping tools didn't know what you do with these overlap, they report all information (it's a good think) but overlap information can became very large and for some large dataset exceeded the Terra byte. In section \ref{sec:preasm:intro_fpa} we introduce in more details this trouble and the solution we have design.
 
 Correction and scrubbing seeks to perform the same target, reduce the error rate of reads, scrubbing work on large region (around ten or hundred base), and correction work at the level of one base. This difference of scale create an important difference in term of computation time and memory usage. But this difference can also have an impact on variant information. Section \ref{sec:preasm:yacrd} describe the interest of scrubbing in relation to the correction.
 
