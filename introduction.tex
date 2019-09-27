@@ -57,8 +57,6 @@ Third generation dates back to the early 2010s. It has greatly increased the siz
 Errors in third generation are mostly insertion or deletion, sequencer didn't read a part of sequence or introduce random base not present in original sequence. Table \ref{intro:tab:technology_property} present read length and error rate on many sequencing technology.%AL
 We would like to emphasize that both second and third generation technologies are always used today, and sometimes both technologies are used for a single experiment, as we will discuss later about hybrid techniques. %JSV
 
-\jsv{je pense que cette phrase est inutile : DNA sequencing is very useful tools for many analysis, and in some cases is mandatory to be able to understand biological mechanisms.} %AL
-
 With sequencing one can read all information contains in a genome. But, no matter the technology, we get lots of (short) unordered fragments. Genome assembly therefore designate the task of reconstructing the original sequence from this set of unordered fragments.%AL
 
 \section{The genome assembly task}
@@ -95,8 +93,8 @@ A \textbf{scaffold} designates an ordering of contigs. Most of the times we can'
 Figure \ref{intro:fig:assembly} gives a summary of how reads are processed to obtain an assembly.
 \begin{figure}[ht]
 	\centering
-	\pim{Add schéma to present each notion}
-	\caption{Schematic of DNA assembly.}
+	\subfile{introduction/tikz/assembly_lexique.tex}
+	\caption{Schematic of DNA assembly. Each horizontal line represents a read, grey box represents overlap found between reads, this overlap is used to build contigs and finaly this contigs was ordered in a scraffold.}
     \label{intro:fig:assembly}
 \end{figure}
 

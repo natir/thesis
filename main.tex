@@ -46,8 +46,8 @@
 % todonotes package and macro
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Switch comment to enable or disable comment
-\usepackage[disable]{todonotes}
-%\usepackage[colorinlistoftodos,prependcaption,textwidth=6cm]{todonotes}
+%\usepackage[disable]{todonotes}
+\usepackage[colorinlistoftodos,prependcaption,textwidth=6cm]{todonotes}
 
 \newcommandx{\jsv}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red]{#2}{#1}}
 \newcommandx{\rc}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue]{#2}{#1}}
@@ -76,10 +76,13 @@
 \speciality{Informatique}
 \date{2016-2019}
 
+\AddJuryMember{Rapporteur}{Tobias Marschall}{Prof, Max Planck Institut}
 \AddJuryMember{Rapporteur}{Pierre Peterlongo}{CR, Inria Rennes - Bretagne Atlantique}
 \AddJuryMember{Directeur de thèse}{Jean-Stéphane Varré}{Prof, Univ Lille, CRIStAL}
 \AddJuryMember{Co-encadrant de thèse}{Rayan Chikhi}{CR, Institut Pasteur \& CNRS}
-\AddJuryMember{autre}{autre}{autre}
+\AddJuryMember{Examinatrice}{Blerin Sinaimeri}{Université Lyon I – INRIA}
+\AddJuryMember{Examinatrice}{Clarisse Dhaenens}{Université Lille}
+
 \input{macro.tex}
 
 \begin{document}
@@ -114,6 +117,7 @@ France
 \tableofcontents
 
 \mainmatter
+
 \subfile{introduction.tex}
 
 \subfile{preassembly.tex}
