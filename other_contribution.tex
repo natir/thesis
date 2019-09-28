@@ -40,7 +40,7 @@ When writing this document, we do not have yet the result  of other team or an i
 
 \section{10X linked-read deconvolution} \label{section:other_contribution:10x}
 
-10X linked-read was a sequencing technique developed by 10X genomics. Figure \label{fig:other_contribution:10x} present the main idea of 10X linked-read sequencing. After purification DNA was fragmented in large molecule ($\approx$100 kb length), by microfluidic method each large molecule was separate in individuals bubble each bubble was associated with a barcode in this bubble DNA was fragmented in shorter fragment (compatible with Illumina sequencing method) and barcode was add to extremity. After a classic short-read sequencing, we can use barcode information to determinate if read comes from the same large fragment or not.
+10X linked-read sequencing is a sequencing technique developed by 10X genomics. Figure \label{fig:other_contribution:10x} presents the main idea of 10X linked-read sequencing. After purificationn DNA is fragmented into large molecules ($\approx$100 kb length). By microfluidic method each large molecule is separated into an individuals bubble. Each bubble is associated to a barcode. In a bubble DNA is fragmented into shorter fragments (compatible with Illumina sequencing method) and a barcode is added to the extremity of each fragment. After a classic short-read sequencing, we can use barcode information to determinate if read comes from the same large fragment or not.
 
 \begin{figure}
     \centering
@@ -49,19 +49,21 @@ When writing this document, we do not have yet the result  of other team or an i
     \label{fig:other_contribution:10x}
 \end{figure}
 
-Unfortunately, there is not a barcode for each large DNA molecule and therefore several fragments will share the barcode. The task of assigning each reads its original molecule is called deconvolution. Knowing exactly the original molecule of each reads is useful to: 
+Unfortunately, there is not a barcode for each large DNA molecule and therefore several fragments will share the barcode. The task of assigning each reads its original molecule is called \textbf{deconvolution}. Knowing exactly the original molecule of each reads is useful to: 
 \begin{itemize}
-    \item assembly and scaffollding by allowing to solve repetitions that are span by large molecule
-    \item variant phasing all reads come from same molecule, come for same individuals/cells
+    \item assembey and scaffolding, by allowing to solve repetitions that are spanned by large molecules,
+    \item variant phasing; all reads coming from same molecule necessarily come from the same haplotype.
 \end{itemize}
  
-If we have access to a good genome reference deconvolution was easy by mapping reads against reference each read with same barcode mapped in approximately 100 kb range on the reference genome come from same molecule, it's general idea used by \toolsname{ema}\cite{ema} and \toolsname{Lariat}\cite{lariat} to assign a read to a molecule.
+If we have access to a good genome reference, deconvolution is easy: by mapping reads against the reference, we can look for reads of same barcode that map within approximately a 100 kb range on the reference genome. Those reads then likely come from same molecule. This general idea used by \toolsname{ema}\cite{ema} and \toolsname{Lariat}\cite{lariat} to assign a read to a molecule.
 
-But when haven't good reference genome we can't use this method. To solve this problem, in collaboration with Chen Sun, Rayan Chikhi , Paul Medvedev and Yoann Dufresne, we try to propose some different techniques to perform a 10x linked-reads deconvolution. I propose a method based on graph assembly analysis.
+But when we don't have a good reference genome we cannot use this method. 
+%To solve this problem, in collaboration with Chen Sun, Rayan Chikhi , Paul Medvedev and Yoann Dufresne, we try to propose some different techniques to perform a 10x linked-reads deconvolution. 
+I proposed a method to perform deconvolution based on assembly graph analysis.
+After a classic \DBG assembly (using \toolsname{bcalm}), we remap reads against contigs with the  \toolsname{ema} software. Reads with same barcode and map on same contig are assigned an identical premolecule identifier by \toolsname{ema}. We attempted to glue clusters of reads by analyzing the contigs graph. For all clusters of premolecules with the same barcode, we searched for the shortest path in the contigs graph between clusters. If the length (in number of bases) of a path is shorter than a threshold, we merge both premolecule clusters. 
+%This method perform some result, but we didn't have time to finish and evaluate methods.
 
-After a classic \DBG assembly (we use \toolsname{bcalm}), we remap reads against contigs with \toolsname{ema}, to reads with same barcode and map on same contig \toolsname{ema} assign same premolecule identifier. We try to glue premolecule cluster of reads by analyze contigs graph. For all premolecule cluster with same barcode we search shortest path in contigs graph between cluster, if the length (in number of bases) of this path is shortest than a threshold we merge this cluster. 
-
-This method perform some result, but we didn't have time to finish and evaluate methods.
+At this stage, we did not perform a complete evaluation of the method, thus this is still work in progress.
 
 \onlyinsubfile{
 \bibliographystyle{plainnat}
