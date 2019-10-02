@@ -60,7 +60,7 @@ We would like to emphasize that both second and third generation technologies ar
 
 With sequencing one can read all information contained in a genome. But, no matter the technology, we get lots of (short) unordered fragments. Genome assembly therefore designates the task of reconstructing the original sequence from this set of unordered fragments. %AL
 
-\section{The genome assembly task}
+\section{The genome assembly task} \label{intro:sec:analogy}
 
 If you want study an organism, knowing the complete genome sequence is very useful for a lot of tasks, such as as finding 
 genes of interest, or study the sequence variations across a population \ldots %AL
@@ -101,8 +101,7 @@ Figure \ref{intro:fig:assembly} gives a summary of how reads are processed to ob
 \section{Thesis outline}
 
 
-As stated above, latest sequencing technologies allow to sequence larger DNA fragments. One could think that the task of assembly becomes easier since we have to solve a puzzle with larger pieces. But this is not the case, as we will see in the following chapters. The main goal of this work is \jsv{a finir et a revoir}
-
+As stated above, latest sequencing technologies allow to sequence larger DNA fragments. One could think that the task of assembly becomes easier since we have to solve a puzzle with larger pieces. But this is not the case, as we will see in the following chapters. The main goal of this work is improve long-read genome assembly without creating a new assembly tool or modifying an existing one. The tools developed in this thesis can interface with existing long-read assembly tools or even with other bioinformatics analysis tools.
 
 Chapter \ref{chapter:preassembly} addresses some of the key steps that are performed prior to assembly. %AL
 The quality of the data provided to an assembler has a direct impact on the produced results. %AL
@@ -117,11 +116,5 @@ Chapter \ref{chapter:sota} presents a state of the art of several assembly metho
 Chapter \ref{chapter:postassembly} concers some steps that occur after assembly. The first contribution is a blog post that presents the difficulties of evaluating the results of certain assembly tools that do not correct reads (or even polish contigs). The second contribution presents a tool for analyzing and improving assembly results, \knot, that we developed during this thesis \cite{knot}.
 
 Chapter \ref{chapter:other_contribution} will focus on various other scientific contributions: participation in the development of a graphical interface for genomic data analysis, participation in the contest is, and some work around 10X data.
-
-\onlyinsubfile{
-\bibliographystyle{plainnat}
-\bibliography{main}
-\addcontentsline{toc}{chapter}{Bibliography}
-}
 
 \end{document}

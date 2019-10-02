@@ -4,7 +4,7 @@
 
 \chapter{Preassembly} \label{chapter:preassembly}
 
-A key concept of assembly is the detection of overlaps between reads. Computing overlaps is done prior to assembly can thus be considered as a preassembly task, even if some assembly pipelines compute overlaps several times. Computing overlaps is a hard task, even harder with high error rate reads. A number of tools have been designed in the last decade, with their own definition of what is an 'good' overlap. The section \ref{sec:preasm:ovl} gives a short overview of algorithmic ideas on which overlappers are designed. The next section (\ref{sec:preasm:blog_post}) discusses about comparison of overlaps found by state-of-the-art overlappers for long read data. 
+Two key aspects in long-read genome assembly are 1) the detection of overlaps between reads and 2) dealing with errors in reads. Computing overlaps is done prior to assembly can thus be considered as a preassembly task, even if some assembly pipelines compute overlaps several times. Computing overlaps is a hard task, even harder with high error rate reads. A number of tools have been designed in the last decade, with their own definition of what is an 'good' overlap. The section \ref{sec:preasm:ovl} gives a short overview of algorithmic ideas on which overlappers are designed. The next section (\ref{sec:preasm:blog_post}) discusses about comparison of overlaps found by state-of-the-art overlappers for long read data. 
 
 \bigskip
 
@@ -21,13 +21,15 @@ or perform some operations to improve the quality of reads, e.g.
 Cleaning preprocessing intends to improve the quality of the assembly or to help the task of assembly (e.g. by reducing the number of false overlaps). 
 As overlapping tools didn't know what the user will do with the computed set of overlaps, all information is reported (it's a good point). But one has to remember that the number of overlaps for a common sequencing experiment is very large, storing them may require more than terabyte for some large dataset. In section \ref{sec:preasm:intro_fpa} we introduce in more details this trouble and the solution we have design. \jsv{paragraphe a retravailler}
 
-Correction and scrubbing seeks to perform the same target: reduce the error rate of reads. Scrubbing works on large region (around ten or hundred bases) while correction works at the level of one base. This difference of scale implies different requirements in terms of computation time and memory usage. \jsv{But this difference can also have an impact on variant information. Pour cette phrase est intule} Section \ref{sec:preasm:yacrd} discusses the interest of scrubbing towards correction.
+Correction and scrubbing seeks to perform the same target: reduce the error rate of reads. Scrubbing works on large region (around ten or hundred bases) while correction works at the level of one base. This difference of scale implies different requirements in terms of computation time and memory usage. Section \ref{sec:preasm:yacrd} discusses the interest of scrubbing towards correction.
 
 Our work on overlap selection and on scrubbing tools was merged in a paper presented in section \ref{section:preassembly:paper}.
 
-\section{How to find similar regions between sequence} \label{sec:preasm:ovl}
+\section{Overlaps and their impact on assembly}
 
-As we defined in the introduction, when two sequences share a common subsequence, we say that they overlap or that one of them maps on the other see \ref{intro:fig:overlap:perfect}. It is possible for sequences to share a common subsequence just by chance (because of the 4-letter alphabet) but the probability of this event decreases when the length of the common subsequence increases. Intuitively, this probability gets smaller as common subsequence gets longer. If the reads does not contain sequencing errors, the only criteria to evaluate whether a common subsequence is "true" or not could be the length of this subsequence. However, the number of errors in the sequence of readings breaks this paradigm and forces us to integrate the errors when assessing the quality of an overlap. Figure \ref{intro:fig:overlap:erroneous} show an overlap with two mismatch. There are two base pairs that do not match between the two sequences - knowing if this overlap is "true" or not isn't obvious.
+\subsection{How to find similar regions between sequence} \label{sec:preasm:ovl}
+
+As we defined in the introduction, when two sequences share a common substring, we say that they overlap or that one of them maps on the other see \ref{intro:fig:overlap:perfect}. It is possible for sequences to share a common substring just by chance (because of the 4-letter alphabet) but the probability of this event decreases when the length of the common substring increases. Intuitively, this probability gets smaller as common substring gets longer. If the reads does not contain sequencing errors, the only criteria to evaluate whether a common substring is "true" or not could be the length of this substring. However, the number of errors in the sequence of readings breaks this paradigm and forces us to integrate the errors when assessing the quality of an overlap. Figure \ref{intro:fig:overlap:erroneous} show an overlap with two mismatch. There are two base pairs that do not match between the two sequences - knowing if this overlap is "true" or not isn't obvious.
 
 
 \begin{figure}[ht]
@@ -47,34 +49,27 @@ As we defined in the introduction, when two sequences share a common subsequence
 In this document we distinguish two tasks in similarity search between two sequences:
 \begin{itemize}
     \item mapping: one tries to find the position of a read in a larger sequence (e.g. comparing different datasets, experiments from different sequencing generations, or between the reads and an assembly, against a reference genome)
-    \item overlapping: one tries to find which reads share a common subsequence with other reads (e.g. finding common subsequences in the same dataset) 
+    \item overlapping: one tries to find which reads share a common substring with other reads (e.g. finding common substrings in the same dataset) 
 \end{itemize}
 Even if mapping and overlapping can be seen as different tasks, one could observe that the same tools, and underlying algorithmic, can be used to solve both tasks.
-
 
 
 \paragraph{The seed-and-extend strategy.} 
 Search of similarity between two or more DNA sequences has many links to plain text search.
 Seed-and-extend is an approach used by many tools to find similar sequences between a target (e.g. a reference genome) and a query (e.g. a read). The idea is to find a high similar subsequence (often exact), namely the seed (or anchor), and then to extend this seed to have a larger common subsequence. Tools that implement this approach usually create an index of the target. This index need to answer to a simple question: is a given subsequence exist in target and at which position. Each query is processed and its substrings are searched in the index. This gives a set of seeds that can be extended through alignment techniques such as dynamic programming. If the alignment score reaches a given threshold, a hit is reported.
 
-Many tools for mapping and overlapping use seed-and-extend strategy. The most popular is \toolsname{Blast} \cite{blast_one, blast_two}. Specific tools dedicated to sequencing are \toolsname{BWA} \cite{bwa_mem} or \toolsname{blasr} \cite{blasr}. Implementation details of indexes, size and number of anchors change between tools. For example \toolsname{BWA} or \toolsname{blasr} use a FM-index \cite{fm-index} to perform anchor search. 
+Many tools for mapping and overlapping use seed-and-extend strategy. The most popular is \toolsname{Blast} \cite{blast_one, blast_two}. Specific tools dedicated to sequencing are \toolsname{BWA} \cite{bwa_mem} or \toolsname{blasr} \cite{blasr}. Implementation details of indexes, size and number of anchors change between tools. For example \toolsname{BWA} or \toolsname{blasr} use a FM-index \cite{fm-index} to perform anchor search.
 
 \paragraph{The seed-only strategy.}
 
 With NGS technology development more and more data had to be processed and the seed-and-extend strategy was replaced by a seed-only strategy. Indeed, the extension step is still very time-consuming. With the seed-and-extend strategy, an overlap is scored by its length and the number of errors in the alignment. With the seed-only strategy we don't have an alignment. The overlap is thus scored using the number of seeds and their positions. 
 
-\jsv{j'appuie la remarque de Rayan : il faut citer les overlappers qui utilisent cette stratégie, même si tu dis qu'ils seront detallés plus tard (minimap2, mhap)}
+This strategy was used in \toolsname{SGA} \cite{SGA} assembly tools, during overlapping step \toolsname{SGA} search exact overlap between low error read, by search a substring at end of read in a FM-index. 
 
-\jsv{1 citer des mapper qui utilisent cette stratégie mais pas pour de la 3rd generation}
 Specificity of long-reads (longer reads, high error rate) has relaunched this research field. \citeauthor{ovl_bench} produce an interesting review about some of third-generation overlap search in \cite{ovl_bench}, discussed in next section. 
-\jsv{2 citer des mapper qui utilisent cette stratégie pour de la 3rd generation}
-We will give some details on \mhap and \minimap in section \ref{chapter:sota}.
-For third generation reads, the length of the reads and the large number of errors make the choice of algorithm parameters even more complicated, particularly concerning the seed \jsv{tu veux duire le type de graine ? si oui il faut expliquer avant qu'il y en a plusieurs types} and length of seeds.
-\jsv{il faut conclure avec l'intérêt de cette stratégie}
+We can cite \toolsname{Hisea} \cite{hisea}, \toolsname{Daligner} \cite{daligner}, \mhap \cite{canu} and \minimap \cite{minimap, minimap2} as overlapping tools they use this strategy to found overlap between thrid generation overlap. We will give some details on \mhap and \minimap in section \ref{chapter:sota}.
 
-To found overlap, similar sequence in a read dataset, FM-index was used too, for example \toolsname{SGA} \cite{SGA} to search exact overlap between low error read, by search a sub-sequence at end of read in a FM-index. 
-\jsv{franchement je ne sais pas quoi faire de cette phrase, qu'apporte-t-elle d'autre que OK, tu connais une datastructure de plus, les FM-index}
-
+For third generation reads, the length of the reads and the large number of errors make the choice of algorithm parameters even more complicated, particularly concerning how we choose the seed and length of seeds. But by removing the extend step the computation time was reduce and help to manage the high error rate of thrid generation reads.
 
 \paragraph{On the importance of overlaps.}
 
@@ -95,8 +90,9 @@ In a blog post "State-of-the-art long reads overlappers comparison" \footnote{\u
 
 \subfile{paper/blog_post.tex}
 
+\section{Improving assembly by filtering out overlaps and scrubbing}
 
-\section{Improve genome assembly quality by reducing the quantity of information} \label{sec:preasm:intro_fpa}
+\subsection{Improve genome assembly efficiency by reducing the quantity of information} \label{sec:preasm:intro_fpa}
 
 Error in third generation reads make it more difficult to found overlaps between reads. Current techniques attempt to optimize results on real data \cite{ovl_bench}.
 Actually, a key observation is that within the overlaps found by state-of-the-art tools, not all of them are useful to downstream analysis. For example \miniasm keeps only end-to-end overlaps, and \canu keeps only the two longest end-to-end overlaps for each read (see \ref{chapter:sota} for more details).
@@ -113,7 +109,7 @@ There is definitively room for improvement. Can we filter overlapping informatio
 In section \ref{section:preassembly:paper} we present \fpa (for Filter Pairwise Alignment), our solution to solve filter out useless overlaps. An overlaper output can be piped directly to \fpa. \fpa can apply several filters based on length of read, length of overlap, type of overlap, read name. Some simple \fpa filters reduce the computation time of assembly without effect (or a small positive effect) on assembly.
 
 
-\section{Read scrubbing an alternative of read correction} \label{sec:preasm:intro_yacrd}
+\subsection{Read scrubbing: an alternative of read correction} \label{sec:preasm:intro_yacrd}
 
 Assembly tools are based on reads. If your reads are bad, your assembly will be bad. To continue on the analogy given in the introduction, you probably cannot reconstruct a book if crazy monks gave to you only fragments with half of the letters being erroneous. Correction of reads, with a mix of sequencing technologies (or with a single technology), can help you to get better reads. But actually, correction tools have an important cost in term of computation time and memory usage. Moreover it's hard to differentiate natural mutations (e.g. real SNPs) to sequencing errors, and sometimes interesting mutations are consider as errors and are corrected (thus removed).
 
@@ -131,13 +127,13 @@ To found and remove this very low quality region and read we create \yacrd (for 
 
 Our paper "\yacrd and \fpa: upstream tools for long-read genome assembly" presents two tools, \yacrd , and \fpa. \yacrd focuses on the detection and elimination of very poor quality regions. \fpa focuses on filtering 'useless' overlaps.
 
-
-
 \subfile{paper/yacrd_fpa.tex}
 
 \section{Chapter conclusion}
 
-The blog post on overlapping tools comparaison, demonstrate overlapping tools didn't found same overlap. And that we will be able to improve the quality of the overlaps we found between our reads by combining their results. This is the idea of an overlaps consensus generator. But in the blog post we consider if two overlapping tools found a overlap between same reads they found the same overlap. But in a case of two reads \texttt{A} and \texttt{B}, it's possible:
+In this chapter we have proposed a benchmark of overlappers, a filtering tool for these overlap and a scrubbing tool.
+
+The blog post on overlapping tools comparison demonstrates that they do not found same overlaps. We should be able to improve the quality of the overlaps we found between reads by combining results from several tools. This is the idea of an overlap consensus generator. But in the blog post we consider if two overlapping tools found a overlap between same reads they found the same overlap. But in a case of two reads \texttt{A} and \texttt{B}, it's possible:
 \begin{itemize}
     \item the first overlapping tools found the end of read \texttt{A} overlap the begin of read \texttt{B}
     \item the second overlapping tools found the end of read \texttt{B} overlap the begin of read \texttt{A}
@@ -148,10 +144,6 @@ This list can be continued indefinitely. If we want build a overlaps consensus g
 This work was made in the context of a PFE (\textit{Projet de Fin d'Étude} End of Study Projects) by Yann Grabe. He create a tool that will build a consensus of several overlap files, by founding overlap between overlap and compute a confident score on each overlap by evaluate the number of overllaping tools found the same overlap.
 
 For the moment this tool is only a prototype and would still require a lot of work before it can be finalized. 
-
-\yacrd and \fpa have an important impact on assembly of \miniasm and \wtdbg. They were well received by the community \yacrd and \fpa was actually used, in some tools and pipeline.
-
-\pim{Trouvé une conclusion globale au chapitre}
 
 %\onlyinsubfile{
 %\bibliographystyle{plainnat}
