@@ -4,7 +4,7 @@
 
 \chapter{Preassembly} \label{chapter:preassembly}
 
-Two key aspects in long-read genome assembly are 1) the detection of overlaps between reads and 2) dealing with errors in reads. Computing overlaps is done prior to assembly can thus be considered as a preassembly task, even if some assembly pipelines compute overlaps several times. Computing overlaps is a hard task, even harder with high error rate reads. A number of tools have been designed in the last decade, with their own definition of what is an 'good' overlap. The section \ref{sec:preasm:ovl} gives a short overview of algorithmic ideas on which overlappers are designed. The next section (\ref{sec:preasm:blog_post}) discusses about comparison of overlaps found by state-of-the-art overlappers for long read data. 
+Two key aspects in long-read genome assembly are 1) the detection of overlaps between reads and 2) dealing with errors in reads. Computing overlaps is done prior to assembly can thus be considered as a preassembly task, even if some assembly pipelines compute overlaps several times. Computing overlaps is a hard task, even harder with high error rate reads. A number of tools have been designed in the last decade, with their own definition of what is an 'good' overlap. The section \ref{sec:preasm:ovl} gives a short overview of algorithmic ideas on which overlappers are designed. The next section \ref{sec:preasm:blog_post} discusses about comparison of overlaps found by state-of-the-art overlappers for long read data. 
 
 \bigskip
 
@@ -21,7 +21,7 @@ or perform some operations to improve the quality of reads, e.g.
 Cleaning preprocessing intends to improve the quality of the assembly or to help the task of assembly (e.g. by reducing the number of false overlaps). 
 As overlapping tools didn't know what the user will do with the computed set of overlaps, all information is reported (it's a good point). But one has to remember that the number of overlaps for a common sequencing experiment is very large, storing them may require more than terabyte for some large dataset. In section \ref{sec:preasm:intro_fpa} we introduce in more details this trouble and the solution we have design. \jsv{paragraphe a retravailler}
 
-Correction and scrubbing seeks to perform the same target: reduce the error rate of reads. Scrubbing works on large region (around ten or hundred bases) while correction works at the level of one base. This difference of scale implies different requirements in terms of computation time and memory usage. Section \ref{sec:preasm:yacrd} discusses the interest of scrubbing towards correction.
+Correction and scrubbing seeks to perform the same target: reduce the error rate of reads. Scrubbing works on large region (around ten or hundred bases) while correction works at the level of one base. This difference of scale implies different requirements in terms of computation time and memory usage.
 
 Our work on overlap selection and on scrubbing tools was merged in a paper presented in section \ref{section:preassembly:paper}.
 
@@ -90,6 +90,8 @@ In a blog post "State-of-the-art long reads overlappers comparison" \footnote{\u
 
 \subfile{paper/blog_post.tex}
 
+\newpage
+
 \section{Improving assembly by filtering out overlaps and scrubbing}
 
 \subsection{Improve genome assembly efficiency by reducing the quantity of information} \label{sec:preasm:intro_fpa}
@@ -106,24 +108,22 @@ Figure \ref{intro:fig:length_overlap_histogram} shows a histogram of overlap len
 \end{figure}
 There is definitively room for improvement. Can we filter overlapping information with positive (or at least no negative) impact on assembly results ? One may hope to at least decrease the disk space and may be to increase the speed of assembly.
 
-In section \ref{section:preassembly:paper} we present \fpa (for Filter Pairwise Alignment), our solution to solve filter out useless overlaps. An overlaper output can be piped directly to \fpa. \fpa can apply several filters based on length of read, length of overlap, type of overlap, read name. Some simple \fpa filters reduce the computation time of assembly without effect (or a small positive effect) on assembly.
+In section \ref{section:preassembly:paper} we present \fpa (for Filter Pairwise Alignment), our solution to filter out useless overlaps. An overlaper output can be piped directly to \fpa. \fpa can apply several filters based on length of read, length of overlap, type of overlap, read name. Some simple \fpa filters reduce the computation time of assembly without effect (or a small positive effect) on assembly.
 
 
-\subsection{Read scrubbing: an alternative of read correction} \label{sec:preasm:intro_yacrd}
+\subsection{Read scrubbing: an alternative to read correction} \label{sec:preasm:intro_yacrd}
 
-Assembly tools are based on reads. If your reads are bad, your assembly will be bad. To continue on the analogy given in the introduction, you probably cannot reconstruct a book if crazy monks gave to you only fragments with half of the letters being erroneous. Correction of reads, with a mix of sequencing technologies (or with a single technology), can help you to get better reads. But actually, correction tools have an important cost in term of computation time and memory usage. Moreover it's hard to differentiate natural mutations (e.g. real SNPs) to sequencing errors, and sometimes interesting mutations are consider as errors and are corrected (thus removed).
+Assembly tools are based on reads. If your reads are bad, your assembly will be bad. To continue on the analogy given in the introduction, you probably cannot reconstruct a book if crazy monks gave you only fragments with half of the letters being erroneous. Correction of reads, with a mix of sequencing technologies or with a single technology, can help to get better reads. But actually, correction tools have an important cost in term of computation time and memory usage. Moreover it's hard to distinguish mutations (e.g. true SNPs) from sequencing errors, and sometimes interesting mutations are consider as errors and are corrected (thus removed).
 
-Correction was per-processing step to found and remove error in reads, this step was particularly important for long-reads data because her error rate was important and can lead to more error and misassembly in assembly. Roughly correction use overlap information to pick other reads share same sequence of a read need to be correct and use all information present sequence to build a consensus, we can cite tools like \toolsname{Mecat}\cite{MECAT}, \toolsname{CONSENT}\cite{CONSENT}. A similar task call polishing, was run after assembly, read are mapped against contig and contig sequence was correct with reads information we can site \toolsname{Racon}\cite{racon} and \toolsname{CONSENT}.
+The pre-processing correction step is particularly important for long-reads data because of high error rates that can lead to more errors and misassemblies. Tools like \toolsname{Mecat}\cite{MECAT}, \toolsname{CONSENT}\cite{CONSENT} uses overlap information to pick reads that share same sequences and build a consensus from the alignements induced by overlaps. A similar task, called polishing, is run after assembly, as a post-processing task. Reads are mapped against assembled contigs and contig sequences is corrected using reads, we can cite \toolsname{Racon}\cite{racon} and \toolsname{CONSENT}.
 
-More than read contains error more correction required many reads, but the sequencing depth is not homogeneous and if for a given region this depth is not sufficient for the corrector, it will be less effective but it could still reduce the sequencing depth by eliminating reads or part of reads. To solve this problem it is necessary either to work without correction or to return to the raw reads to find the lost connection.
+The more a read contains errors, the more the correction step require reads. But the sequencing depth is not homogeneous. Thus the corrector will be more or less effective depending on regions and the depth of coverage thereof. If the sequencing depth is too low, the correction may discard some reads. To solve this problem it is necessary either to work without correction or to return to raw reads.
 
-At the best of our knowledge the only one reads correctors they try to keept the hetrozygotie during correction is falcon \cite{falcon}, the other didn't try to keep this information. Or heterozygotie are very use full to understand genetic diversity in population or some genetic disease.
-Moreover if you genome contain some almost repetion (two instance of same text with some mutation), the correction maybe can't distinguish the mutation between this two instance to sequencing error and correct the two instance of the almost repetition to the same sequence, so correction can create a repetition that cannot be resolved where there were we have two solvable almost repetitions.
+Correction of reads before assembly can generate some trouble in assembly by remove some important information. At the best of our knowledge the only one reads corrector that tries to keep the heterozygotie during correction is falcon \cite{falcon}. Heterozygotie is very useful to understand genetic diversity in population or some genetic diseases. Another example concerns genomes that contain approximate repeats. The correction step tends to correct both region in order to make them identical. By the way, correction creates a repetition that cannot be solved by the assembler although regions could be distinguished prior to correction.
 
-Correction of reads before assembly can generate some trouble in assembly by remove some important read. But long-reads still contains very low quality region \cite{blog_post_error_repartition} this region can lead to a fragmented assembly \cite{long_read_assembler_comparison}. An alternative to preassembly correction can be scrubbing, remove only very low quality region and keep all other information.
+ Nevertheless, long-reads still contains very low quality region \cite{blog_post_error_repartition} that can lead to fragmented assembly \cite{long_read_assembler_comparison}. It is thus necessary to filter out thos regions. An alternative to correction can be scrubbing: one removes only very low quality region and keep all other information.
 
-To found and remove this very low quality region and read we create \yacrd (for Yet Another Chimeric Read Detector), \yacrd use self overlapping information to compute a coverage curve and identify region with low coverage. We suppose this low coverage region is region with low quality, read section \ref{section:preassembly:paper} for more details on this tools.
-
+To found and remove this very low quality region and read we created \yacrd (for Yet Another Chimeric Read Detector). \yacrd uses self overlapping information to compute a coverage curve and identifies regions of low coverage. We hypothesise taht such low coverage regions are of low quality (see section \ref{section:preassembly:paper} for more details on this tool).
 
 Our paper "\yacrd and \fpa: upstream tools for long-read genome assembly" presents two tools, \yacrd , and \fpa. \yacrd focuses on the detection and elimination of very poor quality regions. \fpa focuses on filtering 'useless' overlaps.
 
@@ -133,15 +133,14 @@ Our paper "\yacrd and \fpa: upstream tools for long-read genome assembly" presen
 
 In this chapter we have proposed a benchmark of overlappers, a filtering tool for these overlap and a scrubbing tool.
 
-The blog post on overlapping tools comparison demonstrates that they do not found same overlaps. We should be able to improve the quality of the overlaps we found between reads by combining results from several tools. This is the idea of an overlap consensus generator. But in the blog post we consider if two overlapping tools found a overlap between same reads they found the same overlap. But in a case of two reads \texttt{A} and \texttt{B}, it's possible:
+The blog post on overlapping tools comparison demonstrates that they do not found same overlaps. We should be able to improve the quality of the overlaps we found between reads by combining results from several tools. This is the idea of an overlap consensus generator. In the blog post we considered that if overlapping tools found an overlap between two reads, the overlap should be roughly the same. Actually this is not true. Considering two reads \texttt{A} and \texttt{B} and three overlapping tools, it's possible that:
 \begin{itemize}
-    \item the first overlapping tools found the end of read \texttt{A} overlap the begin of read \texttt{B}
-    \item the second overlapping tools found the end of read \texttt{B} overlap the begin of read \texttt{A}
-    \item the third overlapping tools found the reads \texttt{A} and \texttt{B} share an internal match
+    \item the first tool find that the end of read \texttt{A} overlaps the beginning of read \texttt{B}
+    \item the second tool find that the end of read \texttt{B} overlaps the beginning of read \texttt{A}
+    \item the third tool find that reads \texttt{A} and \texttt{B} share an internal match
 \end{itemize}
-
-This list can be continued indefinitely. If we want build a overlaps consensus generator we need found a method, to say this two overlap found by two different overlapping tools, concern the same region of read \texttt{A} and the same region of read \texttt{B}, we can increase our confidence in this overlap is a \textit{true} overlap and it's is between this region of \texttt{A} and this region of read \texttt{B}. Or all overlapping tools found an overlap between read \texttt{C} and \texttt{D} but all this overlap concern different region of \texttt{C} and \texttt{D}, we can say they are probably no overlap between \texttt{C} and \texttt{D}.
-This work was made in the context of a PFE (\textit{Projet de Fin d'Étude} End of Study Projects) by Yann Grabe. He create a tool that will build a consensus of several overlap files, by founding overlap between overlap and compute a confident score on each overlap by evaluate the number of overllaping tools found the same overlap.
+A number of other situations can occur. If we want to build an overlap consensus generator we need to found a method able to say this two overlap found by two different overlapping tools, concern the same region of read \texttt{A} and the same region of read \texttt{B}, we can increase our confidence in this overlap is a \textit{true} overlap and it's is between this region of \texttt{A} and this region of read \texttt{B}. Or all overlapping tools found an overlap between read \texttt{C} and \texttt{D} but all this overlap concern different region of \texttt{C} and \texttt{D}, we can say they are probably no overlap between \texttt{C} and \texttt{D}.
+A temptative work has been  made in the context of a PFE (\textit{Projet de Fin d'Étude} End of Study Projects) by Yann Grabe. He built a tool that computes a consensus of several overlap files, by founding overlap between overlap and compute a confident score on each overlap by evaluate the number of overllaping tools found the same overlap.
 
 For the moment this tool is only a prototype and would still require a lot of work before it can be finalized. 
 

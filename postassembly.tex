@@ -13,7 +13,7 @@ We will see that this method requires some adjustment when evaluating an uncorre
 In a second part we  observe how recent assembly long-read assembly tools still failed to produce a good assembly on data where  it should  theoretically succeed. We thereafter present our solution \knot. \knot is a tool which by returning to the original information reads, tries to find information that could not be used by the assembly pipelines.%GNU ?
 
 
-\section{Assembly evaluation} 
+\section{Assembly evaluation} \label{section:post:eval}
 
 Several metrics exist to compare and evaluate assembly. The most common metric used is the N50 that evaluate the contiguity of assembly. For example we take a genome with one chromosomes and two assembly. The first assembly contains one large contigs (approximately the length of chromosomes) and many short. The second contains only contigs of average size one or two order of magnitude smaller than the chromosomes. The first one have an higher contiguity we have more information about the genome with the first assembly than the second we didn't need perform an hard scaffolding step to have an idea of genome organisation.
 

@@ -5,11 +5,11 @@
 \chapter{Long reads assembly tools state of the art}\label{chapter:sota}
 
 In the previous chapter we have seen how we can clean data before running assembly. In this chapter we present methods to perform an assembly and how this methods was applied on long-read assembly tools we select this tools because method and algorithm used in it was representative how other tools work in addition, these tools are recognized by the community for their quality.
-We can see assembly tools can be split in step. Between each assembly tools we can found some similarity, between step. But we can observe that in the most recent assemblers (see section \ref{section:sota:wtdbg} and \ref{section:sota:new_assembly}), the interdependence between each step of the assembly is more and more important.
+We can see assembly tools can be split in step. Between each assembly tools we can found some similarity, between step. But we can observe that in the most recent assemblers (see section \ref{section:sota:wtdbg} and \ref{sec:sota:new_assembly_tools}), the interdependence between each step of the assembly is more and more important.
 
 \section{\textit{Greedy} assembly algorithm}
 
-The \textbf{Greedy} assembly algorithm is the first type of assembly tools, used on Sanger data. For example, GigAssembler was used to assemble the first human genome data \cite{GigAssembler}. Algorithm \ref{intro:algo:greedy} presents the general idea of how the \textbf{Greedy} algorithm works.
+The \textbf{Greedy} assembly algorithm is the first type of assembly tools, used on Sanger data. For example, GigAssembler was used to assemble the first human genome \cite{GigAssembler}. Algorithm \ref{intro:algo:greedy} presents the general idea of how the \textbf{Greedy} algorithm works.
 
 The BEST\_OVERLAP function is the main part of algorithm the best overlap is the larger one or the overlap with less error, each algorithm have her own method.
 
@@ -44,7 +44,7 @@ Figure \ref{intro:fig:greedy:repetition} presents a case where reads $R_0$, $R_1
 
 An alternative to the \textbf{Greedy} approach is the Overlap Layout Consensus (\OLC). We can find a first definition of \OLC in \cite{OLC_myers} in 1995. The most popular assembly pipeline based on OLC is probably Celera \cite{celera_first, celera_second}. This approach is based on a graph where a read is a node and we build an edge between nodes if reads share an overlap. Figure \ref{intro:fig:olc:graph}, presents the \OLC corresponding to the overlap seen in \ref{intro:fig:greedy:repetition}.
 
-If we reuse analogy we introduce in section \label{intro:sec:analogy} we can see this graph as an ordering of the chapters of a book provided by a crazy copyist monk. An edge indicates this piece of text was before that piece of text in the original book.
+If we reuse analogy we introduce in section \ref{intro:sec:analogy} we can see this graph as an ordering of the chapters of a book provided by a crazy copyist monk. An edge indicates this piece of text was before that piece of text in the original book.
 
 As we can see in Figure \ref{intro:fig:olc:graph} a repetition creates a fork in \OLC, a node with two successors. It's easy to detect this case in the graph and stop this contig construction. The assembly result of this graph is 3 sequences with white nodes, green nodes and red nodes. The assembly is more fragmented than with the \textit{Greedy} algorithm but does not contain any misassembly.
 
@@ -73,7 +73,7 @@ With string graphs, we just need to follow a simple path (a path in which each n
 
 \subsection{Contained reads} \label{intro:subsubsec:contained_reads}
 
-In third generation technology, the crazy copyst monk provides fragments of different sizes and chooses the beginning of a fragment randomly, so it is possible to have a read that is contained in another one. More formaly a read A is contained in another one B, if A and B share an overlap where A starts after the start of B, and A end before the end of B. All information (kmer or overlap with other reads) in contained reads was present in the container read for assembly task and so we can remove the contained read to save memory and time.
+In third generation technology, the crazy copyst monk (see section \ref{intro:sec:analogy}) provides fragments of different sizes and chooses the beginning of a fragment randomly, so it is possible to have a read that is contained in another one. More formaly a read A is contained in another one B, if A and B share an overlap where A starts after the start of B, and A end before the end of B. All information (kmer or overlap with other reads) in contained reads was present in the container read for assembly task and so we can remove the contained read to save memory and time.
 
 \subsection{Bubble and tips} \label{intro:subsubsec:bubble_tips}
 
@@ -130,13 +130,13 @@ Third generation reads are not larger than all repetitions, but they are larger 
         \textit{Escherichia coli} strain CFT073 & 88,381 * & 4,721,099 \cite{publi_dataset} & 50 \\
         \textit{Ambystoma mexicanum} & 256 \cite{axolot_short} & 216,366 \cite{axolot_long} & 845 \\
     \end{tabular}
-    \caption{contigs N50 of some genome assembly with short and long reads. * GenBank Id 6313798}
+    \caption{contigs N50 (define in section \ref{section:post:eval}) of some genome assembly with short and long reads. * GenBank Id 6313798}
     \label{intro:tab:sr_lr_assembly}
 \end{table}
 
 Moreover, \citeauthor{dnAQET} in \cite{dnAQET} perform an assessment of different versions of well known assemblies. \citeauthor{dnAQET} notice an important improvement in this assembly after the introduction of third generation reads and 10X data (for more information on 10X data read Section \ref{section:other_contribution:10x}).
 
-Recently a high quality human genome assembly (CHM13 cell line), telomere to telomere gapless assembly, was produced with a combination of Nanopore and Pacbio reads \cite{telomere2telomere}. The authors of this paper focused their efforts on X chromosome, reconstructed a ~2.8 megabase centromeric satellite DNA array and closed all 29 remaining gaps in the current X \textit{H. sapiens} reference. Nanopore data by analysis of raw signal provides an access to DNA methylation. This study confirm previous epigenomic results observed on the X chromosome.
+Recently a high quality human genome assembly (CHM13 cell line), telomere to telomere gapless assembly, was produced with a combination of Nanopore and Pacbio reads \cite{telomere2telomere}. The authors of this paper focused their efforts on X chromosome, reconstructed a ~2.8 megabase centromeric satellite DNA array and closed all 29 remaining gaps in the current X chromosome \textit{H. sapiens} reference. Nanopore data by analysis of raw signal provides an access to DNA methylation. This study confirm previous epigenomic results observed on the X chromosome.
 
 Long read technology not only helps to improve genome assembly, it also has a significant impact on RNA study. Sequencing mRNA from beginning to end helps to detect new isoforms and splicing structures, by sequencing without PCR long reads help to remove bias in RNA quantification. But long read sequencing error rate and large input material requirements (compared with short-read RNA-seq) require new analysis methodology development \cite{review_lr_rna}. 
 
@@ -150,14 +150,14 @@ Canu \cite{canu} was proposed in 2016, it is one of the first long reads assembl
 
 \subsection{Overlapping} \label{subsec:sota:canu:overlapping}
 
-In \canu pipeline overlap is computed by \mhap (for MinHash Alignment Process). We have seen that overlap between all reads takes a lot of time and requires a lot of memory. To avoid all versus all alignment, \mhap tries to estimate which reads share a common part with another by estimating a Jaccard distance between the set of \kmers of two reads. The Jaccard distance, present in equation \ref{sota:equ:jaccard_dist}, evaluates the distance between two sets by dividing the intersection of the sets by the union of the sets.
+In \canu pipeline overlap is computed by \mhap (for MinHash Alignment Process). We have seen that overlap between all reads takes a lot of time and requires a lot of memory. To avoid all versus all alignment, \mhap tries to estimate which reads share a common part with another by estimating a Jaccard distance between the set of \kmers of two reads. A \kmer was a substring of sequence with a fixed size equal to k. The Jaccard distance, present in equation \ref{sota:equ:jaccard_dist}, evaluates the distance between two sets by dividing the intersection of the sets by the union of the sets.
 
 \begin{equation}
 J_{\delta}(A,B) = 1 - J(A,B) = 1 -  J(A,B) = 1 - \frac{|A \cap B|}{|A \cup B|}
 \label{sota:equ:jaccard_dist}
 \end{equation}
 
-In this equation \texttt{A} and \texttt{B} represent the kmer set of read \texttt{A} and read \texttt{B}. If $J(A,B)$ is low, we can suppose read \texttt{A} and read \texttt{B} share a common part.
+In this equation \texttt{A} and \texttt{B} represent the \kmer set of read \texttt{A} and read \texttt{B}, $J_{\delta}(A,B)$ represent the Jaccard distance and $J(A,B)$ represent the Jaccard index. If $J_{\delta}(A,B)$ is low, we can suppose read \texttt{A} and read \texttt{B} share a common part.
 Enumerating all the \kmers of each read and computing the intersection and union of each set takes a lot of time. \mhap selects a subset of \kmers to represent the read and computes a mash distance; \cite{mash_distance} see equation \ref{sota:equ:mash_dist_def} 
 
 \begin{equation}
@@ -165,9 +165,9 @@ J(A,B) = \frac{|A \cap B|}{|A \cup B|} \approx \frac{|S(A \cup B) \cap S(A) \cap
 \label{sota:equ:mash_dist_def}
 \end{equation}
 
-$S(A)$ is a \kmers set composed by $s$ first \kmers of set $A$. \citeauthor{mash_distance} evaluate the error between mash distance and Jaccard distance is in $\mathcal{O}(\frac{1}{\sqrt{s}})$, by default in \mhap $s=512$ so the error is smaller than 0.05.
+$S(A)$ is a \kmers set composed by $s$ a subset \kmers of set $A$. \citeauthor{mash_distance} evaluate the error between mash distance and Jaccard distance is in $\mathcal{O}(\frac{1}{\sqrt{s}})$, by default in \mhap $s=512$ so the error is smaller than 0.05.
 
-In \mhap order \kmer with a \texttt{tf-idf} score, see equation \ref{sota:equ:tf_idf_def}. The \texttt{tf-idf} score comes from the field of text search. \texttt{tf-idf} evaluates if this term is specific to this document. \texttt{tf} for term frequency indicates if the term is present many times in the document, $n_{i,j}$ is how many time the term $i$ is present in document and is $j$ divided by the number of terms in document $j$. \texttt{idf} for inverse document frequency evaluates if the term is present in many documents or just a few, $|\mathcal{D}|$ is the number of documents in the dataset divided by $|\{d_{j}:t_{i}\in d_{j}\}|$, the number of documents where the term $i$ is present.
+\mhap to choose which \kmer participate to the subset, assign to each \kmer a \texttt{tf-idf} score, see equation \ref{sota:equ:tf_idf_def}. The \texttt{tf-idf} score comes from the field of text search. \texttt{tf-idf} evaluates if this term is specific to this document. \texttt{tf} for term frequency indicates if the term is present many times in the document, $n_{i,j}$ is how many time the term $i$ is present in document and is $j$ divided by the number of terms in document $j$. \texttt{idf} for inverse document frequency evaluates if the term is present in many documents or just a few, $|\mathcal{D}|$ is the number of documents in the dataset divided by $|\{d_{j}:t_{i}\in d_{j}\}|$, the number of documents where the term $i$ is present.
 
 \begin{equation}
 \mathrm{tf-idf_{i,j}} = \mathrm{tf_{i,j}} \cdot \mathrm{idf_{i}} = \frac{n_{i,j}}{\sum_{k}n_{k,j}} \cdot \log{\frac  {|\mathcal{D}|}{|\{d_{j}:t_{i}\in d_{j}\}|}}
@@ -209,7 +209,7 @@ The trimming step will remove the parts of the reads that are not supported by t
 
 The assembly step in \canu pipeline is based on the \OLC paradigm (see Section \ref{intro:subsec:OLC} for a definition of \OLC), with some specificities. \canu builds a Best Overlap Graph (BOG) for each non-contained read only two overlaps are kept in the graph, the best overlap for each read extremity, in \canu the best overlap was the longest overlap. Use of a BOG instead of a classic \OLC graph is an aggressive strategy, in BOG we cannot observe a transitive edge and the number of edges is limited by the number of nodes. We avoid a cleaning step and reduce the memory impact of the graph. Once this graph construction step is performed, a clean step is run, removing tips and little bubbles (see Section \ref{intro:subsubsec:bubble_tips}).
 
-This BOG was used as a scaffold to generate assembly. By remapping the reads against this scaffold, \canu tries to detect larger-than-read repetitions, which do not show as loops in BOG. Afterwards, this mapping is used to build the consensus sequence of contigs. Each simple path in BOG was used to build a contig.
+This BOG was used as a scaffold to generate assembly. By remapping the reads against this scaffold, \canu tries to detect larger-than-read repetitions, which do not show as loops in BOG (see Figure \ref{sota:fig:canu:remapping}). Afterwards, this mapping is used to build the consensus sequence of contigs. Each simple path in BOG was used to build a contig.
 
 By remapping reads on the BOG, \canu can build a consensus and detect repetitions not observed in the graph. BOG was an aggressive strategy to avoid transitive edge and reduce graph size, but it could hide an edge that would have indicated a repetition. This check was required too.
 
@@ -236,12 +236,12 @@ The miniasm pipeline is more simple than the canu pipeline because it does not i
 
 \subsection{\minimap} \label{subsec:sota:miniasm:minimap}
 
-The main idea with \minimap (similar to \mhap) is that we can represent a read as a set of minimizer, and if two reads share the same succession of minimizer we can suppose these two reads share an overlap.
+The main idea with \minimap is that we can represent a read as a set of minimizer, and if two reads share the same succession of minimizer we can suppose these two reads share an overlap.
 
-A minimizer is define as the \kmer with the minimal hash value of a set of consecutive \kmer.
+A minimizer is define (in \minimap publication) as the \kmer with the minimal hash value of a set of consecutive \kmer.
 
-If we keep the same hash function, two set of \kmer from different reads but with same kmer composition, have the same kmer minimizer.
-Moreover, a kmer can be the minimizer for several consecutive sets of kmer if no kmer with a lower hash value comes in the window. 
+If we keep the same hash function, two set of \kmer from different reads but with same \kmer composition, have the same \kmer minimizer.
+Moreover, a \kmer can be the minimizer for several consecutive sets of \kmer if no \kmer with a lower hash value comes in the window. 
 
 \begin{figure}[ht]
     \centering
@@ -263,7 +263,7 @@ With this index \minimap can collect the positions of similar minimizers between
     \label{sota:fig:miniasm:mapping}
 \end{figure}
 
-\minimap reports overlap where the number of matches is sufficient (greater than a threshold) and  total length of putative overlap is sufficient. 
+\minimap reports overlap where the number of matches is sufficient (greater than a threshold, 3 by default) and  total length of putative overlap is sufficient. 
 
 \subsection{\miniasm}
 
@@ -284,7 +284,7 @@ Each overlap was classified in three categories, in order to keep only true end-
     \item containment, a read of this overlap is contained in the other read, it is the same sequence
     \item dovetail, it is an end-to-end overlap
 \end{itemize}
-Here we give intruitive definitions of these categories without being mathematically rigorous. One would argue that being rigorous here is not necessary, as these definitions turn out to depend on arbitrary criteria in practice (e.g. in \miniasm).
+Here we give intuitive definitions of these categories without being mathematically rigorous. One would argue that being rigorous here is not necessary, as these definitions turn out to depend on arbitrary criteria in practice (e.g. in \miniasm).
 
 Figure \ref{sota:fig:miniasm:ovl_classification} shows examples of these overlaps. Containment read was removed, only dovetail overlap was used to build the overlap graph. Tips, small bubbles and transitive edges were removed after this step. \miniasm takes each simple path and concatenates substring of read between the beginning and the first position of overlap.
 
@@ -344,7 +344,7 @@ During the \abreviation{ABG} construction, \abruijn stores which read generates 
 \wtdbg \cite{wtdbg2}  uses a \DBG approach to solve long-read assembly. It is not really a \DBG, but a "Fuzzy-Bruijn graph" (\abreviation{FDBG}) and was defined for the first time in this article. To build this graph, \wtdbg splits a read in a bin with a fixed size (256 base pairs) and stores the kmer present in each bin in a hash table.
 To find the overlap between reads, wtdg2 uses a hash table to compare the kmer compositions between each read and performs a pairwise alignment between each bin of reads.
 
-After this alignment step, \wtdbg only keeps in memory which bin is aligned to which bin, and it builds k-bins. Each k-bin is a sequence of k successive bin in a read. \wtdbg can infer if two k-bins overlap if one bin in this two k-bins shares an ovelap.
+After this alignment step, \wtdbg only keeps in memory which bin is aligned to which bin, and it builds k-bins. Each k-bin is a sequence of k successive bin in a read. \wtdbg can infer if two k-bins overlap if one or more bin in this two k-bins shares an ovelap.
 
 A group of k-bins are a node of \abreviation{FDBG}. \wtdbg builds an edge between two nodes if the k-bins from each node are successive in a read, after some cleaning step (pops bubbles, tips cleaning) \wtdbg builds a consensus sequence with each simple path in \abreviation{FDBG}.
 
@@ -392,9 +392,7 @@ Long read assembly is an active field of research, many tools are created each y
 
 To perform overlap detection, a majority of tools use k-mer to find reads with a high similarity and avoid all-versus-all overlapping search. To further reduce the space search, some tools use filtering based on minimizing: we keep the kmer with the lowest score, this score can be based on information contained in the dataset or be determined by an arbitrary function. The choice of k-mer size, filtering method and minimizing function, can have a great impact on result of each tool.
 
-The \OLC approach has proven its effectiveness in assembling third generation reads. Several modifications have been made to support these new reads but efforts are mainly focused on reducing the computation time of memory usage. These modifications have led to the idea of a hybrid \OLC algorithm with \DBG and Greedy (cf \flye and \wtdbg). But the step that takes the most time and memory is not the graph construction and contig construction, it is the search for overlap and the correction.
-
-This is not the only the challenge that needs to be addressed. Many assembly steps have a considerable cost in computation time and memory usage. One challenge, for example, would be to be able to conduct an overlap search with high precision and recall without excessive cost in computation time and memory usage \cite{bench_ovl}.
+The \OLC approach has proven its effectiveness in assembling third generation reads. Several modifications have been made to support these new reads but efforts are mainly focused on reducing the computation time of memory usage. These modifications have led to the idea of a hybrid \OLC algorithm with \DBG and Greedy (cf \flye and \wtdbg). This hybridisation of method create tools where interdependance between each step was more and more important. For exemple in \flye, \wtdbg and \shasta the search of overlap was linked to a assembly graph construction.
 
 The only assembly that tried to take heterozygosity into account was \toolsname{FALCON}, by making the difference between a sequencing error and a variant or heterozygosity. To get heterozygosity and variant phased or genome graph after assembly would be interesting. But the tools to extract all this information from a read do not exist yet.
 

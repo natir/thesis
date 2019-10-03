@@ -4,7 +4,7 @@
 
 \chapter{Introduction}\label{chapter:introduction}
 
-"Only what is evolving is alive" \footnote{Pierre Kerner translation from french, original quote "N'est vivant que ce qui évolue"} -- this definition of life, like many others, is incomplete. (And one could probably even find some counter-examples to it.) One should first need to define what evolution is. We can try to define the evolution of a thing as its changes to optimize the capability to conserve itself. To do that, such a thing needs some form of memory.
+"Only what is evolving is alive" \footnote{Pierre Kerner translation from french, original quote "N'est vivant que ce qui évolue"} -- this definition of life, like many others, is incomplete. And one could probably even find some counter-examples to it. One should first need to define what evolution is. We can try to define the evolution of a thing as its changes to optimize the capability to conserve itself. To do that, such a thing needs some form of memory.
 
 In the majority of current known life, the physical support of this memory is DNA, which stands for DeoxyriboNucleic Acid. DNA is a molecule composed of two strands. Each strand is composed of a phosphate backbone. Along these backbones, we have a sugar linked to a nucleic acid. We have four types of nucleic acids: Adenine (A), Thymine (T), Cytosine (C) and Guanine (G), Figure \ref{intro:fig:dna_rna_pres} shows the 3D structure of DNA.
 
@@ -38,11 +38,11 @@ If a read contains many errors (replace a letter by an other one, insert random 
     \centering
     \begin{tabular}{ll|rr|l}
 Generation & Technology          & Read length (bd)                 & Error rate             & Source                          \\ \hline
+First      & Sanger              & $\approx$ 2 kb                   & Low ($\approx$ 2\%)    & \cite{seq_assembly_demystified} \\
 Second     & ABI/Solid           & 75                               & Low ($\approx$ 2\%)    & \cite{seq_assembly_demystified} \\
 Second     & Illumina/Solexa     & 100–150                          & Low ($<$2\%)             & \cite{seq_assembly_demystified} \\
 Second     & IonTorrent          & $\approx$ 200                    & Medium ($\approx$ 4\%) & \cite{seq_assembly_demystified} \\
 Second     & Roche/454           & 400–600                          & Medium ($\approx$ 4\%) & \cite{seq_assembly_demystified} \\
-First      & Sanger              & $\approx$ 2 kb                   & Low ($\approx$ 2\%)    & \cite{seq_assembly_demystified} \\
 Third      & Pacific Biosciences & $\approx$ 10 kb ($\max$ 100 kb)  & High ($\approx$ 18\%)  & \cite{seq_assembly_demystified} \cite{longread_dark_matter} \\
 Third      & Oxford Nanopore     & $\approx$ 10 kb ($\max$ 1 mb)    & High ($\approx$ 12\%)  & \cite{longread_dark_matter} \cite{nanopore_read_accuracy} \\
     \end{tabular}
