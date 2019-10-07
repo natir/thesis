@@ -4,18 +4,16 @@
 
 \chapter{Post Assembly} \label{chapter:postassembly}
 
-In previous part we saw several third generation assembly tools, each on have their own specificity and method to produce a long read assembly. Each assembly tools produce different output files, but all of them produce a contigs file that store contigs sequences build during assembly. Other files generally contains information about contigs, coverage, if a contigs is circular or not, which reads is included to which contigs, ….
+In the previous chapter we saw several third generation assembly tools, each one having its own specificity and method to produce a long read assembly. Each assembly tool produces different output files, but all of them produce a contigs file that store contigs sequences built during assembly. Other files generally contains information about contigs, coverage, if a contig is circular or not, which reads were used to build a given contig, …
 
-All this information is useful to assess the assembly quality, or to integrate other information to improve the assembly. In this chapter we will briefly review some methods for evaluating an assembly and will especially focus on the most commonly used method for evaluating a new assembly. 
-The alignment of the contigs of the assembly against a known reference.%PHRASE NOMINALE=DANGER
+All this information is useful to assess the assembly quality, or to integrate other information to improve the assembly. In this chapter we will briefly review some methods for evaluating an assembly and will especially focus on the most commonly used method for evaluating a new assembly: the alignment of the contigs of the assembly against a known reference.%PHRASE NOMINALE=DANGER
 We will see that this method requires some adjustment when evaluating an uncorrected assembly pipeline.
 
-In a second part we  observe how recent assembly long-read assembly tools still failed to produce a good assembly on data where  it should  theoretically succeed. We thereafter present our solution \knot. \knot is a tool which by returning to the original information reads, tries to find information that could not be used by the assembly pipelines.%GNU ?
-
+In a second part we  observe how recent long-read assembly tools still fail to produce a good assembly on data although it should  theoretically succeed. We thereafter present our solution \knot. \knot is a tool which by returning to the original information reads, tries to find information that could not be used by the assembly pipelines.%GNU ?
 
 \section{Assembly evaluation} \label{section:post:eval}
 
-Several metrics exist to compare and evaluate assembly. The most common metric used is the N50 that evaluate the contiguity of assembly. For example we take a genome with one chromosomes and two assembly. The first assembly contains one large contigs (approximately the length of chromosomes) and many short. The second contains only contigs of average size one or two order of magnitude smaller than the chromosomes. The first one have an higher contiguity we have more information about the genome with the first assembly than the second we didn't need perform an hard scaffolding step to have an idea of genome organisation.
+Several metrics exist to compare and evaluate assembly. The most common metric used is the N50 that evaluates the contiguity of assembly. For example we take a genome with one chromosome and two assemblies. The first assembly contains one large contig (approximately the length of the chromosome) and many short ones. The second contains only contigs of average size one or two order of magnitude smaller than the chromosome. The first one has an higher contiguity. We have more information about the genome with the first assembly than the second one. We don't need perform an hard scaffolding step to have an idea of genome organisation.
 
 To compute N50, we create a list of your contigs length and sort them. When the cumulative sum of contigs length (starting with the largest) is larger than the sum of all contigs, the length the last added contig is the N50 value. For example, $L$ is the sorted list of contigs length: 
 \begin{equation}
@@ -31,30 +29,30 @@ N_{50}(L) &= 70\\
 70 was the last length added in cumulative length before this cumulative length is larger than half of the total sum of assembly.
 N25, N75 or NX correspond to the same metrics as N50 for 25\%, 75\%, or X\% of total length of contigs. L50 is the rank of the N50 contig in the sorted contigs list, L50 of our example is 5.
 
-NG50 is the same thing as N50, but the total sum of contigs length is replaced by the genome length (estimate or get from a previous assembly). NGA50 is the same as NG50, but the contigs length is replaced by the length of contig that map against the reference genome. We can cite U50 as another metric similar to N50 where overlapping region between contigs was ignored \cite{U50}.
+NG50 is the same thing as N50, but the total sum of contigs length is replaced by the genome length (estimated or get from a previous assembly). NGA50 is the same as NG50, but the contigs length is replaced by the length of contig that map against the reference genome. We can cite U50 as another metric similar to N50 where overlapping region between contigs was ignored \cite{U50}.
 
 N50 family metrics are not perfect, but they help to represent the contigs length distribution, and to compare the results of different assembly tools on the same dataset. N50 is useful to analyze assembly quality without any external information.
 
-By adding other information, we can evaluate assembly not only on size of contigs. \toolsname{BUSCO}\cite{busco} evaluates the assembly completeness with the presence or the absence of core genes. By mapping contigs against reference genome or close reference genome, \toolsname{Quast}\cite{quast} computes many metrics like the number of misassembly, NGA50, the identity level of contigs, …. 
+By adding other information, we can evaluate assembly not only on size of contigs. \toolsname{BUSCO}\cite{busco} evaluates the assembly completeness with the presence or the absence of core genes. By mapping contigs against reference genome or close reference genome, \toolsname{Quast}\cite{quast} computes many metrics like the number of misassemblies, NGA50, the identity level of contigs, …. 
 
-Some other tools and techniques exist and is useful. Some of them are presented in more details in \cite{seq_assembly_demystified}
+Some other tools and techniques exist and are useful. Some of them are presented in more details in \cite{seq_assembly_demystified}
 
 \subfile{paper/misassemblies-in-noisy-assemblies.tex}
 
 \section{Trouble with heuristic algorithm}
 
-Assembly tools need to rely on heuristics. Due to theoretical limit, how many of base need to be share between two read to create an overlap, how many error we can accept in this overlap, to memory constraint, computation time limit you can't search and store all overlap.%2 phrases pls
-Most of the time chosen heuristics perform  very well, but in some case a more complex analysis is needed.
+Assembly tools need to rely on heuristics. Due to theoretical limit: how many bases need to be share between two read to create an overlap, how many errors can we accept in this overlap. Due to technical limit: memory constraint, computation time limit. You can't search and store all overlap.
+Most of the time chosen heuristics perform very well, but in some cases a more complex analysis is needed.
 
-\citeauthor{long_read_assembler_comparison} in \cite{long_read_assembler_comparison} perform a comparison of five assembly tools on real data and simulated data bacterial data set. Some difficulty is injected in the input long-reads to stress assembly tools:
+\citeauthor{long_read_assembler_comparison} in \cite{long_read_assembler_comparison} perform a comparison of five assembly tools on real data and simulated data bacterial data set. Some difficulties are injected in the input long-reads to stress assembly tools:
 \begin{itemize}
-    \item Adaptor length. Sequencing techniques require the introduction of short sequence before reads. Because of their high error rates to detect and remove those adaptor from long-read sequences is not trivial. Those adaptors can generate  assembly error.
+    \item Adaptor length. Sequencing techniques require the introduction of short sequence before reads. Because of their high error rates to detect and remove those adaptor from long-read sequences is not trivial. Those adaptors can generate  assembly errors.
     \item Chimeric read. During DNA extraction and fragmentation, two fragments coming from different regions can be  sequenced as a single read. This can lead to assembly fragmentation.
-    \item Glitch level. Long-read error aren't uniformly distributed along the reads and sometimes sequencer create a region with only random sequence. A higher the glitch level indicate a larger region and a higher frequency. 
-    \item Random junk reads. Some read are just a string of random character
-    \item Read depth, correspond to genome coverage
-    \item Read identity, percent of error insertion, deletion, substitution 
-    \item Read length
+    \item Glitch level. Long-read error aren't uniformly distributed along the reads and sometimes sequencer create a region with only random sequence. A higher the glitch level indicates a larger region and a higher frequency. 
+    \item Random junk reads. Some reads are just a string of random character.
+    \item Read depth, corresponds to genome coverage.
+    \item Read identity, percent of error insertion, deletion, substitution. 
+    \item Read length.
 \end{itemize}
 
 \begin{figure}
@@ -64,33 +62,30 @@ Most of the time chosen heuristics perform  very well, but in some case a more c
     \label{intro:fig:rrwick_bench}
 \end{figure}
 
-This study focus on  assembly contiguity, if the number of contigs match with the expected number of contig and if  contigs can be mapped against the reference. %Refaire la phrase sans if
-All assemblers perform a good assembly when:%according to this benchmarck we observe that
+This study focuses on assembly contiguity, the number of contigs vs. the expected number of contigs, and the number of contigs that can be mapped against the reference.
+According to this benchmark we observe that:
 \begin{itemize}
-    \item reads length are upper than 10k and lower than 20k, this length can be reach by long-read sequencing technology but requests a particular attention be focused on the risk of DNA fragmentation%MOUAIS
-    \item read identity need to be upper than 85\% except %except nadine ?
-    \item the minimal coverage is around 20x, but this study didn't analyze the error rate of assembly we can suspect an high error rate in assembled contigs% too soon ?
-    \item Chimeric read have an important impact on assembly contiguity but at level generally not observe in real data % ne va pas avec le "when : bla" met "si il n'y a pas bcp de reads chimeric" et discute de tes trucs apres cette liste
+    \item reads length are upper than 10k and lower than 20k, this length can be reached by long-read sequencing technology but requests a particular attention be focused on the risk of DNA fragmentation
+    \item read identity need to be upper than 85\%
+    \item the minimal coverage is around 20x, but this study didn't analyze the error rate of assembly, we can suspect a high error rate in assembled contigs
+    \item chimeric reads have an important impact on assembly contiguity but at level generally not observed in real data 
 \end{itemize}
 
-We can observe an important variability of result (in \canu, \wtdbg and \toolsname{Unicycler}), an assembly can fail for many reason: a chimeric read in a repetition, a drop of coverage, a missing overlap, or a inappropriate  set of parameter.
-%UN SAUT TH2MATIQUE DE OUF ICI
-We often notice an overlap missed by a given tool but found by another and we observe that overlapping tools on real data have room for progression  \cite{ovl_bench}. 
-In section \ref{section:preassembly:ovl_consensus} we talk about difference between overlapping tools result and some preliminary result of an overlapping tools consensus.%GNU
+We can observe an important variability of result (in \canu, \wtdbg and \toolsname{Unicycler}). An assembly can fail for many reasons: a chimeric read in a repetition, a drop of coverage, a missing overlap, or a inappropriate  set of parameters.
 
-Analysis and understanding of the data produced by assembly tools help to check if assembly result didn't produce false result or to understand, and sometimes solve, assembly trouble. Some tools use remapping of reads against assembled contigs to found misassembly by detect incongruity's in read coverage, mate pairs mapping, read mapping clipping.
-Some tools or assembly tools was developed in order to to analyses assembly graph to understand what is happening during assembly like \toolsname{Bandage} \cite{bandage}, a tools to visualize assembly graph.
+Analysis and understanding of the data produced by assembly tools help to check if assembly result didn't produce false result or to understand, and sometimes solve, assembly trouble. Some tools use remapping of reads against assembled contigs to found misassembly by detecting incongruity's in read coverage, mate pairs mapping, read mapping clipping.
+Some tools or assembly tools were developed in order to analyse assembly graphs to understand what is happening during assembly like \toolsname{Bandage} \cite{bandage}, a tool to visualize assembly graph.
 
-We developed \knot a tools to simplify analysis of assembly tools result and help users to make choices improving assembly quality.% and found lost link between contigs in assembly. ca va ailleurs ca
-This tool is based on the observation that the graph of raw reads is generally connected (we can reach any node from any node), while the graph of contigs does not. Therefore the idea of \knot is to use the graph of raw reads to find the (potentially missed) links between the contigs.
+We developed \knot a tool to simplify analysis of assembly tools results and help users to make choices improving assembly quality.
+This tool is based on the observation that the graph of raw reads is generally connected (we can reach any node from any node), while the graph of contigs does not. Therefore the idea of \knot is to use the graph of raw reads to find the (potentially missed) links between contigs.
 
 \begin{figure}[ht]
     \includegraphics[width=\textwidth]{postassembly/images/t_roseus_projection_annoted.pdf}
-    \caption{This graph is the overlap graph (computed by \minimap), reads used by \canu to build its contigs are colored with same color. We can observe two fragmentation points, one can be explained by a repetition, green circle, we can observe repetition solved by \canu, but the fragmentation between green and red can't be explain by a repetition.}%Plus simple pls
+    \caption{This graph is the overlap graph (computed by \minimap), reads used by \canu to build its contigs are colored with same color. We can thus distinguish the three contigs computed by \canu. We can observe two fragmentation points, one can be explained by a repetition (green circle). We can observe that some repetitions are solved by \canu. But the fragmentation between green and red contigs (blue circle) can't be explained by a repetition.}%Plus simple pls
     \label{postassembly:fig:t_roseus_example}
 \end{figure}
 
-The Figure \ref{postassembly:fig:t_roseus_example} present the main idea of \knot, to combine information of assembly (the read coloration) with a maximum of information that can be extracted from reads (the \OLC graph build from \minimap but another overlapping tools can be used). The   contigs information help us to ignore some already solved problem (red circle), unsolvable trouble (greed circle) and  to focus on strange situations (blue circle). Figure \ref{postassembly:fig:t_roseus_example} show a very simple example on a real case. The \OLC graph can be unreadable. For these reason and to run analysis without an human intervention we also automatised the idea of \knot.%UNCLEAR
+The Figure \ref{postassembly:fig:t_roseus_example} present the main idea of \knot, to combine information of assembly (the read coloration) with pieces of information that can be extracted from reads (the \OLC graph build from \minimap but another overlapping tools can be used). The   contigs information helps us to ignore some already solved problem (red circle), unsolvable trouble (greed circle) and  to focus on strange situations (blue circle). Figure \ref{postassembly:fig:t_roseus_example} show a very simple example on a real case. The \OLC graph can be very hard to read and understand for a human, analysing an \OLC graph by hand is almost impossible. For these reasons and to run analysis without an human intervention we also automatised the idea of \knot.%UNCLEAR
 
 The paper was publish originally publish in Bioinformatics (\url{https://doi.org/10.1093/bioinformatics/btz219}), we reformat the paper in the style of this current document for reasons of readability.
 
@@ -101,8 +96,6 @@ The paper was publish originally publish in Bioinformatics (\url{https://doi.org
 In this section we studied how we can evaluate an assembly, and detailed some issues when we use a reference genome to evaluate a de novo long-read assemblies.
 
 With \knot we present the interest to go back to raw read information, and how it can solve  bacterial assembly issues.
-To use \knot on more complex datasets we need improve some part of \knot, especially the graph construction, its representation in memory and the search of paths between contigs extremity. This improvements required some development, but the original idea of going back to raw reads information can be used for more genome assembly improvements. I present this idea in my conclusion. %on peux faire mieux comme phrase de fin de chapitre
-
-
+To use \knot on more complex datasets needs to improve some parts of \knot, especially the graph construction, its representation in memory and the search of paths between contigs extremities. These improvements required some development, but the original idea of going back to raw reads information can be used for more genome assembly improvements.
 
 \end{document}

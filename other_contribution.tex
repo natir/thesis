@@ -6,7 +6,7 @@
 
 This chapter have not any link to other ones they presents about my contribution on some projects where I spent some time during my PhD without sufficiently large contribution to have a specific chapter.
 
-\section{labsquare}
+\section{Labsquare}
 
 Labsquare is a community for genomics software, this community was create by me and some other bioinformaticien's friend I participate in developpement of two tools.
 
@@ -26,7 +26,7 @@ Labsquare is a community for genomics software, this community was create by me 
 
 In this challenge, we have two datasets with similar reads composition. A set of Illumina Hiseq like reads and a set of Pacbio like reads, simulated by \toolsname{CAMISIM}\cite{camisim}.
 
-We have two dataset, Marine Dataset built to correspond to the composition of a metagenomics sequencing of seawater, and Strain Madness Dataset with very important strain-level variation.
+We have two datasets, Marine Dataset built to correspond to the composition of a metagenomics sequencing of seawater, and Strain Madness Dataset with very important strain-level variation.
 
 \subsection{Assembly strategy}
 
@@ -36,11 +36,11 @@ On the second hand, my main contribution in this challenge, we build a long-read
 
 Finally, we submit a reconciliation of short reads assembly made by \toolsname{gatb-pipeline} and \wtdbg assembly of corrected long-read, if a short reads contig maps in a long reads contig the short reads contigs is discarded. This strategy should have allowed us to have good quality contigs (from long reads assemblies) on the most present strains without losing the information of the least present strains (contained in the short reads contigs). Indeed, long reads sequencing technologies have lower sequencing depths which cannot allow the detection and assembly of the least present strains.
 
-When writing this document, we do not have yet the result  of other team or an idea of quality of our assembly.
+When writing this document, we do not have yet the result  of other teams or an idea of quality of our assembly.
 
 \section{10X linked-read deconvolution} \label{section:other_contribution:10x}
 
-10X linked-read sequencing is a sequencing technique developed by 10X genomics. Figure \label{fig:other_contribution:10x} presents the main idea of 10X linked-read sequencing. After purificationn DNA is fragmented into large molecules ($\approx$100 kb length). By microfluidic method each large molecule is separated into an individuals bubble. Each bubble is associated to a barcode. In a bubble DNA is fragmented into shorter fragments (compatible with Illumina sequencing method) and a barcode is added to the extremity of each fragment. After a classic short-read sequencing, we can use barcode information to determinate if read comes from the same large fragment or not.
+10X linked-read sequencing is a sequencing technique developed by 10X genomics. Figure \ref{fig:other_contribution:10x} presents the main idea of 10X linked-read sequencing. After purificationn DNA is fragmented into large molecules ($\approx$100 kb length). By microfluidic method each large molecule is separated into an individuals bubble. Each bubble is associated to a barcode. In a bubble DNA is fragmented into shorter fragments (compatible with Illumina sequencing method) and a barcode is added to the extremity of each fragment. After a classic short-read sequencing, we can use barcode information to determinate if read comes from the same large fragment or not.
 
 \begin{figure}
     \centering
@@ -51,7 +51,7 @@ When writing this document, we do not have yet the result  of other team or an i
 
 Unfortunately, there is not a barcode for each large DNA molecule and therefore several fragments will share the barcode. The task of assigning each reads its original molecule is called \textbf{deconvolution}. Knowing exactly the original molecule of each reads is useful to: 
 \begin{itemize}
-    \item assembey and scaffolding, by allowing to solve repetitions that are spanned by large molecules,
+    \item assembly and scaffolding, by allowing to solve repetitions that are spanned by large molecules,
     \item variant phasing; all reads coming from same molecule necessarily come from the same haplotype.
 \end{itemize}
  

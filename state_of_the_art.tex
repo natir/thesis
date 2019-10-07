@@ -4,14 +4,14 @@
 
 \chapter{Long reads assembly tools state of the art}\label{chapter:sota}
 
-In the previous chapter we have seen how we can clean data before running assembly. In this chapter we present methods to perform an assembly and how this methods was applied on long-read assembly tools we select this tools because method and algorithm used in it was representative how other tools work in addition, these tools are recognized by the community for their quality.
-We can see assembly tools can be split in step. Between each assembly tools we can found some similarity, between step. But we can observe that in the most recent assemblers (see section \ref{section:sota:wtdbg} and \ref{sec:sota:new_assembly_tools}), the interdependence between each step of the assembly is more and more important.
+In the previous chapter we have seen how we can clean data before running assembly. In this chapter we present methods to perform an assembly and how these methods are applied on long-read assembly tools. We selected some tools for which we give a detailed description because methods and algorithms used are representative on how other tools work. In addition, these tools are recognized by the community for their quality.
+We can see that assembly tools can be split in steps. Assembly tools share similar steps. But we can observe that in the most recent assemblers (see section \ref{section:sota:wtdbg} and \ref{sec:sota:new_assembly_tools}), the interdependence between each step of an assembly pipeline is more and more important.
 
 \section{\textit{Greedy} assembly algorithm}
 
 The \textbf{Greedy} assembly algorithm is the first type of assembly tools, used on Sanger data. For example, GigAssembler was used to assemble the first human genome \cite{GigAssembler}. Algorithm \ref{intro:algo:greedy} presents the general idea of how the \textbf{Greedy} algorithm works.
 
-The BEST\_OVERLAP function is the main part of algorithm the best overlap is the larger one or the overlap with less error, each algorithm have her own method.
+The BEST\_OVERLAP function is the main part of algorithm. The best overlap is the larger one or the overlap with less error. Each algorithm have its own method.
 
 \begin{algorithm}[ht]
     \caption{A greedy assembly}

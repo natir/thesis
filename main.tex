@@ -20,7 +20,7 @@
   \IfFileExists{#1}{}{\typeout{No file #1.}}
 }
 \makeatother
- 
+
 \newcommand*{\myexternaldocument}[1]{%
     \externaldocument{#1}%
 %    \addFileDependency{#1.tex}%
@@ -43,8 +43,8 @@
 % todonotes package and macro
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Switch comment to enable or disable comment
-%\usepackage[disable]{todonotes}
-\usepackage[colorinlistoftodos,prependcaption,textwidth=6cm]{todonotes}
+\usepackage[disable]{todonotes}
+%\usepackage[colorinlistoftodos,prependcaption,textwidth=6cm]{todonotes}
 
 \newcommandx{\jsv}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red]{#2}{#1}}
 \newcommandx{\rc}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue]{#2}{#1}}
@@ -74,11 +74,12 @@
 \date{2 décembre 2019}
 
 \AddJuryMember{Rapporteur}{Tobias Marschall}{Prof, Max Planck Institut}
-\AddJuryMember{Rapporteur}{Pierre Peterlongo}{CR, Inria Rennes - Bretagne Atlantique}
+\AddJuryMember{Rapportrice}{Marie-France Sagot}{DR, Inria Grenoble Rhône-Alpes}
 \AddJuryMember{Directeur de thèse}{Jean-Stéphane Varré}{Prof, Université Lille, CRIStAL}
 \AddJuryMember{Co-encadrant de thèse}{Rayan Chikhi}{CR, Institut Pasteur \& CNRS}
 \AddJuryMember{Examinatrice}{Blerina Sinaimeri}{Université Lyon I – INRIA}
 \AddJuryMember{Examinatrice}{Clarisse Dhaenens}{Université Lille}
+\AddJuryMember{Examinateur}{Pierre Peterlongo}{CR, Inria Rennes - Bretagne Atlantique}
 
 \input{macro.tex}
 

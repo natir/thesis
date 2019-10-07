@@ -19,15 +19,13 @@ or perform some operations to improve the quality of reads, e.g.
 	\item correct reads using information from other sequencing technology (this is called hybrid correction) or with same technology, this operation is called \emph{correction} 
 \end{itemize}
 Cleaning preprocessing intends to improve the quality of the assembly or to help the task of assembly (e.g. by reducing the number of false overlaps). 
-As overlapping tools didn't know what the user will do with the computed set of overlaps, all information is reported (it's a good point). But one has to remember that the number of overlaps for a common sequencing experiment is very large, storing them may require more than terabyte for some large dataset. In section \ref{sec:preasm:intro_fpa} we introduce in more details this trouble and the solution we have design. \jsv{paragraphe a retravailler}
+As overlapping tools are not aware of what the user will do with the computed set of overlaps, all information is reported (it's a good point). But one has to remember that the number of overlaps for a usual sequencing experiment is very large. Storing them may require more than terabyte for some large dataset. In section \ref{sec:preasm:intro_fpa} we introduce in more details bottlenecks and the solution we have proposed. 
 
 Correction and scrubbing seeks to perform the same target: reduce the error rate of reads. Scrubbing works on large region (around ten or hundred bases) while correction works at the level of one base. This difference of scale implies different requirements in terms of computation time and memory usage.
 
 Our work on overlap selection and on scrubbing tools was merged in a paper presented in section \ref{section:preassembly:paper}.
 
-\section{Overlaps and their impact on assembly}
-
-\subsection{How to find similar regions between sequence} \label{sec:preasm:ovl}
+\section{Overlaps and their impact on assembly} \label{sec:preasm:ovl}
 
 As we defined in the introduction, when two sequences share a common substring, we say that they overlap or that one of them maps on the other see \ref{intro:fig:overlap:perfect}. It is possible for sequences to share a common substring just by chance (because of the 4-letter alphabet) but the probability of this event decreases when the length of the common substring increases. Intuitively, this probability gets smaller as common substring gets longer. If the reads does not contain sequencing errors, the only criteria to evaluate whether a common substring is "true" or not could be the length of this substring. However, the number of errors in the sequence of readings breaks this paradigm and forces us to integrate the errors when assessing the quality of an overlap. Figure \ref{intro:fig:overlap:erroneous} show an overlap with two mismatch. There are two base pairs that do not match between the two sequences - knowing if this overlap is "true" or not isn't obvious.
 
@@ -140,9 +138,7 @@ The blog post on overlapping tools comparison demonstrates that they do not foun
     \item the third tool find that reads \texttt{A} and \texttt{B} share an internal match
 \end{itemize}
 A number of other situations can occur. If we want to build an overlap consensus generator we need to found a method able to say this two overlap found by two different overlapping tools, concern the same region of read \texttt{A} and the same region of read \texttt{B}, we can increase our confidence in this overlap is a \textit{true} overlap and it's is between this region of \texttt{A} and this region of read \texttt{B}. Or all overlapping tools found an overlap between read \texttt{C} and \texttt{D} but all this overlap concern different region of \texttt{C} and \texttt{D}, we can say they are probably no overlap between \texttt{C} and \texttt{D}.
-A temptative work has been  made in the context of a PFE (\textit{Projet de Fin d'Étude} End of Study Projects) by Yann Grabe. He built a tool that computes a consensus of several overlap files, by founding overlap between overlap and compute a confident score on each overlap by evaluate the number of overllaping tools found the same overlap.
-
-For the moment this tool is only a prototype and would still require a lot of work before it can be finalized. 
+A work has been  made in the context of a student project I supervised (PFE - \textit{Projet de Fin d'Étude} End of Study Projects by Yann Grabe). He built a tool that computes a consensus of several overlap files. By comparing overlaps, i.e. computing overlaps between read overlaps, the tool computes a confident score on each read overlap by evaluating the number of overlapping tools that found the same read overlap. For the moment this tool is only a prototype and would still require a lot of work before it can be finalized. 
 
 %\onlyinsubfile{
 %\bibliographystyle{plainnat}
