@@ -1,5 +1,7 @@
 \documentclass{thesis}
 
+\pdfobjcompresslevel 0
+
 % package 
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
@@ -11,6 +13,7 @@
 \usepackage{algpseudocode}
 \usepackage{csvsimple}
 \usepackage{supertabular}
+\usepackage{afterpage}
 
 \usepackage{xr}
 \makeatletter
@@ -88,7 +91,7 @@
 \maketitle
 \clearpage
 
-\listoftodos
+\blankpage
 
 \begin{center}
 ~\vspace*{\fill}\\
@@ -106,11 +109,16 @@ France
 
 \frontmatter
 
+\blankpage
+
+\thispagestyle{empty}
 \subfile{acknowledgement.tex}
 
 \tableofcontents
 
 \mainmatter
+
+\blankpage
 
 \subfile{introduction.tex}
 
@@ -137,6 +145,7 @@ France
 \subfile{supplemental/yacrd_fpa/supplemental.tex}
 
 \newpage
+\thispagestyle{empty}
 \backmatter
 \subfile{abstract.tex}
 
