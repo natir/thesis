@@ -156,7 +156,7 @@
       \@author \par
     }
     \rule{\textwidth}{1pt}
-    {\fontsize{24}{28}\bfseries\MakeUppercase\selectfont
+    {\fontsize{22}{24}\bfseries\MakeUppercase\selectfont
       \@title\par
     }
     \rule{\textwidth}{1pt}
@@ -167,9 +167,10 @@
     }
     \vfill
   \end{center}
-  {\rmfamily\fontsize{14}{16}\selectfont
+    {\rmfamily\fontsize{14}{16}\selectfont
     Soutenue le \@date~ devant un jury compos\'e de~:\par
-    \rule{\textwidth}{1pt}
+    \hspace{-1cm}\rule{\textwidth}{1pt}
+
     \begin{table}[H]
       \small
       \rmfamily\fontsize{12}{14}\selectfont
